@@ -1,0 +1,6 @@
+---
+- name: create_vm_use_template
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_use_template
