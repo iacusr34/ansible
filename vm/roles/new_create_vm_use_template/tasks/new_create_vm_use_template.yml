@@ -37,7 +37,7 @@
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     cluster: 'IAAS_iac(D)_Cluster'
-    name: '{{ vm_purpose[0:1] }}{{ vm_name }}{{ vm_type }}{{ item }}v'
+    name: '{{ vm_purpose[0:1] }}{{ vm_name }}{{ item }}v'
     state: poweredon
     template: 'TMP_RHEL8.6_60_50_DEV'
     disk:
