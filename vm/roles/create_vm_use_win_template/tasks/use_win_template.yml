@@ -1,1 +1,29 @@
 ---
+- name: 'Create a virtual machine from a Windows template'
+  vmware_guest:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    cluster: 'IAAS_iac(D)_Cluster'
+    name: '{{ vm_name }}'
+    state: poweredon
+    template: 'TMP_WIN2019_DEV'
+    disk:
+    - size_gb: 60
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    - size_gb: 50
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    hardware:
+      memory_mb: 8192
+      num_cpus: 4
+      scsi: paravirtual
+      cpu_shares_level: "normal"
+      mem_shares_level: "normal"
+  delegate_to: localhost
+  register: deploy
+
+- name: debugging
+  debug:
+    var: deploy
