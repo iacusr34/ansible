@@ -1,0 +1,6 @@
+---
+- name: Power off the selected VM after 1 minute
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: power_off_after_pause
