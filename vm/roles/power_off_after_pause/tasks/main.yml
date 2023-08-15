@@ -1,9 +1,9 @@
 ---
-- name: change power state the VM after 1 minutes
-  include_tasks: poweroff_after_pause.yml
+- name: 'change power state the VM : {{ vm_name }} after 1 minutes'
+  include_tasks: restart_after_vm.yml
   when: running_check == "yes"
 
-- name:
+- name: 'check variable input values to control VM power
   debug:
-    msg:
+    msg: 'You must enter yes to control the power of the VM. the value you entered : {{ running_check }}'
   when: running_check != "yes"
