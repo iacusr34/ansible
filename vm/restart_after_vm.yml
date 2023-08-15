@@ -3,4 +3,4 @@
   hosts: localhost
   gather_facts: false
   roles:
-    - role: power_off_after_pause
+    - role: restart_after_vm
