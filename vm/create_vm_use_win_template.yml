@@ -1,2 +1,6 @@
 ---
-- name:
+- name: create vm use win template
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_use_win_template
