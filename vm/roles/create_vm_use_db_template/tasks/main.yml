@@ -1,0 +1,3 @@
+---
+- name: create vm use db template
+  include_tasks: use_db_template.yml
