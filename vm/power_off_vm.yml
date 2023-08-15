@@ -1,0 +1,6 @@
+---
+- name: power off the VM you choose
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: power_off_vm
