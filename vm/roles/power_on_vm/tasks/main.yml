@@ -1,0 +1,8 @@
+- name: power on the guest VM
+  include_tasks: poweron.yml
+  when: running_check == "yes"
+
+- name: Check variable input values to control VM power
+  debug:
+    msg: "You must enter yes to control the power of the VM. the value you entered : {{ running_check }}"
+  when: running_check != "yes"
