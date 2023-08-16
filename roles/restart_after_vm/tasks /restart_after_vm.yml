@@ -11,7 +11,7 @@
   pause:
     minutes: 1
 
-- name: Power on the VM : {{ vm_name }}
+- name: 'Power on the VM : {{ vm_name }}'
   vmware_guest_powerstate:
     validate_certs: false
     folder: 'IAAS_Datacenter/vm'
