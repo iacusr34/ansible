@@ -1,3 +1,7 @@
 ---
+- name: debug msg
+  debug:
+    msg: ------------------test-------------
+
 - name: new create vm use template
   include_tasks: use_template.yml
