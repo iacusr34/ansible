@@ -5,7 +5,7 @@
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     cluster: 'IAAS_iac(D)_Cluster'
-    name: '{{ vm_name }}'
+    name: '{{ vm_name | upper }}'
     state: poweredon
     template: 'TMP_WIN2019_DEV'
     disk:
