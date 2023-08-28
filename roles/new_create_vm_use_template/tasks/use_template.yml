@@ -25,12 +25,45 @@
   delegate_to: localhost
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was' or vm_type|lower == 'mas' or vm_type|lower == 'mys'
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
 
 - name: debugging 
   debug:
     msg: '{{ deploy }}'
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was' or vm_type|lower == 'mas' or vm_type|lower == 'mys'
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+
+- name: 'New Create a virtual machine from a template ( VM Type is "Not OTHER and Database Mysql or MariaDB" )'
+  vmware_guest:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    cluster: 'IAAS_iac(D)_Cluster'
+    name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    state: poweredon
+    template: 'TMP_RHEL8.6_DEV_{{ vm_type | upper }}'
+    disk:
+    - size_gb: 60
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    - size_gb: 370
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    hardware:
+      memory_mb: 4096
+      num_cpus: 2
+      scsi: paravirtual
+      mem_reservation: 4096
+      cpu_shares_level: "normal"
+      mem_shares_level: "normal"
+  delegate_to: localhost
+  register: deploy
+  with_sequence: start=1 end={{ vm_count }}
+  when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
+
+- name: debugging 
+  debug:
+    msg: '{{ deploy }}'
+  when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
 
 - name: 'New Create a virtual machine from a template ( VM TYPE is "OTHER" )'
   vmware_guest:
