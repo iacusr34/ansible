@@ -1,0 +1,7 @@
+---
+- name: "Common Config Setting"
+  include_tasks: common_config.yml
+
+- name: "Application Config Setting"
+  include_tasks: application_config.yml
+  when: vm_name[5:8]|lower == 'pxy' or vm_name[5:8]|lower == 'web' or vm_name[5:8]|lower == 'was'
