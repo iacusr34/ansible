@@ -124,10 +124,10 @@
   delegate_to: localhost
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
-  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys'
+  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys' and vm_type|lower != 'hpxy'
 
 - name: debugging 
   debug:
     msg: '{{ deploy }}'
-  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys'
+  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys' and vm_type|lower != 'hpxy'
   
