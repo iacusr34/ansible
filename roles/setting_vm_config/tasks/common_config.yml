@@ -1,0 +1,29 @@
+---
+- name: "< Common Config - 01 > Setting Hostname"
+  hostname:
+    name: "{{ vm_name }}"
+  register: common_rs_01
+
+- name: "< Common Config -01 > Result Check"
+  debug:
+    msg: "{{ common_rs_01.ansible_facts.ansible_hostname }}"
+
+- name: "< Common Config - 02 > Running DCA Agent"
+  shell: "sh /DCA/AgentInstall.sh"
+  register: common_rs_02
+  ignore_errors: true
+
+- name: "< Common Config - 02 > Result Check"
+  debug:
+    msg: "{{ common_rs_02 }}"
+  ignore_errors: true
+
+- name: "< Common Config - 03 > Running OS Security Agent"
+  shell: "sh /root/linux/Install.sh 2 40 /ost/SSR"
+  register: common_rs_03
+  ignore_errors: true
+
+- name: "< Common Config - 03 > Result Check"
+  debug:
+    msg: "{{ common_rs_03 }}"
+  ignore_errors: true
