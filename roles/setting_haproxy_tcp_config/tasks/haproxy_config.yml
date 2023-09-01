@@ -25,8 +25,8 @@
     state: absent
   register: result_03
   loop:
-    - "server s1 192.168.1.25:8888 check fail 5 inter 2000 rise 2"
-    - "server s2 192.168.1.26:8888 check fail 5 inter 2000 rise 2"
+    - "server s1 192.168.1.25:8888 check fall 5 inter 2000 rise 2"
+    - "server s2 192.168.1.26:8888 check fall 5 inter 2000 rise 2"
 
 - name: "< Haproxy {{ proxy_type|upper }} Setting - 03 > Result Check"
   debug:
@@ -39,8 +39,8 @@
     line: "{{ item }}"
   register: result_04
   loop:
-    - "   server s2 {{ vm_member_2 }} check fail 5 inter 2000 rise 2"
-    - "   server s1 {{ vm_member_1 }} check fail 5 inter 2000 rise 2"
+    - "   server s2 {{ vm_member_2 }} check fall 5 inter 2000 rise 2"
+    - "   server s1 {{ vm_member_1 }} check fall 5 inter 2000 rise 2"
 
 - name: "< Haproxy {{ proxy_type|upper }} Setting - 04 > Result Check"
   debug:
