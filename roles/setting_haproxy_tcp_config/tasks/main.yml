@@ -1,0 +1,3 @@
+---
+- name: "Haproxy Config TCP or Proxy Setting"
+  include_tasks: haproxy_config.yml
