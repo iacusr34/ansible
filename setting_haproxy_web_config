@@ -1,0 +1,7 @@
+---
+- name: "Setting Haproxy WEB config"
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - role: setting_haproxy_web_config
