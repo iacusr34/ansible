@@ -1,0 +1,17 @@
+---
+- name: "Add New VM(=host) IP to Inventory API Call"
+  uri:
+    url: http://172.20.49.121/api/v2/inventories/12/hosts/
+    method: POST
+    body_format: json
+    status_code: 201
+    return_content: true
+    headers:
+      Content-Type: application/json
+      Authorization: 'Bearer K12UYyLVyrxrotEAlXzrKux2wqIGLO'
+    body: '{ "name": "{{ ip_addr }}" }'
+  register: api
+
+- name: 'Result Check'
+  debug:
+    msg: "{{ api }}"
