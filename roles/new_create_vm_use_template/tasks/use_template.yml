@@ -59,7 +59,7 @@
     - name: IAC_192.168.129
       ip: "{{ ip_addr }}"
       netmask: 255.255.255.0
-      device_type: vmxnet3
+      device_type: VMXNET 3
   delegate_to: localhost
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
