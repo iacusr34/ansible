@@ -56,7 +56,7 @@
       cpu_shares_level: "normal"
       mem_shares_level: "normal"
     networks:
-    - name: "IAC_192.168.129"
+    - name: "VSW_INT.DevSVC_20.44"
       ip: "{{ ip_addr }}"
       netmask: "255.255.255.0"
     wait_for_ip_address: true
