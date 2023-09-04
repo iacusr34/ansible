@@ -59,6 +59,8 @@
     - name: "IAC_192.168.129"
       ip: "{{ ip_addr }}"
       netmask: "255.255.255.0"
+      connected: true
+      start_connected: true
   delegate_to: localhost
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
