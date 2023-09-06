@@ -32,6 +32,11 @@
     msg: '{{ deploy }}'
   when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
 
+- name: 'New virtual machine booting stand by 1 minute'
+  pause:
+    minutes: 1
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+    
 - name: 'New Create a virtual machine IP Setting ( VM Type is "Not OTHER" )'
   vmware_vm_shell:
     validate_certs: false
@@ -81,6 +86,11 @@
     msg: '{{ deploy }}'
   when: vm_type|lower == 'hpxy'
 
+- name: 'New virtual machine booting stand by 1 minute'
+  pause:
+    minutes: 1
+  when: vm_type|lower == 'hpxy'
+  
 - name: 'New Create a virtual machine IP Setting ( VM Type is "Not OTHER and HAPROXY" )'
   vmware_vm_shell:
     validate_certs: false
