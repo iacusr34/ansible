@@ -56,9 +56,8 @@
       cpu_shares_level: "normal"
       mem_shares_level: "normal"
     networks:
-    - name: "VSW_INT.DevSVC_20.44"
-      ip: "{{ ip_addr }}"
-      netmask: "255.255.255.0"
+    - name: "VM network"
+      mac: 00:50:56:a0:49:05
     wait_for_ip_address: true
   delegate_to: localhost
   register: deploy
