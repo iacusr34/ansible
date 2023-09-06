@@ -39,7 +39,7 @@
     datacenter: IAAS_Datacenter
     vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
     vm_username: 'iacusr'
-    vm_password: '{{ vm_password }}'
+    vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
     vm_shell_args: "nmcli con mod ens192 ipv4.address {{ ip_addr }}/24 ipv4.method manual connection.autoconnect yes"
   delegate_to: localhost
@@ -88,7 +88,7 @@
     datacenter: IAAS_Datacenter
     vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
     vm_username: 'iacusr'
-    vm_password: '{{ vm_password }}'
+    vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
     vm_shell_args: "nmcli con mod ens192 ipv4.address {{ ip_addr }}/24 ipv4.method manual connection.autoconnect yes"
   delegate_to: localhost
