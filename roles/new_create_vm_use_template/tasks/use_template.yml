@@ -41,7 +41,7 @@
     vm_username: 'iacusr'
     vm_password: '{{ vm_password }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ vm_addr }}/24 ipv4.method manual connection.autoconnect yes"
+    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ ip_addr }}/24 ipv4.method manual connection.autoconnect yes"
   delegate_to: localhost
   register: ip_result
   with_sequence: start=1 end={{ vm_count }}
@@ -90,7 +90,7 @@
     vm_username: 'iacusr'
     vm_password: '{{ vm_password }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ vm_addr }}/24 ipv4.method manual connection.autoconnect yes"
+    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ ip_addr }}/24 ipv4.method manual connection.autoconnect yes"
   delegate_to: localhost
   register: ip_result
   with_sequence: start=1 end={{ vm_count }}
