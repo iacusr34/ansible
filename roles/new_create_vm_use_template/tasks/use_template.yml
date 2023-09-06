@@ -55,10 +55,6 @@
       mem_reservation: 4096
       cpu_shares_level: "normal"
       mem_shares_level: "normal"
-    networks:
-    - name: "VM network"
-      mac: 00:50:56:a0:49:05
-    wait_for_ip_address: true
   delegate_to: localhost
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
