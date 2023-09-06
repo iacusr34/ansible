@@ -32,6 +32,22 @@
     msg: '{{ deploy }}'
   when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
 
+- name: 'New Create a virtual machine IP Setting ( VM Type is "Not OTHER" )'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    vm_username: 'iacusr'
+    vm_password: '{{ vm_password }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ vm_addr }}/24 ipv4.method manual connection.autoconnect yes"
+  delegate_to: localhost
+  register: ip_result
+  with_sequence: start=1 end={{ vm_count }}
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+  ignore_errors: true
+
 - name: 'New Create a virtual machine from a template ( VM Type is "Not OTHER and HAPROXY" )'
   vmware_guest:
     validate_certs: false
@@ -64,6 +80,22 @@
   debug:
     msg: '{{ deploy }}'
   when: vm_type|lower == 'hpxy'
+
+- name: 'New Create a virtual machine IP Setting ( VM Type is "Not OTHER and HAPROXY" )'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
+    vm_username: 'iacusr'
+    vm_password: '{{ vm_password }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con mod ens192 ipv4.address {{ vm_addr }}/24 ipv4.method manual connection.autoconnect yes"
+  delegate_to: localhost
+  register: ip_result
+  with_sequence: start=1 end={{ vm_count }}
+  when: vm_type|lower == 'hpxy'
+  ignore_errors: true
 
 - name: 'New Create a virtual machine from a template ( VM Type is "Not OTHER and Database Mysql or MariaDB" )'
   vmware_guest:
