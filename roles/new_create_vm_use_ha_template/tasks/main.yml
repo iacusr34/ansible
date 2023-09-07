@@ -1,0 +1,3 @@
+---
+- name: 'New Create vm use HA template
+  include_tasks: use_template.yml
