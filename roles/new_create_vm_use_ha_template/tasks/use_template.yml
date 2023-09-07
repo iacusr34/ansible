@@ -55,7 +55,7 @@
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
 #    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.method manual autoconnect yes"
-    vm_shell_args: "nmcli con mod ens224 ipv4.address {{ item.ip_addr }}/24 ipv4.method manual"
+    vm_shell_args: "nmcli con mod ens224 ipv4.address {{ item.ip_addr }}/24 ipv4.method manual && sudo nmcli con up ens224"
   delegate_to: localhost
   register: ip_result
   loop: '{{ vm_ip_list }}'
@@ -118,7 +118,7 @@
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
 #    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.addr }}/24 ipv4.method manual autoconnect yes"
-    vm_shell_args: "nmcli con mod ens224 ipv4.address {{ item.ip_addr }}/24 ipv4.method manual"
+    vm_shell_args: "nmcli con mod ens224 ipv4.address {{ item.ip_addr }}/24 ipv4.method manual && sudo nmcli con up ens224"
   delegate_to: localhost
   register: ip_result
   loop: '{{ vm_ip_list }}'
