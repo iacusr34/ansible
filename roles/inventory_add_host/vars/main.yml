@@ -1,2 +1,4 @@
 ---
-ip_addr:
+vm_ip_list: []
+vm_member_1:
+vm_member_2:
