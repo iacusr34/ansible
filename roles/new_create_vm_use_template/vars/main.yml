@@ -4,4 +4,6 @@ vm_code:
 vm_type:
 vm_count:
 ip_addr:
+ip_list: []
+vm_id: "iacusr"
 vm_pw: "dlatl00"
