@@ -1,5 +1,5 @@
 ---
-- name: 'New create vm use ha template
+- name: 'New create vm use ha template'
   hosts: localhost
   gather_facts: false
   roles:
