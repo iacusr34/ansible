@@ -36,8 +36,8 @@
   set_fact:
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
-    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}1v', 'ip_addr','{{ vm_member_1 }}' }
-    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}2v', 'ip_addr','{{ vm_member_2 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}1v', 'ip_addr':'{{ vm_member_1 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}2v', 'ip_addr':'{{ vm_member_2 }}' }
   when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
 
 - name: 'New virtual machine booting stand by 1 minute'
@@ -99,8 +99,8 @@
   set_fact:
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
-    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy1v', 'ip_addr','{{ vm_member_1 }}' }
-    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy2v', 'ip_addr','{{ vm_member_2 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy1v', 'ip_addr':'{{ vm_member_1 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy2v', 'ip_addr':'{{ vm_member_2 }}' }
   when: vm_type|lower == 'hpxy'
 
 - name: 'New virtual machine booting stand by 1 minute'
