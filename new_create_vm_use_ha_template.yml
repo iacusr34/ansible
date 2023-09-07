@@ -1,0 +1,6 @@
+---
+- name: 'New create vm use ha template
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: new_create_vm_use_ha_template
