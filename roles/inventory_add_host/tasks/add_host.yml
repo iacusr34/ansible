@@ -1,4 +1,11 @@
 ---
+- name: 'New vm host IP address variable setting'
+  set_fact:
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
+  with_items:
+    - { 'ip_addr':'{{ vm_member_1 }}' }
+    - { 'ip_addr':'{{ vm_member_2 }}' }
+
 - name: "Add New VM(=host) IP to Inventory API Call"
   uri:
     url: http://172.20.49.121/api/v2/inventories/12/hosts/
@@ -9,7 +16,8 @@
     headers:
       Content-Type: application/json
       Authorization: 'Bearer K12UYyLVyrxrotEAlXzrKux2wqIGLO'
-    body: '{ "name": "{{ ip_addr }}" }'
+    body: '{ "name": "{{ item.ip_addr }}" }'
+  loop: '{{ vm_ip_list }}'
   register: api
 
 - name: 'Result Check'
