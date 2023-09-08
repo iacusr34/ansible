@@ -1,3 +1,16 @@
 ---
-- name: 'New Create vm use HA template'
-  include_tasks: use_template.yml
+- name: '[PROD] Create VM type is Applicaton[ Apache Proxy, WEB, WAS ]'
+  include_tasks: application_template.yml
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+
+- name: '[PROD] Create VM type is Applicaton[ Haproxy ]'
+  include_tasks: haproxy_template.yml
+  when: vm_type|lower == 'hpxy'
+
+- name: '[PROD] Develop Create VM type is Database[ Mysql, MariaDB ]'
+  include_tasks: database_template.yml
+  when: when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
+
+- name: '[PROD] Create VM type is OTHER'
+  include_tasks: other_template.yml
+  when: vm_type|lower != 'pxy' and vm_type|lower != 'hpxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys'
