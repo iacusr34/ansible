@@ -43,10 +43,10 @@
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
-    vm_username: 'iacusr'
+    vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ ip_addr }}/24 ipv4.method manual autoconnect yes"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_member_1 }}/24 ipv4.method manual autoconnect yes"
   delegate_to: localhost
   register: ip_result
   with_sequence: start=1 end={{ vm_count }}
@@ -100,7 +100,7 @@
     vm_username: 'iacusr'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ ip_addr }}/24 ipv4.method manual autoconnect yes"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_member_1 }}/24 ipv4.method manual autoconnect yes"
   delegate_to: localhost
   register: ip_result
   with_sequence: start=1 end={{ vm_count }}
@@ -140,6 +140,27 @@
     msg: '{{ deploy }}'
   when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
 
+- name: 'New virtual machine booting stand by 1 minute'
+  pause:
+    minutes: 1
+  when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
+  
+- name: 'New Create a virtual machine IP Setting ( VM Type is "Not OTHER and Database Mysql or MariaDB" )'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
+    vm_username: 'iacusr'
+    vm_password: '{{ vm_pw }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_member_1 }}/24 ipv4.method manual autoconnect yes"
+  delegate_to: localhost
+  register: ip_result
+  with_sequence: start=1 end={{ vm_count }}
+  when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
+  ignore_errors: true
+
 - name: 'New Create a virtual machine from a template ( VM TYPE is "OTHER" )'
   vmware_guest:
     validate_certs: false
@@ -172,4 +193,24 @@
   debug:
     msg: '{{ deploy }}'
   when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys' and vm_type|lower != 'hpxy'
+
+- name: 'New virtual machine booting stand by 1 minute'
+  pause:
+    minutes: 1
+  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys' and vm_type|lower != 'hpxy'
   
+- name: 'New Create a virtual machine IP Setting ( VM TYPE is "OTHER" )'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
+    vm_username: 'iacusr'
+    vm_password: '{{ vm_pw }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_member_1 }}/24 ipv4.method manual autoconnect yes"
+  delegate_to: localhost
+  register: ip_result
+  with_sequence: start=1 end={{ vm_count }}
+  when: vm_type|lower != 'pxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys' and vm_type|lower != 'hpxy'
+  ignore_errors: true
