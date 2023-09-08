@@ -5,8 +5,8 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.change }}'
   loop: 
-    - { 'origin':'                     address="172."', 'change':'                     address="{{ vm_ipaddr_1 }}"' }
-    - { 'origin':'                     host="172."', 'change':'                     host="{{ vm_ipaddr_2 }}"' }
+    - { 'origin':'address="172."', 'change':'                     address="{{ vm_ipaddr_1 }}"' }
+    - { 'origin':'host="172."', 'change':'                     host="{{ vm_ipaddr_2 }}"' }
   when: inventory_hostname == vm_ipaddr_1
   register: ins11_result
 
@@ -33,8 +33,8 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.change }}'
   loop: 
-    - { 'origin':'                     address="172."', 'change':'                     address="{{ vm_ipaddr_2 }}"' }
-    - { 'origin':'                     host="172."', 'change':'                     host="{{ vm_ipaddr_1 }}"' }
+    - { 'origin':'address="172."', 'change':'                     address="{{ vm_ipaddr_2 }}"' }
+    - { 'origin':'host="172."', 'change':'                     host="{{ vm_ipaddr_1 }}"' }
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_result
 
