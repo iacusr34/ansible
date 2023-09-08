@@ -17,9 +17,9 @@
 - name: '< Application : WAS > Rename instance11 to instance21 server.xml'
   shell: '{{ item }}'
   loop: 
-    - { 'mv /engn/tomcat/servers/instance11 /engn/tomcat/servers/instance21' }
-    - { 'mv /logs/tomcat/instance11 /logs/tomcat/instance21' }
-    - { 'mv /sorc/applications/instance11 /sorc/applications/instance21' }
+    - 'mv /engn/tomcat/servers/instance11 /engn/tomcat/servers/instance21'
+    - 'mv /logs/tomcat/instance11 /logs/tomcat/instance21'
+    - 'mv /sorc/applications/instance11 /sorc/applications/instance21'
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_rename
 
