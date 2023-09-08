@@ -1,13 +1,20 @@
 ---
-- name: 'New Create a virtual machine from a template ( VM Type is "Not OTHER" )'
+- name: 'Setting variables for new VM configuration'
+  set_fact:
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
+  with_items:
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}1v', 'ip_addr':'{{ vm_ipaddr_1 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}2v', 'ip_addr':'{{ vm_ipaddr_2 }}' }
+
+- name: 'New Create a virtual machine from a HA template [ VM type is WEB, WAS, PXY ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     cluster: 'IAAS_iac(D)_Cluster'
-    name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    name: '{{ item.hostname }}'
     state: poweredon
-    template: 'TMP_RHEL8.6_DEV_{{ vm_type | upper }}'
+    template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_{{ vm_type | upper }}'
     disk:
     - size_gb: 60
       type: thin
@@ -24,31 +31,27 @@
       mem_shares_level: "normal"
   delegate_to: localhost
   register: deploy
-  with_sequence: start=1 end={{ vm_count }}
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+  loop: '{{ vm_ip_list }}'
 
 - name: debugging 
   debug:
     msg: '{{ deploy }}'
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
 
 - name: 'New virtual machine booting stand by 1 minute'
   pause:
     minutes: 1
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
     
-- name: 'New Create a virtual machine IP and Hostname Setting ( VM Type is "Not OTHER" )'
+- name: 'New Create a virtual machine IP and Hostname Setting [ VM type is WEB, WAS, PXY ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    vm_id: '{{ item.hostname }}'
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_ipaddr_1 }}/24 ipv4.method manual autoconnect yes && sudo hostnamectl set-hostname {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.method manual autoconnect yes && sudo hostnamectl set-hostname {{ item.hostname }}"
   delegate_to: localhost
   register: ip_result
-  with_sequence: start=1 end={{ vm_count }}
-  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+  loop: '{{ vm_ip_list }}'
   ignore_errors: true
