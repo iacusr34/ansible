@@ -1,3 +1,8 @@
 ---
 - name: "Haproxy Config TCP or Proxy Setting"
   include_tasks: haproxy_tcp_config.yml
+  when: proxy_type|lower == 'tcp' or proxy_type|lower == 'proxy'
+
+- name: "Haproxy Config WEB Setting"
+  include_tasks: haproxy_web_config.yml
+  when: proxy_type|lower == 'web
