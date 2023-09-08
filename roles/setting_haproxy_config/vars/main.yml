@@ -1,4 +1,5 @@
 ---
+vm_type:
 proxy_type:
 bind_port:
 vm_member_1:
