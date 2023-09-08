@@ -1,0 +1,3 @@
+---
+- name: 'Workflow Tempalte Develop Create VM Main'
+  include_tasks: use_template.yml
