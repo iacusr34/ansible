@@ -1,30 +1,15 @@
 ---
-- name: '< Application : WAS > hostname Check'
-  shell: 'hostname'
-  register: hostname_rs
-
-- name: '< Application : WAS > Setting instance11 server.xml (1)'
+- name: '< Application : WAS > Setting instance11 server.xml'
   lineinfile:
     path: '/engn/tomcat/servers/instance11/conf/server.xml'
-    regexp: 'address="172."'
-    line: 'address="{{ vm_ipaddr_1 }}"'
-  loop: '{{ hostname_rs }}'
-  when: item.stdout|regex_search('1v')
+    regexp: '{{ item.origin }}'
+    line: '{{ item.change }}'
+  loop: 
+    - { 'origin':'address="172."', 'change':'address="{{ vm_ipaddr_1 }}"' }
+    - { 'origin':'host="172."', 'change':'host="{{ vm_ipaddr_2 }}"' }
+  when: inventory_hostname == vm_ipaddr_1
   register: ins11_server_1
 
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins11_server_1 }}'
-
-- name: '< Application : WAS > Setting instance11 server.xml (2)'
-  lineinfile:
-    path: '/engn/tomcat/servers/instance11/conf/server.xml'
-    regexp: 'host="172."'
-    line: 'host="{{ vm_ipaddr_2 }}"'
-  loop: '{{ hostname_rs }}'
-  when: item.stdout|regex_search('1v')
-  register: ins11_server_2
-
-- name: '< Application : WAS > Result Check'
-  debug:
-    msg: '{{ ins11_server_2 }}'
