@@ -5,11 +5,39 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.change }}'
   loop: 
-    - { 'origin':'address="172."', 'change':'address="{{ vm_ipaddr_1 }}"' }
-    - { 'origin':'host="172."', 'change':'host="{{ vm_ipaddr_2 }}"' }
+    - { 'origin':'                     address="172."', 'change':'                     address="{{ vm_ipaddr_1 }}"' }
+    - { 'origin':'                     host="172."', 'change':'                     host="{{ vm_ipaddr_2 }}"' }
   when: inventory_hostname == vm_ipaddr_1
-  register: ins11_server_1
+  register: ins11_result
 
 - name: '< Application : WAS > Result Check'
   debug:
-    msg: '{{ ins11_server_1 }}'
+    msg: '{{ ins11_result }}'
+
+- name: '< Application : WAS > Rename instance11 to instance21 server.xml'
+  shell: '{{ item }}'
+  loop: 
+    - { 'mv /engn/tomcat/servers/instance11 /engn/tomcat/servers/instance21' }
+    - { 'mv /logs/tomcat/instance11 /logs/tomcat/instance21' }
+    - { 'mv /sorc/applications/instance11 /sorc/applications/instance21' }
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_rename
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_rename }}'
+
+- name: '< Application : WAS > Setting instance21 server.xml'
+  lineinfile:
+    path: '/engn/tomcat/servers/instance21/conf/server.xml'
+    regexp: '{{ item.origin }}'
+    line: '{{ item.change }}'
+  loop: 
+    - { 'origin':'                     address="172."', 'change':'                     address="{{ vm_ipaddr_2 }}"' }
+    - { 'origin':'                     host="172."', 'change':'                     host="{{ vm_ipaddr_1 }}"' }
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_result
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_result }}'
