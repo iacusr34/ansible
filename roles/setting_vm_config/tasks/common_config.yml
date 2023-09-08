@@ -1,7 +1,7 @@
 ---
 - name: "< Common Config - 01 > Setting Hostname"
   hostname:
-    name: "{{ vm_name }}"
+    name: "{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v"
   register: common_rs_01
 
 - name: "< Common Config -01 > Result Check"
