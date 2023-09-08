@@ -4,4 +4,4 @@
   gather_facts: false
   become: true
   roles:
-    - role: setting_haproxy_tcp_config
+    - role: setting_haproxy_config
