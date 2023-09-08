@@ -30,6 +30,7 @@
     state: directory
     owner: "{{ item.user }}"
     group: "3000"
+    recurse: yes
   register: app_rs_03_1
   loop:
     - { dir: "/engn/apache", user: "{{ vm_code | lower }}adm" }
@@ -48,6 +49,7 @@
     state: directory
     owner: "{{ item.user }}"
     group: "3000"
+    recurse: yes
   register: app_rs_03_2
   loop:
     - { dir: "/engn/tomcat", user: "{{ vm_code | lower }}adm" }
