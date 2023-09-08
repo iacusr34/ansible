@@ -4,4 +4,4 @@
 
 - name: "Application Config Setting"
   include_tasks: application_config.yml
-  when: vm_name[5:8]|lower == 'pxy' or vm_name[5:8]|lower == 'web' or vm_name[5:8]|lower == 'was'
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
