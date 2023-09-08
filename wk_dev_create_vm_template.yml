@@ -1,0 +1,6 @@
+---
+- name: 'Workflow Tempalte Develop Create VM'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: wk_dev_create_vm_template
