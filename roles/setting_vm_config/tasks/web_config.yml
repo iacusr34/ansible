@@ -1,6 +1,6 @@
 ---
 - name: '< Application : WEB > Setting Properties'
-    lineinfile:
+  lineinfile:
     path: '/engn/apache/conf/workers.properties'
     regexp: '{{ item.origin }}'
     line: "{{ item.change }}"
