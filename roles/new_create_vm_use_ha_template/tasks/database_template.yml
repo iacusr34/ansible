@@ -1,0 +1,57 @@
+---
+- name: 'Setting variables for new VM configuration'
+  set_fact:
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
+  with_items:
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}1v', 'ip_addr':'{{ vm_ipaddr_1 }}' }
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}2v', 'ip_addr':'{{ vm_ipaddr_2 }}' }
+
+- name: 'New Create a virtual machine from a HA template [ VM type is Mysql, MariaDB ]'
+  vmware_guest:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    cluster: 'IAAS_iac(D)_Cluster'
+    name: '{{ item.hostname }}'
+    state: poweredon
+    template: 'TMP_RHEL8.6_DEV_{{ vm_type | upper }}'
+    disk:
+    - size_gb: 60
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    - size_gb: 50
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    hardware:
+      memory_mb: 4096
+      num_cpus: 2
+      scsi: paravirtual
+      mem_reservation: 4096
+      cpu_shares_level: "normal"
+      mem_shares_level: "normal"
+  delegate_to: localhost
+  register: deploy
+  loop: '{{ vm_ip_list }}'
+
+- name: debugging 
+  debug:
+    msg: '{{ deploy }}'
+
+- name: 'New virtual machine booting stand by 1 minute'
+  pause:
+    minutes: 1
+    
+- name: 'New Create a virtual machine IP and Hostname Setting [ Mysql, MariaDB ]'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ item.hostname }}'
+    vm_username: '{{ vm_user }}'
+    vm_password: '{{ vm_pw }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.method manual autoconnect yes && sudo hostnamectl set-hostname {{ item.hostname }}"
+  delegate_to: localhost
+  register: ip_result
+  loop: '{{ vm_ip_list }}'
+  ignore_errors: true
