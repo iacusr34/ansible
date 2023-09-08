@@ -4,7 +4,6 @@
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
     - { 'ip_addr':'{{ vm_member_1 }}' }
-    - { 'ip_addr':'{{ vm_member_2 }}' }
 
 - name: "Add New VM(=host) IP to Inventory API Call"
   uri:
