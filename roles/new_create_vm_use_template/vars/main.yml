@@ -3,7 +3,7 @@ vm_purpose:
 vm_code:
 vm_type:
 vm_count:
-ip_addr:
+vm_member_1:
 ip_list: []
 vm_id: "iacusr"
 vm_pw: "dlatl00"
