@@ -13,6 +13,7 @@
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins11_result }}'
+  when: inventory_hostname == vm_ipaddr_1
 
 - name: '< Application : WAS > Rename instance11 to instance21 server.xml'
   shell: '{{ item }}'
@@ -26,6 +27,34 @@
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins21_rename }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Remove Symbolic link Directory Logs/instance11'
+  file:
+    path: '/engn/tomcat/servers/instance21/logs'
+    state: absent
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_remove
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_remove }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Create Symbolic link Directory Logs/instance21'
+  file:
+    src: '/logs/tomcat/instance21'
+    dest: '/engn/tomcat/servers/instance21/logs'
+    owner: "3100"
+    group: "3000"
+    state: link
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_symbol
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_symbol }}'
+  when: inventory_hostname == vm_ipaddr_2
 
 - name: '< Application : WAS > Setting instance21 server.xml'
   lineinfile:
@@ -41,3 +70,29 @@
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins21_result }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Setting instance21 Running Script [ env.sh ]'
+  lineinfile:
+    path: '/engn/tomcat/servers/instance21/bin/env.sh'
+    regexp: 'instance11'
+    line: 'instance21'
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_env
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_env }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Setting instance21 Start shell'
+  shell: '{{ item }}'
+    - 'mv /engn/tomcat/servers/instance21/bin/start-instance11.sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
+    - 'mv /engn/tomcat/servers/instance21/bin/stop-instance11.sh /engn/tomcat/servers/instance21/bin/stop-instance21.sh'
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_shell
+  
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_shell }}'
+  when: inventory_hostname == vm_ipaddr_2
