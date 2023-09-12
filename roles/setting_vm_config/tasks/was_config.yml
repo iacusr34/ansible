@@ -55,6 +55,7 @@
     state: link
     owner: '3100'
     group: '3000'
+    follow: false
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_symbol
 
