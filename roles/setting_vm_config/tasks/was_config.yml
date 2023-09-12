@@ -45,8 +45,8 @@
   file:
     src: '/logs/tomcat/instance21'
     dest: '/engn/tomcat/servers/instance21/logs'
-    owner: "3100"
-    group: "3000"
+    owner: '3100'
+    group: '3000'
     state: link
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_symbol
@@ -87,6 +87,7 @@
 
 - name: '< Application : WAS > Setting instance21 Start shell'
   shell: '{{ item }}'
+  loop:
     - 'mv /engn/tomcat/servers/instance21/bin/start-instance11.sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
     - 'mv /engn/tomcat/servers/instance21/bin/stop-instance11.sh /engn/tomcat/servers/instance21/bin/stop-instance21.sh'
   when: inventory_hostname == vm_ipaddr_2
