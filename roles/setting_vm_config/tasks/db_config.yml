@@ -1,0 +1,13 @@
+---
+- name: '< Database > Setting my.cnf [ server_id ]'
+  lineinfile:
+    path: '/etc/my.cnf'
+    regexp: 'server_id=101'
+    line: 'server_id=102'
+  when: inventory_hostname == vm_ipaddr_2
+  register: db_result
+
+- name: '< Database > Result Check'
+  debug:
+    msg: '{{ db_result }}'
+  when: inventory_hostname == vm_ipaddr_1
