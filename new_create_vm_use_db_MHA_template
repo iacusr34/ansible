@@ -1,0 +1,6 @@
+---
+- name: 'New create vm use Database MHA template'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: new_create_vm_use_db_mha_template
