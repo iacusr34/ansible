@@ -13,3 +13,7 @@
 - name: "WAS Server HA Config Setting"
   include_tasks: was_config.yml
   when: vm_type|lower == 'was' and vm_purpose|lower == 'prd'
+
+- name: "Database Server HA Config Setting"
+  include_tasks: db_config.yml
+  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' ) 
