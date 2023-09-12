@@ -1,64 +1,62 @@
 ---
-- name: "< Haproxy WEB Setting - 01 > WEB Config Template Copy"
-  shell: "cp /engn/haproxy/conf/haproxy.web.cfg /engn/haproxy/conf/haproxy.cfg"
+- name: '< DATABASE MHA Setting - 01 > Setting MHA Config Server IP'
+  lineinfile:
+    path: '/engn001/mha/conf/mha.conf'
+    regexp: '{{ item.origin }}'
+    line: '{{ item.new_set }}'
+  loop:
+    - { 'origin':'hostname=192.168.100.181','new_set':'hostname={{ vm_member_1 }}' }
+    - { 'origin':'hostname=192.168.100.182','new_set':'hostname={{ vm_member_2 }}' }
   register: result_01
 
-- name: "< Haproxy WEB Setting - 01 > Result Check"
+- name: "< DATABASE MHA Setting - 01 > Result Check"
   debug:
     msg: "{{ result_01 }}"
-    
-- name: "< Haproxy WEB Setting - 02 > Add WEB Server member"
-  lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    insertafter: "   server s2 192.168.1.26:80 check fall 5 inter 2000 rise"
-    line: "{{ item }}"
-  register: result_02
-  loop:
-    - "   server s2 {{ vm_member_2 }}:80 check fall 5 inter 2000 rise"
-    - "   server s1 {{ vm_member_1 }}:80 check fall 5 inter 2000 rise"
 
-- name: "< Haproxy WEB Setting - 02 > Result Check"
+- name: '< DATABASE MHA Setting - 02 > Setting MHA Environment Config'
+  lineinfile:
+    path: '/engn001/mha/scripts/.env.ini'
+    regexp: '{{ item.origin }}'
+    line: '{{ item.new_set }}'
+  loop:
+    - { "origin":"declare -x ORIG_MASTERDB='192.168.100.181'","new_set":"declare -x ORIG_MASTERDB='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x ORIG_SLAVEDB='192.168.100.182'","new_set":"declare -x ORIG_SLAVEDB='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x DB1_SERVICE_IP='192.168.100.181'","new_set":"declare -x DB1_SERVICE_IP='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x DB2_SERVICE_IP='192.168.100.182'","new_set":"declare -x DB2_SERVICE_IP='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x DB1_REPL_IP='192.168.100.181'","new_set":"declare -x DB1_REPL_IP='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x DB2_REPL_IP='192.168.100.182'","new_set":"declare -x DB2_REPL_IP='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x VIP='172.20.49.184/24'","new_set":"declare -x VIP='{{ vm_vip }}/24'" }
+  register: result_02
+
+- name: "< DATABASE MHA Setting - 02 > Result Check"
   debug:
     msg: "{{ result_02 }}"
-    
-- name: "< Haproxy WEB Setting - 03 > Remove Default Config line"
-  lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    regexp: "{{ item }}"
-    state: absent
-  register: result_03
-  loop:
-    - "   server s1 192.168.1.25:80 check fall 5 inter 2000 rise 2"
-    - "   server s2 192.168.1.26:80 check fall 5 inter 2000 rise 2"
 
-- name: "< Haproxy WEB Setting - 03 > Result Check"
-  debug:
-    msg: "{{ result_03 }}"
+- name: "< DATABASE MHA Setting - 03 > Setting Variable VIP Ip address"
+  set_fact:
+    vip_split: '{{ vm_vip|split(".") }}'
     
-- name: "< Haproxy WEB Setting - 04 > Add WEB SSL Server member"
-  lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    insertafter: "   server s2 192.168.1.26:443 check fall 5 inter 2000 rise"
-    line: "{{ item }}"
+- name: '< DATABASE MHA Setting - 04 > Setting MHA Script failover'
+  shell: '{{ item }}'
+  loop: 
+    - 'sed -i "s/172.20.49.184/{{ vm_vip }}" /engn001/mha/scripts/master_ip_failover'
+    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1" /engn001/mha/scripts/master_ip_failover'
   register: result_04
-  loop:
-    - "   server s2 {{ vm_member_2 }}:443 check fall 5 inter 2000 rise"
-    - "   server s1 {{ vm_member_1 }}:443 check fall 5 inter 2000 rise"
 
-- name: "< Haproxy WEB Setting - 04 > Result Check"
+- name: "< DATABASE MHA Setting - 04 > Result Check"
   debug:
     msg: "{{ result_04 }}"
-    
-- name: "< Haproxy WEB Setting - 05 > Remove SSL Default Config line"
-  lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    regexp: "{{ item }}"
-    state: absent
-  register: result_05
-  loop:
-    - "   server s1 192.168.1.25:443 check fall 5 inter 2000 rise 2"
-    - "   server s2 192.168.1.26:443 check fall 5 inter 2000 rise 2"
 
-- name: "< Haproxy WEB Setting - 05 > Result Check"
+- name: '< DATABASE MHA Setting - 05 > Setting MHA Script master_ip_online_change'
+  shell: '{{ item }}'
+  loop: 
+    - 'sed -i "s/172.20.49.184/{{ vm_vip }}" /engn001/mha/scripts/master_ip_online_change'
+    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1" /engn001/mha/scripts/master_ip_online_change'
+  register: result_05
+
+- name: "< DATABASE MHA Setting - 05 > Result Check"
   debug:
     msg: "{{ result_05 }}"
+
+
+
