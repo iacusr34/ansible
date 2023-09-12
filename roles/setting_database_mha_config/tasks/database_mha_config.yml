@@ -1,12 +1,12 @@
 ---
 - name: '< DATABASE MHA Setting - 01 > Setting MHA Config Server IP'
   lineinfile:
-    path: '/engn001/mha/conf/mha.conf'
+    path: '/engn001/mha/conf/mha.cnf'
     regexp: '{{ item.origin }}'
-    line: '{{ item.new_set }}'
+    line: '{{ item.change }}'
   loop:
-    - { 'origin':'hostname=192.168.100.181','new_set':'hostname={{ vm_member_1 }}' }
-    - { 'origin':'hostname=192.168.100.182','new_set':'hostname={{ vm_member_2 }}' }
+    - { 'origin':'hostname=192.168.100.181','change':'hostname={{ vm_member_1 }}' }
+    - { 'origin':'hostname=192.168.100.182','change':'hostname={{ vm_member_2 }}' }
   register: result_01
 
 - name: "< DATABASE MHA Setting - 01 > Result Check"
@@ -19,13 +19,13 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.new_set }}'
   loop:
-    - { "origin":"declare -x ORIG_MASTERDB='192.168.100.181'","new_set":"declare -x ORIG_MASTERDB='{{ vm_member_1 }}'" }
-    - { "origin":"declare -x ORIG_SLAVEDB='192.168.100.182'","new_set":"declare -x ORIG_SLAVEDB='{{ vm_member_2 }}'" }
-    - { "origin":"declare -x DB1_SERVICE_IP='192.168.100.181'","new_set":"declare -x DB1_SERVICE_IP='{{ vm_member_1 }}'" }
-    - { "origin":"declare -x DB2_SERVICE_IP='192.168.100.182'","new_set":"declare -x DB2_SERVICE_IP='{{ vm_member_2 }}'" }
-    - { "origin":"declare -x DB1_REPL_IP='192.168.100.181'","new_set":"declare -x DB1_REPL_IP='{{ vm_member_1 }}'" }
-    - { "origin":"declare -x DB2_REPL_IP='192.168.100.182'","new_set":"declare -x DB2_REPL_IP='{{ vm_member_2 }}'" }
-    - { "origin":"declare -x VIP='172.20.49.184/24'","new_set":"declare -x VIP='{{ vm_vip }}/24'" }
+    - { "origin":"declare -x ORIG_MASTERDB='192.168.100.181'","change":"declare -x ORIG_MASTERDB='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x ORIG_SLAVEDB='192.168.100.182'","change":"declare -x ORIG_SLAVEDB='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x DB1_SERVICE_IP='192.168.100.181'","change":"declare -x DB1_SERVICE_IP='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x DB2_SERVICE_IP='192.168.100.182'","change":"declare -x DB2_SERVICE_IP='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x DB1_REPL_IP='192.168.100.181'","change":"declare -x DB1_REPL_IP='{{ vm_member_1 }}'" }
+    - { "origin":"declare -x DB2_REPL_IP='192.168.100.182'","change":"declare -x DB2_REPL_IP='{{ vm_member_2 }}'" }
+    - { "origin":"declare -x VIP='172.20.49.184/24'","change":"declare -x VIP='{{ vm_vip }}/24'" }
   register: result_02
 
 - name: "< DATABASE MHA Setting - 02 > Result Check"
@@ -57,6 +57,3 @@
 - name: "< DATABASE MHA Setting - 05 > Result Check"
   debug:
     msg: "{{ result_05 }}"
-
-
-
