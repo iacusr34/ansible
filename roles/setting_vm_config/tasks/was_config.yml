@@ -95,6 +95,7 @@
     file_type: directory
     patterns: '*instance21*'
   register: ins21_sh_check
+  when: inventory_hostname == vm_ipaddr_2
 
 - name: '< Application : WAS > Setting instance21 Start shell'
   shell: '{{ item }}'
