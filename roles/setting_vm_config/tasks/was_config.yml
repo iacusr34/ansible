@@ -15,19 +15,26 @@
     msg: '{{ ins11_result }}'
   when: inventory_hostname == vm_ipaddr_1
 
+- name: '< Application : WAS > Checked Directory Name is instance11 [ Not instance11 Server ]'
+  find:
+    paths: '/engn/tomcat/servers/'
+    file_type: directory
+    patterns: 'instance21'
+  register: ins21_dir_check
+
 - name: '< Application : WAS > Rename instance11 to instance21 server.xml'
   shell: '{{ item }}'
   loop: 
     - 'mv /engn/tomcat/servers/instance11 /engn/tomcat/servers/instance21'
     - 'mv /logs/tomcat/instance11 /logs/tomcat/instance21'
     - 'mv /sorc/applications/instance11 /sorc/applications/instance21'
-  when: inventory_hostname == vm_ipaddr_2
+  when: inventory_hostname == vm_ipaddr_2 and ins21_dir_check.matched == 0
   register: ins21_rename
 
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins21_rename }}'
-  when: inventory_hostname == vm_ipaddr_2
+  when: inventory_hostname == vm_ipaddr_2 and ins21_check.matched > 0
 
 - name: '< Application : WAS > Remove Symbolic link Directory Logs/instance11'
   file:
@@ -85,15 +92,22 @@
     msg: '{{ ins21_env }}'
   when: inventory_hostname == vm_ipaddr_2
 
+- name: '< Application : WAS > Checked Shell Script is instance11 [ Not instance11 Server ]'
+  find:
+    paths: '/engn/tomcat/servers/instance21/bin/'
+    file_type: directory
+    patterns: '*instance21*'
+  register: ins21_sh_check
+
 - name: '< Application : WAS > Setting instance21 Start shell'
   shell: '{{ item }}'
   loop:
     - 'mv /engn/tomcat/servers/instance21/bin/start-instance11.sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
     - 'mv /engn/tomcat/servers/instance21/bin/stop-instance11.sh /engn/tomcat/servers/instance21/bin/stop-instance21.sh'
-  when: inventory_hostname == vm_ipaddr_2
+  when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
   register: ins21_shell
   
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins21_shell }}'
-  when: inventory_hostname == vm_ipaddr_2
+  when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
