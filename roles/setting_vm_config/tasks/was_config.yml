@@ -52,9 +52,9 @@
   file:
     src: '/logs/tomcat/instance21'
     dest: '/engn/tomcat/servers/instance21/logs'
+    state: link
     owner: '3100'
     group: '3000'
-    state: link
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_symbol
 
@@ -80,10 +80,7 @@
   when: inventory_hostname == vm_ipaddr_2
 
 - name: '< Application : WAS > Setting instance21 Running Script [ env.sh ]'
-  lineinfile:
-    path: '/engn/tomcat/servers/instance21/bin/env.sh'
-    regexp: 'instance11'
-    line: 'instance21'
+  shell: 'sed -i "s/instance11/instance21/g" /engn/tomcat/servers/instance21/bin/env.sh'
   when: inventory_hostname == vm_ipaddr_2
   register: ins21_env
 
