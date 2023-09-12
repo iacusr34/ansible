@@ -34,7 +34,7 @@
 - name: '< Application : WAS > Result Check'
   debug:
     msg: '{{ ins21_rename }}'
-  when: inventory_hostname == vm_ipaddr_2 and ins21_check.matched > 0
+  when: inventory_hostname == vm_ipaddr_2 and ins21_dir_check.matched == 0
 
 - name: '< Application : WAS > Remove Symbolic link Directory Logs/instance11'
   file:
