@@ -39,8 +39,8 @@
 - name: '< DATABASE MHA Setting - 04 > Setting MHA Script failover'
   shell: '{{ item }}'
   loop: 
-    - 'sed -i "s/172.20.49.184/{{ vm_vip }}" /engn001/mha/scripts/master_ip_failover'
-    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1" /engn001/mha/scripts/master_ip_failover'
+    - 'sed -i "s/172.20.49.184/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_failover'
+    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_failover'
   register: result_04
 
 - name: "< DATABASE MHA Setting - 04 > Result Check"
@@ -50,8 +50,8 @@
 - name: '< DATABASE MHA Setting - 05 > Setting MHA Script master_ip_online_change'
   shell: '{{ item }}'
   loop: 
-    - 'sed -i "s/172.20.49.184/{{ vm_vip }}" /engn001/mha/scripts/master_ip_online_change'
-    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1" /engn001/mha/scripts/master_ip_online_change'
+    - 'sed -i "s/172.20.49.184/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_online_change'
+    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_online_change'
   register: result_05
 
 - name: "< DATABASE MHA Setting - 05 > Result Check"
