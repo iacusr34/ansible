@@ -1,0 +1,7 @@
+---
+- name: "Setting Database MHA config"
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - role: setting_database_mha_config
