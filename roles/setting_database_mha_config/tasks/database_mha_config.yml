@@ -34,7 +34,7 @@
 
 - name: "< DATABASE MHA Setting - 03 > Setting Variable VIP Ip address"
   set_fact:
-    vip_split: '{{ vm_vip|split(".") }}'
+    vip_split: '{{ vm_vip.split(".") }}'
     
 - name: '< DATABASE MHA Setting - 04 > Setting MHA Script failover'
   shell: '{{ item }}'
