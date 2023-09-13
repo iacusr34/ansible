@@ -1,0 +1,11 @@
+---
+- name: '< Haproxy > Service Running [ cmd : systemctl enable --now haproxy ]'
+  systemd:
+    name: haproxy
+    enabled: true
+    state: started
+  register: running_state
+
+- name: '< Haproxy > Running State Check'
+  debug:
+    msg: '{{ running_state }}'
