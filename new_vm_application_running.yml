@@ -1,0 +1,6 @@
+---
+- name: 'New Create VM Application Service Running'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: new_vm_application_running
