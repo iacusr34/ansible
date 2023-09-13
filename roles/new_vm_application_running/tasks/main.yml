@@ -1,0 +1,16 @@
+---
+- name: '< Application Running > Apache Proxy Service'
+  include_tasks: apache_proxy_running.yml
+  when: vm_type|lower == 'pxy'
+
+- name: '< Application Running > HaProxy Service'
+  include_tasks: haproxy_running.yml
+  when: vm_type|lower == 'hpxy'
+
+- name: '< Application Running > Web Service'
+  include_tasks: web_running.yml
+  when: vm_type|lower == 'web'
+
+- name: '< Application Running > Was Service'
+  include_tasks: was_running.yml
+  when: vm_type|lower == 'was'
