@@ -1,8 +1,0 @@
----
-- name: '< Web > Service Running [ cmd : /engn/apache/bin/apachectl start ]'
-  shell: '/engn/apache/bin/apachectl start'
-  register: running_state
-
-- name: '< Web > Running State Check'
-  debug:
-    msg: '{{ running_state }}'
