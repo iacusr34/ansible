@@ -1,6 +1,6 @@
 ---
 - name: " network facts check"
-  ios_facts:
+  cisco.ios.ios_facts:
   register: result
 
 - name: " debug message"
