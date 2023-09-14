@@ -1,4 +1,8 @@
 ---
-- name: " debug message"
+- name: 'cisco network ios connection facts chaeck'
+  ios_facts:
+  register: result
+  
+- name: "cisco facts check"
   debug:
-    msg: 'abcd'
+    msg: '{{ result }}'
