@@ -1,6 +1,6 @@
 ---
-- name: " network ping check tasks"
-  ping:
+- name: " network facts check"
+  ios_facts:
   register: result
 
 - name: " debug message"
