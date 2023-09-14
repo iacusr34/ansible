@@ -1,5 +1,6 @@
 ---
 - name: 'network ping test'
-  hosts: all 
+  hosts: all
+  gather_facts: false
   roles:
     - role: network_ping
