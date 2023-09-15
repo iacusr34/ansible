@@ -1,8 +1,16 @@
 ---
-- name: 'cisco network ios connection facts chaeck'
-  ios_facts:
+- name: 'network Ping Test'
+  ping:
   register: result
   
-- name: "cisco facts check"
+- name: 'Result check'
   debug:
     msg: '{{ result }}'
+
+- name: 'huawei facts check'
+  ce_facts:
+  register: facts_check
+
+- name: 'debug'
+  debug:
+    msg: '{{ facts_check }}'
