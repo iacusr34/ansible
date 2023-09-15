@@ -2,6 +2,6 @@
 vm_purpose: 'PRD'
 vm_code:
 vm_type:
-vm_ipaddr_1:
+vm_ipaddr_mha:
 vm_user: 'iacusr'
 vm_pw: 'dlatl00'
