@@ -45,3 +45,15 @@
 - name: "< Haproxy {{ proxy_type|upper }} Setting - 04 > Result Check"
   debug:
     msg: "{{ result_04 }}"
+
+- name: "< Haproxy {{ proxy_type|upper }} Setting - 05 > Running Haproxy"
+  systemd:
+    name: haproxy
+    state: started
+    enabled: true
+  register: result_05
+
+- name: "< Haproxy {{ proxy_type|upper }} Setting - 05 > Result Check"
+  debug:
+    msg: "{{ result_05 }}"
+    
