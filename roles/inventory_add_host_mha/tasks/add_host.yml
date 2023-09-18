@@ -1,0 +1,24 @@
+---
+- name: 'New vm host MHA IP address variable setting'
+  set_fact:
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
+  with_items:
+    - { 'ip_addr':'{{ vm_ipaddr_mha }}' }
+
+- name: "Add New VM(=host) MHA IP to Inventory API Call"
+  uri:
+    url: http://172.20.49.121/api/v2/inventories/12/hosts/
+    method: POST
+    body_format: json
+    status_code: 201
+    return_content: true
+    headers:
+      Content-Type: application/json
+      Authorization: 'Bearer K12UYyLVyrxrotEAlXzrKux2wqIGLO'
+    body: '{ "name": "{{ item.ip_addr }}" }'
+  loop: '{{ vm_ip_list }}'
+  register: api
+
+- name: 'Result Check'
+  debug:
+    msg: "{{ api }}"
