@@ -20,7 +20,7 @@
   when: vm_type|lower == 'web'
 
 - name: "< Running Service > Tomcat Was started"
-  shell: "/engn/apache/bin/apachectl start"
+  shell: "sh /engn/tomcat/bin/startup.sh"
   register: was_status
   when: vm_type|lower == 'was' and vm_purpose|lower == 'dev'
 
