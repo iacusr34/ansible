@@ -6,13 +6,6 @@
     - { 'ip_addr':'{{ vm_ipaddr_1 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_2 }}' }
 
-- name: 'MHA VM IP address check variable setting'
-  set_fact:
-    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
-  with_items:
-    - { 'ip_addr':'{{ vm_ipaddr_mha }}' }
-  when: vm_ipaddr_mha != None
-
 - name: "Add New VM(=host) IP to Inventory API Call"
   uri:
     url: http://172.20.49.121/api/v2/inventories/12/hosts/
