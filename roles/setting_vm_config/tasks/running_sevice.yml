@@ -1,0 +1,30 @@
+---
+- name: "< Running Service > Apache Proxy started"
+  shell: "/engn/apache/bin/apachectl start"
+  register: pxy_status
+  when: vm_type|lower == 'pxy'
+
+- name: "< Running Service > Apache Proxy status"
+  debug:
+    msg: "{{ pxy_status.stdout_lines }}"
+  when: vm_type|lower == 'pxy'
+
+- name: "< Running Service > Apache Web started"
+  shell: "/engn/apache/bin/apachectl start"
+  register: web_status
+  when: vm_type|lower == 'web'
+
+- name: "< Running Service > Apache Web status"
+  debug:
+    msg: "{{ web_status.stdout_lines }}"
+  when: vm_type|lower == 'web'
+
+- name: "< Running Service > Tomcat Was started"
+  shell: "/engn/apache/bin/apachectl start"
+  register: was_status
+  when: vm_type|lower == 'was' and vm_purpose|lower == 'dev'
+
+- name: "< Running Service > Tomcat Was status"
+  debug:
+    msg: "{{ was_status.stdout_lines }}"
+  when: vm_type|lower == 'was' and vm_purpose|lower == 'dev'
