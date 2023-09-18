@@ -1,3 +1,4 @@
 ---
 - name: "[Workflow] Database Config MHA Setting"
   include_tasks: database_mha_config.yml
+  when: vm_type|lower == 'mas' and vm_ipaddr_mha != None
