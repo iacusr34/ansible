@@ -112,7 +112,7 @@
   when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
 
 - name: '< Application : WAS > Tomcat WAS Service Running instance11'
-  shell: 'sh /engn/tomcat/servers/instance21/bin/start-instance11.sh'
+  shell: 'sh /engn/tomcat/servers/instance11/bin/start-instance11.sh'
   register: ins11_start
   when: inventory_hostname == vm_ipaddr_1
 
