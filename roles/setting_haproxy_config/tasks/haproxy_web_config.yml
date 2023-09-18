@@ -62,3 +62,14 @@
 - name: "< Haproxy WEB Setting - 05 > Result Check"
   debug:
     msg: "{{ result_05 }}"
+
+- name: "< Haproxy WEB Setting - 06 > Running Haproxy"
+  systemd:
+    name: haproxy
+    state: started
+    enabled: true
+  register: result_06
+
+- name: "< Haproxy WEB Setting - 06 > Result Check"
+  debug:
+    msg: "{{ result_06 }}"
