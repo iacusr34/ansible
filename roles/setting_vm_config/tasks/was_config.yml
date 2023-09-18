@@ -110,3 +110,23 @@
   debug:
     msg: '{{ ins21_shell }}'
   when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
+
+- name: '< Application : WAS > Tomcat WAS Service Running instance11'
+  shell: 'sh /engn/tomcat/servers/instance21/bin/start-instance11.sh'
+  register: ins11_start
+  when: inventory_hostname == vm_ipaddr_1
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins11_start }}'
+  when: inventory_hostname == vm_ipaddr_1
+
+- name: '< Application : WAS > Tomcat WAS Service Running instance21'
+  shell: 'sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
+  register: ins21_start
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_start }}'
+  when: inventory_hostname == vm_ipaddr_2
