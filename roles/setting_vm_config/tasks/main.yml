@@ -17,3 +17,7 @@
 - name: "Database Server HA Config Setting"
   include_tasks: db_config.yml
   when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' ) 
+
+- name: "Application Service Running"
+  include_tasks: running_sevice.yml
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was' or vm_type|lower == 'mas' or vm_type|lower == 'mys'
