@@ -39,8 +39,8 @@
     line: "{{ item }}"
   register: result_04
   loop:
-    - "   server s2 {{ vm_member_2 }} check fall 5 inter 2000 rise 2"
-    - "   server s1 {{ vm_member_1 }} check fall 5 inter 2000 rise 2"
+    - "   server s2 {{ vm_member_2 }}:{{ bind_port }} check fall 5 inter 2000 rise 2"
+    - "   server s1 {{ vm_member_1 }}:{{ bind_port }} check fall 5 inter 2000 rise 2"
 
 - name: "< Haproxy {{ proxy_type|upper }} Setting - 04 > Result Check"
   debug:
