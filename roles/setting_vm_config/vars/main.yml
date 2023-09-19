@@ -5,3 +5,5 @@ vm_type:
 vm_count:
 vm_ipaddr_1:
 vm_ipaddr_2:
+vm_vip:
+vm_ipaddr_mha:
