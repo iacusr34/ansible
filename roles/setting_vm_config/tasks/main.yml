@@ -18,6 +18,10 @@
   include_tasks: db_config.yml
   when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' ) 
 
+- name: "Database Config MHA Setting"
+  include_tasks: db_mha_config.yml
+  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' and vm_ipaddr_mha != None ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' and vm_ipaddr_mha != None )
+
 - name: "Application Service Running"
   include_tasks: running_sevice.yml
   when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was' or vm_type|lower == 'mas' or vm_type|lower == 'mys'
