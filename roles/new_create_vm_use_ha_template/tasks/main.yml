@@ -11,6 +11,10 @@
   include_tasks: database_template.yml
   when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
 
+- name: '[PRD] Create VM type is MHA [ Mysql, MariaDB  ]'
+  include_tasks: mha_template.yml
+  when: ( vm_type|lower == 'mas' and vm_ipaddr_mha != None ) or ( vm_type|lower == 'mys' and vm_ipaddr_mha != None )
+
 - name: '[PRD] Create VM type is OTHER'
   include_tasks: other_template.yml
   when: vm_type|lower != 'pxy' and vm_type|lower != 'hpxy' and vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys'
