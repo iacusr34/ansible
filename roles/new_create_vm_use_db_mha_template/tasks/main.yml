@@ -1,4 +1,4 @@
 ---
 - name: '[PRD] Create VM MHA Database type is [ Mysql or MariaDB  ]'
   include_tasks: mas_template.yml
-  when: vm_type|lower == 'mas' and vm_ipaddr_mha != None
+  when: ( vm_type|lower == 'mas' and vm_ipaddr_mha != None ) or (vm_type|lower == 'mys' and vm_ipaddr_mha != None )
