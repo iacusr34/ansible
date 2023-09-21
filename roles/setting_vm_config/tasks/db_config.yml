@@ -25,10 +25,12 @@
 - name: '< Database > Setting Heartbeat IP Address Instance 1'
   shell: 'nmcli con add con-name ens256 ifname ens256 type ethernet ip4 {{ vm_heartbeat_ip_1 }}/24 ipv4.method manual autoconnect yes'
   register: heartbeat_result1
+  when: inventory_hostname == vm_ipaddr_1
 
 - name: '< Database > Result Check'
   debug:
     msg: '{{ heartbeat_result1 }}'
+  when: inventory_hostname == vm_ipaddr_1
     
 - name: '< Database > Setting Heartbeat IP Address vm_ipaddr_2'
   set_fact:
@@ -43,7 +45,9 @@
 - name: '< Database > Setting Heartbeat IP Address Instance 2'
   shell: 'nmcli con add con-name ens256 ifname ens256 type ethernet ip4 {{ vm_heartbeat_ip_2 }}/24 ipv4.method manual autoconnect yes'
   register: heartbeat_result2
+  when: inventory_hostname == vm_ipaddr_2
 
 - name: '< Database > Result Check'
   debug:
     msg: '{{ heartbeat_result2 }}'
+  when: inventory_hostname == vm_ipaddr_2
