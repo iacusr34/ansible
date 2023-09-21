@@ -5,8 +5,8 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.change }}'
   loop:
-    - { 'origin':'hostname=192.168.100.181','change':'hostname={{ vm_ipaddr_1 }}' }
-    - { 'origin':'hostname=192.168.100.182','change':'hostname={{ vm_ipaddr_2 }}' }
+    - { 'origin':'hostname=1.1.1.1','change':'hostname={{ vm_ipaddr_1 }}' }
+    - { 'origin':'hostname=1.1.1.2','change':'hostname={{ vm_ipaddr_2 }}' }
   register: result_01
   when: inventory_hostname == vm_ipaddr_mha
 
@@ -21,13 +21,13 @@
     regexp: '{{ item.origin }}'
     line: '{{ item.change }}'
   loop:
-    - { "origin":"declare -x ORIG_MASTERDB='192.168.100.181'","change":"declare -x ORIG_MASTERDB='{{ vm_ipaddr_1 }}'" }
-    - { "origin":"declare -x ORIG_SLAVEDB='192.168.100.182'","change":"declare -x ORIG_SLAVEDB='{{ vm_ipaddr_2 }}'" }
-    - { "origin":"declare -x DB1_SERVICE_IP='192.168.100.181'","change":"declare -x DB1_SERVICE_IP='{{ vm_ipaddr_1 }}'" }
-    - { "origin":"declare -x DB2_SERVICE_IP='192.168.100.182'","change":"declare -x DB2_SERVICE_IP='{{ vm_ipaddr_2 }}'" }
-    - { "origin":"declare -x DB1_REPL_IP='192.168.100.181'","change":"declare -x DB1_REPL_IP='{{ vm_ipaddr_1 }}'" }
-    - { "origin":"declare -x DB2_REPL_IP='192.168.100.182'","change":"declare -x DB2_REPL_IP='{{ vm_ipaddr_2 }}'" }
-    - { "origin":"declare -x VIP='172.20.49.184/24'","change":"declare -x VIP='{{ vm_vip }}/24'" }
+    - { "origin":"declare -x ORIG_MASTERDB='1.1.1.1'","change":"declare -x ORIG_MASTERDB='{{ vm_ipaddr_1 }}'" }
+    - { "origin":"declare -x ORIG_SLAVEDB='1.1.1.2'","change":"declare -x ORIG_SLAVEDB='{{ vm_ipaddr_2 }}'" }
+    - { "origin":"declare -x DB1_SERVICE_IP='1.1.1.1'","change":"declare -x DB1_SERVICE_IP='{{ vm_ipaddr_1 }}'" }
+    - { "origin":"declare -x DB2_SERVICE_IP='1.1.1.2'","change":"declare -x DB2_SERVICE_IP='{{ vm_ipaddr_2 }}'" }
+    - { "origin":"declare -x DB1_REPL_IP='1.1.1.1'","change":"declare -x DB1_REPL_IP='{{ vm_ipaddr_1 }}'" }
+    - { "origin":"declare -x DB2_REPL_IP='1.1.1.2'","change":"declare -x DB2_REPL_IP='{{ vm_ipaddr_2 }}'" }
+    - { "origin":"declare -x VIP='1.1.1.3/24'","change":"declare -x VIP='{{ vm_vip }}/24'" }
   register: result_02
   when: inventory_hostname == vm_ipaddr_mha
 
@@ -44,8 +44,8 @@
 - name: '< DATABASE MHA Setting - 04 > Setting MHA Script failover'
   shell: '{{ item }}'
   loop: 
-    - 'sed -i "s/172.20.49.184/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_failover'
-    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_failover'
+    - 'sed -i "s/1.1.1.3/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_failover'
+    - 'sed -i "s/1.1.1.4/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_failover'
   register: result_04
   when: inventory_hostname == vm_ipaddr_mha
 
@@ -57,8 +57,8 @@
 - name: '< DATABASE MHA Setting - 05 > Setting MHA Script master_ip_online_change'
   shell: '{{ item }}'
   loop: 
-    - 'sed -i "s/172.20.49.184/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_online_change'
-    - 'sed -i "s/172.20.49.1/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_online_change'
+    - 'sed -i "s/1.1.1.3/{{ vm_vip }}/g" /engn001/mha/scripts/master_ip_online_change'
+    - 'sed -i "s/1.1.1.4/{{ vip_split[0] }}.{{ vip_split[1] }}.{{ vip_split[2] }}.1/g" /engn001/mha/scripts/master_ip_online_change'
   register: result_05
   when: inventory_hostname == vm_ipaddr_mha
 
