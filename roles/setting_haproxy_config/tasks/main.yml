@@ -6,3 +6,7 @@
 - name: "Haproxy Config WEB Setting"
   include_tasks: haproxy_web_config.yml
   when: (vm_type|lower == 'hpxy' and proxy_type|lower == 'web')
+
+- name: "Keepalived Config Setting"
+  include_tasks: keepalived_config.yml
+  when: (vm_purpose|lower == 'prd' and vm_type|lower == 'hpxy')
