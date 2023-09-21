@@ -37,3 +37,14 @@
 - name: "< haproxy Setting - 04 > Result Check"
   debug:
     msg: "{{ keep_result_03 }}"
+
+- name: "< haproxy Setting - 05 > Running Keepalived"
+  systemd:
+    name: keepalived
+    state: started
+    enabled: true
+  register: keep_result_04
+
+- name: "< haproxy Setting - 05 > Result Check"
+  debug:
+    msg: "{{ keep_result_04 }}"
