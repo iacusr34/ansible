@@ -4,3 +4,4 @@ proxy_type:
 bind_port:
 vm_member_1:
 vm_member_2:
+vm_vip:
