@@ -1,0 +1,4 @@
+---
+collections:
+  - name: community.network
+    version: v3.3.1
