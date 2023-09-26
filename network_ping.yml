@@ -2,5 +2,7 @@
 - name: 'network ping test'
   hosts: all
   gather_facts: false
+  collections:
+    - community.network
   roles:
     - role: network_ping
