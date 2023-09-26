@@ -1,3 +1,4 @@
 ---
 collections:
-  - name: http://172.20.36.185/ansible/download/community-network-3.3.1.tar.gz
+  - name: community.network
+    version: 3.3.1
