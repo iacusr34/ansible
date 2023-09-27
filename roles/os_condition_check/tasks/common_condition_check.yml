@@ -1,0 +1,63 @@
+---
+- name: '< Common Condition Check -01 > Get CPU Usage'
+  shell: "top -b -n 1"
+  register: top
+
+- name: '< Common Condition Check -01 > Set CPU Usage'
+  set_fact:
+    cpuused: "{{ 100 - top.stdout_lines[2].split(',')[3].split('.')[0]|int }}"
+
+- name: '< Common Condition Check -01 > CPU Useable Message'
+  set_fact:
+    cpucompl: "{{ cpuused ~' %' if (cpuused|int > 80) else 'Compliant' }}"
+
+- name: '< Common Condition Check -02 > Get Memory Usabe'
+  set_fact:
+    memused: "{{ (ansible_memory_mb.nocache.used / ansible_memtotal_mb * 100)|int }}"
+
+- name: '< Common Condition Check -02 > Set Memory Usabe'
+  set_fact:
+    memcompl: "{{ memused ~' %' if (memused|int >= 80) else 'Compliant' }}"
+
+- name: '< Common Condition Check -03 > Get Filesystem Disk Usabe'
+  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 19) {print $1, $2 }'"
+  register: diskused
+
+- name: '< Common Condition Check -03 > Set Filesystem Disk Usabe'
+  set_fact:
+    fscompl: "{{ diskused.stdout_lines }}"
+  when: diskused.stdout != ""
+
+- name: '< Common Condition Check -03 > Set Memory Usabe'
+  set_fact:
+    fscompl: "Compliant"
+  when: diskused.stdout == ""
+
+- name: '< Common Condition Check -04 > Get Filesystem Disk i-node Usabe'
+  shell: "df -PTi | egrep -v 'devtmpfs|tmpfs|Filesystem' | awk '{print $6 $7}'| awk -v OFS='%\t : ' -F% '($1 >= 1) {print $1, $2}'"
+  register: dfi
+
+- name: '< Common Condition Check -04 > Set Filesystem Disk i-node Usabe'
+  set_fact:
+    incompl: "{{ dfi.stdout_lines }}"
+  when: dfi.stdout != ""
+
+- name: '< Common Condition Check -04 > Set Filesystem Disk i-node Usabe'
+  set_fact:
+    incompl: "Compliant"
+  when: dfi.stdout == ""
+
+- name: '< Common Condition Check -05 > Get NTP Timedate Sync'
+  shell: "chronyc sources | egrep -v '=|MS' | awk '{ print $2 }' || echo Non-Compliant"
+  register: ntpdcompl
+
+  #- name: '< Common Condition Check -06 > Get OS Message Logs'
+  #  shell: >
+  #    if [ $(grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" | wc -l) -gt 100 ]; then
+  #    echo "***** ERROR messages more than 100 lines - omitted. *****";grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" | tail -n 100;
+  #    else grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" || echo Compliant;fi
+  #  register: message
+
+- name: 'Debug test'
+  debug:
+    msg: '{{ ansible_hostname }} | {{ cpuused }} | {{ cpucompl }} | {{ memused }} | {{ memcompl }} | {{ diskused.stdout_lines }} | {{ fscompl }} | {{ dfi.stdout }} | {{ incompl }} | {{ ntpdcompl.stdout }} '
