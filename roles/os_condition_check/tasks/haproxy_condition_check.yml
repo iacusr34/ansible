@@ -1,0 +1,18 @@
+---
+- name: '< Haproxy Condition Check -01 > Check Haproxy Service'
+  systemd:
+    name: haproxyd
+  register: result
+
+- name: debug
+  debug:
+    var: result.status.ActiveState
+
+- name: '< Haproxy Condition Check -02 > Check keepalived Service'
+  systemd:
+    name: keepalived
+  register: result2
+
+- name: debug
+  debug:
+    var: result2.status.ActiveState
