@@ -62,6 +62,22 @@
   #    else grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" || echo Compliant;fi
   #  register: message
 
+- name: '< Common Condition Check -07 > Get OS Type and Version'
+  shell: 'cat /etc/os-release | egrep -i "name|version"'
+  register: os_type
+
+- name: '< Common Condition Check -07 > Set OS Type'
+  set_fact:
+    os_family: "{{ os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
+
+- name: '< Common Condition Check -07 > Set OS Version'
+  set_fact:
+    os_version: "{{ os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}"
+
+- name: '< Common Condition Check -08 > Get Hostname'
+  shell: 'hostname'
+  register: get_hostname
+
 - name: 'Debug test'
   debug:
-    msg: '{{ ansible_hostname }} | {{ cpuused }} | {{ cpucompl }} | {{ memused }} | {{ memcompl }} | {{ diskused.stdout_lines }} | {{ fscompl }} | {{ dfi.stdout }} | {{ incompl }} | {{ ntpdcompl.stdout }} '
+    msg: '{{ get_hostname.stdout }} | {{ os_family }} | {{ os_version }} | {{ cpuused }} | {{ cpucompl }} | {{ memused }} | {{ memcompl }} | {{ diskused.stdout_lines }} | {{ fscompl }} | {{ dfi.stdout }} | {{ incompl }} | {{ ntpdcompl.stdout }} '
