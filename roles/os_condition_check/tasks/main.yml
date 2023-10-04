@@ -1,14 +1,4 @@
 ---
-- name: 'ansible Facts 수집'
-  setup:
-    filter:
-      - ansible_system
-      - ansible_os_family
-      - ansible_mem*
-      - ansible_hostname
-      - ansible_distribution_release
-      - ansible_distribution_version 
-  
 - name: 'Common Get Hostname'
   shell: 'hostname'
   register: get_hostname
