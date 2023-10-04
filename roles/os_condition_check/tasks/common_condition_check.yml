@@ -12,8 +12,8 @@
     cpucompl: "{{ cpuused ~' %' if (cpuused|int > 80) else 'Compliant' }}"
 
 - name: '< Common Condition Check -02 > Get Memory Usabe'
-  set_fact:
-    g_memused: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
+  shell: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
+  register:  g_memused
 
 - name: '< Common Condition Check -02 > Get Memory Usabe'
   set_fact:
