@@ -9,7 +9,7 @@
 
 - name: '< Common Condition Check -01 > CPU Useable Message'
   set_fact:
-    cpucompl: "{{ cpuused ~' %' if (cpuused|int > 80) else 'Compliant' }}"
+    cpucompl: "{{ cpuused ~' %' if (cpuused|int >= 80) else 'Compliant' }}"
 
 - name: '< Common Condition Check -02 > Get Memory Usabe'
   shell: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
@@ -24,7 +24,7 @@
     memcompl: "{{ memused ~' %' if (memused|int >= 80) else 'Compliant' }}"
 
 - name: '< Common Condition Check -03 > Get Filesystem Disk Usabe'
-  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 19) {print $1, $2 }'"
+  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2 }'"
   register: diskused
 
 - name: '< Common Condition Check -03 > Set Filesystem Disk Usabe'
@@ -38,7 +38,7 @@
   when: diskused.stdout == ""
 
 - name: '< Common Condition Check -04 > Get Filesystem Disk i-node Usabe'
-  shell: "df -PTi | egrep -v 'devtmpfs|tmpfs|Filesystem' | awk '{print $6 $7}'| awk -v OFS='%\t : ' -F% '($1 >= 1) {print $1, $2}'"
+  shell: "df -PTi | egrep -v 'devtmpfs|tmpfs|Filesystem' | awk '{print $6 $7}'| awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2}'"
   register: dfi
 
 - name: '< Common Condition Check -04 > Set Filesystem Disk i-node Usabe'
@@ -55,29 +55,18 @@
   shell: "chronyc sources | egrep -v '=|MS' | awk '{ print $2 }' || echo Non-Compliant"
   register: ntpdcompl
 
-  #- name: '< Common Condition Check -06 > Get OS Message Logs'
-  #  shell: >
-  #    if [ $(grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" | wc -l) -gt 100 ]; then
-  #    echo "***** ERROR messages more than 100 lines - omitted. *****";grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" | tail -n 100;
-  #    else grep -e "$(date "+%b %d")" /var/log/messages | egrep -i "error|fail|fault|abort" | egrep -v "default|ansible-command" || echo Compliant;fi
-  #  register: message
-
-- name: '< Common Condition Check -07 > Get OS Type and Version'
+- name: '< Common Condition Check -06 > Get OS Type and Version'
   shell: 'cat /etc/os-release | egrep -i "name|version"'
   register: os_type
 
-- name: '< Common Condition Check -07 > Set OS Type'
+- name: '< Common Condition Check -06 > Set OS Type'
   set_fact:
     os_family: "{{ os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
 
-- name: '< Common Condition Check -07 > Set OS Version'
+- name: '< Common Condition Check -06 > Set OS Version'
   set_fact:
     os_version: "{{ os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}"
 
-- name: '< Common Condition Check -08 > Get Hostname'
-  shell: 'hostname'
-  register: get_hostname
-
 - name: 'Debug test'
   debug:
-    msg: '{{ get_hostname.stdout }} | {{ os_family }} | {{ os_version }} | {{ cpuused }} | {{ cpucompl }} | {{ memused }} | {{ memcompl }} | {{ diskused.stdout_lines }} | {{ fscompl }} | {{ dfi.stdout }} | {{ incompl }} | {{ ntpdcompl.stdout }} '
+    msg: '{{ pub_hostname }} | {{ os_family }} | {{ os_version }} | {{ cpuused }} | {{ cpucompl }} | {{ memused }} | {{ memcompl }} | {{ fscompl }} | {{ incompl }} | {{ ntpdcompl.stdout }} '
