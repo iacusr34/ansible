@@ -7,7 +7,6 @@
     - setup:
         filter:
           - ansible_system
-          - ansible_mem*
           - ansible_os_family
           - ansible_hostname
           - ansible_distribution_release
