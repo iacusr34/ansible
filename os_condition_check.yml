@@ -3,13 +3,5 @@
   hosts: all
   become: true
   gather_facts: false
-  pre_tasks:
-    - setup:
-        filter:
-          - ansible_system
-          - ansible_os_family
-          - ansible_hostname
-          - ansible_distribution_release
-          - ansible_distribution_version
   roles:
     - role: os_condition_check
