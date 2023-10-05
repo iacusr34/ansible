@@ -1,5 +1,0 @@
----
-collections:
-  - name: community.network
-    src: http://172.20.36.185/ansible/api/v3/plugin/ansible/content/published/collections/artifacts/community-network-3.3.1.tar.gz
-    version: 3.3.1
