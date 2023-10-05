@@ -1,0 +1,8 @@
+---
+- name: '< Apache Condition Check -01 > Check web Service'
+  shell: 'ps -eo comm,etime,user | grep httpd
+  register: result
+
+- name: 'debug'
+  debug:
+    msg: '{{ result.stdout }}'
