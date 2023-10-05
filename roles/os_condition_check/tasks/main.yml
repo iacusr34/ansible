@@ -12,7 +12,7 @@
 
 - name: 'Apache Service Condition check [ Apache Proxy, Web ]'
   include_tasks: apache_condition_check.yml
-  when: pub_hostname[5:8]|lower == 'pxy' or ansible_hostname[5:8]|lower == 'web'
+  when: pub_hostname[5:8]|lower == 'pxy' or pub_hostname[5:8]|lower == 'web'
 
 #- name: 'Was Service Condition check [ Was ]'
 #  include_tasks: was_condition_check.yml
@@ -20,7 +20,7 @@
 
 #- name: 'Database Service Condition check [ MariaDB, Mysql ]'
 #  include_tasks: database_condition_check.yml
-#  when: pub_hostname[5:8]|lower == 'mas' or ansible_hostname[5:8]|lower == 'mys'
+#  when: pub_hostname[5:8]|lower == 'mas' or pub_hostname[5:8]|lower == 'mys'
 
 - name: 'Haproxy Service Condition check'
   include_tasks: haproxy_condition_check.yml
