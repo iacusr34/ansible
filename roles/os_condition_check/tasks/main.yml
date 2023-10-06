@@ -1,4 +1,10 @@
 ---
+- name: '< Main > Get Date'
+  shell: 'echo $(date +"%Y%m%d%S")'
+  register: get_date
+  delegate_to: localhost
+  run_once: yes
+
 - name: '< Main > Get Hostname'
   shell: 'hostname'
   register: get_hostname
@@ -25,3 +31,20 @@
 - name: '< Main > Haproxy Service Condition check'
   include_tasks: haproxy_condition_check.yml
   when: rs_hostname[5:8]|lower == 'pxy'
+
+- name: 'main task debug'
+  debug:
+    msg: '{{ rs_hostname }} | {{ rs_os_family }} | {{ rs_os_version }} | {{ rs_cpu_msg }} | {{ rs_mem_msg }} | {{ rs_disk_msg }} | {{ rs_disk_used }} | {{ rs_inode_msg }} | {{ rs_inode_used }} | {{ rs_ntp_set }} | {{ rs_ntp_run }}'
+
+- name: 'create result file'
+  file:
+    path: '/var/www/html/{{ get_date.stdout }}_condition_result'
+    state: touch
+  delegate_to: localhost
+  run_once: yes
+
+- name: 'result file add'
+  lineinfile:
+    path: '/var/www/html/{{ get_date.stdout }}_condition_result'
+    line: '{{ rs_hostname }} | {{ rs_os_family }} | {{ rs_os_version }} | {{ rs_cpu_msg }} | {{ rs_mem_msg }} | {{ rs_disk_msg }} | {{ rs_disk_used }} | {{ rs_inode_msg }} | {{ rs_inode_used }} | {{ rs_ntp_set }} | {{ rs_ntp_run }}'
+  delegate_to: localhost
