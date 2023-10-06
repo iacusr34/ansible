@@ -14,9 +14,9 @@
   include_tasks: apache_condition_check.yml
   when: pub_hostname[5:8]|lower == 'pxy' or pub_hostname[5:8]|lower == 'web'
 
-#- name: 'Was Service Condition check [ Was ]'
-#  include_tasks: was_condition_check.yml
-#  when: pub_hostname[5:8]|lower == 'was'
+- name: 'Was Service Condition check [ Was ]'
+  include_tasks: was_condition_check.yml
+  when: pub_hostname[5:8]|lower == 'was'
 
 #- name: 'Database Service Condition check [ MariaDB, Mysql ]'
 #  include_tasks: database_condition_check.yml
