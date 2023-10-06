@@ -37,9 +37,7 @@
     msg: '{{ rs_hostname }} | {{ rs_os_family }} | {{ rs_os_version }} | {{ rs_cpu_msg }} | {{ rs_mem_msg }} | {{ rs_disk_msg }} | {{ rs_disk_used }} | {{ rs_inode_msg }} | {{ rs_inode_used }} | {{ rs_ntp_set }} | {{ rs_ntp_run }}'
 
 - name: 'create result file'
-  file:
-    path: '/data/{{ get_date.stdout }}_condition_result'
-    state: touch
+  shell: 'touch /var/www/html/{{ get_date.stdout }}_condition_result'
   delegate_to: localhost
   run_once: yes
 
