@@ -1,8 +1,8 @@
 ---
 - name: '< Was Condition Check -01 > Check Was Service'
-  shell: 'ps -ef | grep tomcat'
+  shell: 'ps -ef | grep tomcat | grep Bootstrap'
   register: result
 
 - name: 'debug'
   debug:
-    msg: '{{ result }}'
+    msg: '{{ result.stdout }}'
