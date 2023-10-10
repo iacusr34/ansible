@@ -1,0 +1,33 @@
+---
+- name: '< Database -01 > Check Mariadb Service'
+  systemd:
+    name: mariadb
+  register: get_mas
+  when: rs_hostname[5:8]|lower == 'mas'
+
+- name: '< Database -01 > Set Mariadb Service'
+  set_fact:
+    rs_svc_running: ' MariaDB Service : {{ get_mas.status.ActiveState }}'
+  when: rs_hostname[5:8]|lower == 'mas'
+
+- name: '< Database -02 > Check Mysql Service'
+  systemd:
+    name: mysqld
+  register: get_mys
+  when: rs_hostname[5:8]|lower == 'mys'
+
+- name: '< Database -02 > Set Mysql Service'
+  set_fact:
+    rs_svc_running: ' Mysql Service : {{ get_mys.status.ActiveState }}'
+  when: rs_hostname[5:8]|lower == 'mys'
+
+- name: '< Database -03 > Check MHA Service'
+  systemd:
+    name: mysqld
+  register: get_mha
+  when: rs_hostname[5:8]|lower == 'mha'
+
+- name: '< Database -03 > Set MHA Service'
+  set_fact:
+    rs_svc_running: ' MHA Service : {{ get_mha.status.ActiveState }}'
+  when: rs_hostname[5:8]|lower == 'mha'
