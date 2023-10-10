@@ -13,12 +13,9 @@
 #    rs_svc_running: 'Tomcat : Not Running'
 #  when: get_was.stdout|search('startup') == ""
 
-
-- name: fact check
-  shell: echo "{{ get_was.stdout_lines|select('match','startup') }}"
-  register: find_startup
 - debug:
-    var: find_startup
+    var: get_was.stdout_lines| select('match','startup')| list
+    
 - name: '< WAS -01 > Set Was Service Process Running '
   set_fact:
     rs_svc_running: 'Tomcat : Running'
