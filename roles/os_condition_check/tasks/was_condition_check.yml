@@ -14,7 +14,7 @@
 #  when: get_was.stdout|search('startup') == ""
 
 - debug:
-    var: get_was.stdout_lines| select('match','startup')| list
+    var: get_was.stdout_lines| select('match','startup')
     
 - name: '< WAS -01 > Set Was Service Process Running '
   set_fact:
