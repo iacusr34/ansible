@@ -13,17 +13,16 @@
 #    rs_svc_running: 'Tomcat : Not Running'
 #  when: get_was.stdout|search('startup') == ""
 
-- debug:
-    var: get_was.stdout_lines| select('match','startup')
-    
 - name: '< WAS -01 > Set Was Service Process Running '
   set_fact:
     rs_svc_running: 'Tomcat : Running'
-  when: find_startup.matched > 0
-  
-#- name: '< WAS -01 > Set Was Service Process Not Running'
-#  set_fact:
-#    rs_svc_running: 'Tomcat : Not Running'
-#  when: get_was.stdout_lines|select('match','startup') == ""
+  when: get_was.stdout is search('startup')
+
+- name: '< WAS -01 > Set Was Service Process Not Running'
+  set_fact:
+    rs_svc_running: 'Tomcat : Not Running'
+  when: get_was.stdout is not search('startup')
+
+
 
 
