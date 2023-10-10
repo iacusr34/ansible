@@ -17,9 +17,10 @@
   set_fact:
     rs_svc_running: 'Tomcat : Running'
   when: get_was.stdout_lines|select('match','startup') != ""
+  
 - name: '< WAS -01 > Set Was Service Process Not Running'
   set_fact:
     rs_svc_running: 'Tomcat : Not Running'
-  when: get_was.stdout|select('match','startup') == ""
+  when: get_was.stdout_lines|select('match','startup') == ""
 
 
