@@ -24,9 +24,9 @@
   include_tasks: was_condition_check.yml
   when: rs_hostname[5:8]|lower == 'was'
 
-#- name: '< Main > Database Service Condition check [ MariaDB, Mysql ]'
-#  include_tasks: database_condition_check.yml
-#  when: rs_hostname[5:8]|lower == 'mas' or rs_hostname[5:8]|lower == 'mys'
+- name: '< Main > Database Service Condition check [ MariaDB, Mysql ]'
+  include_tasks: database_condition_check.yml
+  when: rs_hostname[5:8]|lower == 'mas' or rs_hostname[5:8]|lower == 'mys'
 
 - name: '< Main > Haproxy Service Condition check'
   include_tasks: haproxy_condition_check.yml
