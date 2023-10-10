@@ -1,8 +1,12 @@
 ---
-- name: '< Was Condition Check -01 > Check Was Service'
+- name: '< WAS -01 > Get Was Service'
   shell: 'ps -ef | grep tomcat | grep Bootstrap'
-  register: result
+  register: get_was
+
+- name: '< WAS -01 > Set Was Service Process'
+  set_fact:
+    rs_svc_running: "Tomcat : {{ 'running' if (get_was.stdout != '') else 'Not running'  }}"
 
 - name: 'debug'
   debug:
-    msg: '{{ result.stdout }}'
+    msg: '{{ rs_svc_running }}'
