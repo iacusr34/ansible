@@ -80,7 +80,7 @@
 
 - name: '< Common -07 > Set NTP Server Config'
   set_fact:
-    rs_ntp_set: "{{ get_ntp.stdout_lines.replace('\"','') }}"
+    rs_ntp_set: "{{ get_ntp.stdout }}"
   when: get_ntp.stdout != ''
 
 - name: '< Common -08 > Get NTP Service Running Check'
