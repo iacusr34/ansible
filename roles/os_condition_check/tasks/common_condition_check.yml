@@ -12,7 +12,7 @@
     rs_os_version: "{{ get_os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}"
 
 - name: '< Common -02 > Get OS IP Address'
-  shell: 'ip -4 -o a | awk "{ print \"device[ \"$2\" ], ipaddr[ \"$4\" ]\" }" | grep -v lo'
+  shell: ip -4 -o a | awk '{ print "device[ "$2" ], ipaddr[ "$4" ]" }' | grep -v lo
   register: get_ipaddr
 
 - name: '< Common -02> Set OS IP Address'
