@@ -38,7 +38,7 @@
 
 - name: 'create result file'
   file:
-    path: '/var/lib/awx/projects/result/{{ get_date.stdout }}_condition_result'
+    path: '/var/lib/awx/projects/result/{{ get_date.stdout }}_condition_result.csv'
     state: touch
   delegate_to: localhost
   run_once: yes
