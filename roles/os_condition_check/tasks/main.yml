@@ -1,6 +1,6 @@
 ---
 - name: '< Main > Get Date'
-  shell: 'echo $(date +"%Y%m%d%S")'
+  shell: 'echo $(date +"%Y%m%d%H%M%S")'
   register: get_date
   delegate_to: localhost
   run_once: yes
