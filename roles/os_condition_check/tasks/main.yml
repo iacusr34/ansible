@@ -18,7 +18,7 @@
 
 - name: '< Main > Apache Service Condition check [ Apache Proxy, WEB ]'
   include_tasks: apache_condition_check.yml
-  when: rs_hostname[5:8]|lower == 'pxy' or rs_hostname[5:8]|lower == 'web' or rs_hostname[5:8]|lower == 'mha'
+  when: rs_hostname[5:8]|lower == 'pxy' or rs_hostname[5:8]|lower == 'web'
 
 - name: '< Main > WAS Service Condition check [ WAS ]'
   include_tasks: was_condition_check.yml
@@ -26,7 +26,7 @@
 
 - name: '< Main > Database Service Condition check [ MariaDB, Mysql ]'
   include_tasks: database_condition_check.yml
-  when: rs_hostname[5:8]|lower == 'mas' or rs_hostname[5:8]|lower == 'mys'
+  when: rs_hostname[5:8]|lower == 'mas' or rs_hostname[5:8]|lower == 'mys' or rs_hostname[5:8]|lower == 'mha'
 
 - name: '< Main > Haproxy Service Condition check'
   include_tasks: haproxy_condition_check.yml
