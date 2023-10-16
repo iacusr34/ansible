@@ -2,7 +2,7 @@
 - name: '< Apache -01 >  Get Apache Service [ Apache proxy, Web ]'
   shell: 'ps -eo comm,etime,user | grep httpd'
   register: get_apache
-  ignore_erros: true
+  ignore_errors: true
 
 - name: '< Apache -01 >  Set Apache Service is Running [ Apache proxy, Web ]'
   set_fact:
