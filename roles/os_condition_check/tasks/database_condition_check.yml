@@ -25,6 +25,7 @@
   shell: "masterha_check_status --conf=/engn001/mha/conf/mha.cnf"
   register: get_mha
   when: rs_hostname[5:8]|lower == 'mha'
+  ignore_errors: true
 
 - name: '< Database -03 > Set MHA Service Running'
   set_fact:
