@@ -17,12 +17,12 @@
 
 - name: 'debug'
   debug:
-    msg: '{{ get_ipaddr }}'
+    msg: '{{ {{ get_ipaddr.stdout.replace('\n',' | ') }} }}'
 
 - name: '< Common -02> Set OS IP Address'
   set_fact:
     #rs_ip_addr: "{{ get_ipaddr.stdout_lines.replace('\"','') }}"
-    rs_ip_addr: "{{ get_ipaddr.stdout }}"
+    rs_ip_addr: "{{ get_ipaddr.stdout.replace('\n',' | ') }}"
 
 - name: '< Common -03 > Get CPU Usage'
   shell: "top -b -n 1"
