@@ -22,7 +22,7 @@
   when: rs_hostname[5:8]|lower == 'mys'
 
 - name: '< Database -03 > Check MHA Service'
-  shell: 'masterha_check_status --conf=/engn001/mha/conf/mha.cnf'
+  shell: "masterha_check_status --conf=/engn001/mha/conf/mha.cnf"
   register: get_mha
   when: rs_hostname[5:8]|lower == 'mha'
 
