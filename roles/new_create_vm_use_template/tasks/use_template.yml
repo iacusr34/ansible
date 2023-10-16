@@ -150,7 +150,7 @@
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
     vm_username: 'iacusr'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
@@ -204,7 +204,7 @@
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy{{ item }}v'
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
     vm_username: 'iacusr'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
