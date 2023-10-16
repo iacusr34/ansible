@@ -15,13 +15,8 @@
   shell: ip -4 -o a | awk '{ print "device[ "$2" ] > ipaddr[ "$4" ]" }' | grep -v lo
   register: get_ipaddr
 
-- name: 'debug'
-  debug:
-    msg: "{{ get_ipaddr.stdout.replace('\n',' | ') }}"
-
 - name: '< Common -02> Set OS IP Address'
   set_fact:
-    #rs_ip_addr: "{{ get_ipaddr.stdout_lines.replace('\"','') }}"
     rs_ip_addr: "{{ get_ipaddr.stdout.replace('\n',' | ') }}"
 
 - name: '< Common -03 > Get CPU Usage'
@@ -80,7 +75,7 @@
 
 - name: '< Common -07 > Set NTP Server Config'
   set_fact:
-    rs_ntp_set: "{{ get_ntp.stdout }}"
+    rs_ntp_set: "{{ get_ntp.stdout.replace('\n',' | ') }}"
   when: get_ntp.stdout != ''
 
 - name: '< Common -08 > Get NTP Service Running Check'
