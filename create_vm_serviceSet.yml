@@ -1,0 +1,6 @@
+---
+- name: 'Create VM ServiceSet'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_serviceset
