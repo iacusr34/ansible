@@ -1,0 +1,10 @@
+---
+- name: '< Service Set -01 > Create a Web Service VM'
+  include_tasks: web_template.yml
+  when: vm_svc_set == 'yes'
+
+- name: < Service Set -02 > Create a Was Service VM'
+  include_tasks: was_template.yml
+
+- name: '< Service Set -03 > Create a Database Service Vm [ {{ vm_db_type }} ]'
+  include_tasks: database_template.yml
