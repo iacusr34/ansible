@@ -12,14 +12,14 @@
     - size_gb: 60
       type: thin
       datastore: DIAAS_OS_NAS11
-    - size_gb: 50
+    - size_gb: 370
       type: thin
       datastore: DIAAS_OS_NAS11
     hardware:
-      memory_mb: 4096
-      num_cpus: 2
+      memory_mb: 8192
+      num_cpus: 4 
       scsi: paravirtual
-      mem_reservation: 4096
+      mem_reservation: 8192
       cpu_shares_level: "normal"
       mem_shares_level: "normal"
   delegate_to: localhost
