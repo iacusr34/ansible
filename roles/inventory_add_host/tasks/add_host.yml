@@ -4,6 +4,14 @@
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
     - { 'ip_addr':'{{ vm_ipaddr_1 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_2 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_3 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_4 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_5 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_6 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_7 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_8 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_9 }}' }
   
 - name: "Add New VM(=host) IP to Inventory API Call"
   uri:
@@ -18,6 +26,7 @@
     body: '{ "name": "{{ item.ip_addr }}" }'
   loop: '{{ vm_ip_list }}'
   register: api
+  when: item.ip_addr != none
 
 - name: 'Result Check'
   debug:
