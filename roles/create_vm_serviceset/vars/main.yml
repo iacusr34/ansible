@@ -2,8 +2,8 @@ vm_purpose:
 vm_code:
 vm_web_ck:
 vm_db_type:
-vm_ipaddr1:
-vm_ipaddr2:
-vm_ipaddr3:
+vm_ipaddr_1:
+vm_ipaddr_2:
+vm_ipaddr_3:
 vm_user: 'iacusr'
 vm_pw: 'dlatl00'
