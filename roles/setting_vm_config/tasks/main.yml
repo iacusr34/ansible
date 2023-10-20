@@ -1,4 +1,12 @@
 ---
+- name: "Common VM Type CODE Get"
+  shell: 'hostname'
+  register: get_hostname
+
+- name: "Common VM Type CODE Set"
+  set_fact:
+    vm_type: '{{ get_hostname.stdout[5:8] | lower }}'
+
 - name: "Common Config Setting"
   include_tasks: common_config.yml
 
