@@ -38,7 +38,7 @@
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{1v'
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}1v'
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
