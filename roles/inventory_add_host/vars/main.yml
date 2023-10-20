@@ -1,11 +1,11 @@
 ---
 vm_ip_list: []
-vm_ipaddr1:
-vm_ipaddr2:
-vm_ipaddr3:
-vm_ipaddr4:
-vm_ipaddr5:
-vm_ipaddr6:
-vm_ipaddr7:
-vm_ipaddr8:
-vm_ipaddr9:
+vm_ipaddr_1:
+vm_ipaddr_2:
+vm_ipaddr_3:
+vm_ipaddr_4:
+vm_ipaddr_5:
+vm_ipaddr_6:
+vm_ipaddr_7:
+vm_ipaddr_8:
+vm_ipaddr_9:
