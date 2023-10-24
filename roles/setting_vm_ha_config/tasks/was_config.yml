@@ -1,0 +1,132 @@
+---
+- name: '< Application : WAS > Setting instance11 server.xml'
+  lineinfile:
+    path: '/engn/tomcat/servers/instance11/conf/server.xml'
+    regexp: '{{ item.origin }}'
+    line: '{{ item.change }}'
+  loop: 
+    - { 'origin':'address="172."', 'change':'                     address="{{ vm_ipaddr_3 }}"' }
+    - { 'origin':'host="172."', 'change':'                     host="{{ vm_ipaddr_4 }}"' }
+  when: inventory_hostname == vm_ipaddr_3
+  register: ins11_result
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins11_result }}'
+  when: inventory_hostname == vm_ipaddr_3
+
+- name: '< Application : WAS > Checked Directory Name is instance11 [ Not instance11 Server ]'
+  find:
+    paths: '/engn/tomcat/servers/'
+    file_type: directory
+    patterns: 'instance21'
+  register: ins21_dir_check
+
+- name: '< Application : WAS > Rename instance11 to instance21 server.xml'
+  shell: '{{ item }}'
+  loop: 
+    - 'mv /engn/tomcat/servers/instance11 /engn/tomcat/servers/instance21'
+    - 'mv /logs/tomcat/instance11 /logs/tomcat/instance21'
+    - 'mv /sorc/applications/instance11 /sorc/applications/instance21'
+  when: inventory_hostname == vm_ipaddr_4 and ins21_dir_check.matched == 0
+  register: ins21_rename
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_rename }}'
+  when: inventory_hostname == vm_ipaddr_2 and ins21_dir_check.matched == 0
+
+- name: '< Application : WAS > Remove Symbolic link Directory Logs/instance11'
+  file:
+    path: '/engn/tomcat/servers/instance21/logs'
+    state: absent
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_remove
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_remove }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Create Symbolic link Directory Logs/instance21'
+  file:
+    src: '/logs/tomcat/instance21'
+    dest: '/engn/tomcat/servers/instance21/logs'
+    state: link
+    owner: '3100'
+    group: '3000'
+    follow: false
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_symbol
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_symbol }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Setting instance21 server.xml'
+  lineinfile:
+    path: '/engn/tomcat/servers/instance21/conf/server.xml'
+    regexp: '{{ item.origin }}'
+    line: '{{ item.change }}'
+  loop: 
+    - { 'origin':'address="172."', 'change':'                     address="{{ vm_ipaddr_2 }}"' }
+    - { 'origin':'host="172."', 'change':'                     host="{{ vm_ipaddr_1 }}"' }
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_result
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_result }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Setting instance21 Running Script [ env.sh ]'
+  shell: 'sed -i "s/instance11/instance21/g" /engn/tomcat/servers/instance21/bin/env.sh'
+  when: inventory_hostname == vm_ipaddr_2
+  register: ins21_env
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_env }}'
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Checked Shell Script is instance11 [ Not instance11 Server ]'
+  find:
+    paths: '/engn/tomcat/servers/instance21/bin/'
+    file_type: directory
+    patterns: '*instance21*'
+  register: ins21_sh_check
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Setting instance21 Start shell'
+  shell: '{{ item }}'
+  loop:
+    - 'mv /engn/tomcat/servers/instance21/bin/start-instance11.sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
+    - 'mv /engn/tomcat/servers/instance21/bin/stop-instance11.sh /engn/tomcat/servers/instance21/bin/stop-instance21.sh'
+  when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
+  register: ins21_shell
+  
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_shell }}'
+  when: inventory_hostname == vm_ipaddr_2 and ins21_sh_check.matched == 0
+
+- name: '< Application : WAS > Tomcat WAS Service Running instance11'
+  shell: 'sh /engn/tomcat/servers/instance11/bin/start-instance11.sh'
+  register: ins11_start
+  when: inventory_hostname == vm_ipaddr_1
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins11_start }}'
+  when: inventory_hostname == vm_ipaddr_1
+
+- name: '< Application : WAS > Tomcat WAS Service Running instance21'
+  shell: 'sh /engn/tomcat/servers/instance21/bin/start-instance21.sh'
+  register: ins21_start
+  when: inventory_hostname == vm_ipaddr_2
+
+- name: '< Application : WAS > Result Check'
+  debug:
+    msg: '{{ ins21_start }}'
+  when: inventory_hostname == vm_ipaddr_2
