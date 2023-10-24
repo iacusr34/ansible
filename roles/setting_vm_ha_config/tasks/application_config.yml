@@ -1,0 +1,63 @@
+---
+- name: "< Application Config - 01 > [ VM Type: WEB, PXY, WAS ] Create User {{ vm_code | lower }}adm & {{ vm_code | lower }}usr"
+  user:
+    name: "{{ item.user }}"
+    uid: "{{ item.uid }}"
+    group: "3000"
+    password: "{{ 'dlatl00' | password_hash('sha512') }}"
+  register: app_rs_01
+  loop:
+    - { user: "{{ vm_code | lower }}adm", uid: "3100" }
+    - { user: "{{ vm_code | lower }}usr", uid: "3200" }
+
+- name: "< Application Config - 01 > [ VM Type: WEB, PXY, WAS ] Result Check"
+  debug:
+    msg: "{{ app_rs_01 }}"
+
+- name: "< Application Config - 02 > [ VM Type: WEB, PXY, WAS ] Add sudo privileges to the {{ vm_code | lower }}adm User"
+  copy:
+    content: "{{ vm_code | lower }}adm ALL=(ALL) NOPASSWD:ALL"
+    dest: "/etc/sudoers.d/{{ vm_code | lower }}adm"
+  register: app_rs_02
+
+- name: "< Application Config - 02 > [ VM Type: WEB, PXY, WAS ] Result Check"
+  debug:
+    msg: "{{ app_rs_02 }}"
+
+- name: "< Application Config - 03-1 > [ VM Type: WEB, PXY ] Set Directory Permissions"
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ item.user }}"
+    group: "3000"
+    recurse: yes
+  register: app_rs_03_1
+  loop:
+    - { dir: "/engn/apache", user: "{{ vm_code | lower }}adm" }
+    - { dir: "/sorc/webdocs", user: "{{ vm_code | lower }}usr" }
+    - { dir: "/logs/apache", user: "{{ vm_code | lower }}adm" }
+  when: vm_type|lower == "web" or vm_type|lower == "pxy"
+
+- name: "< Application Config - 03-1 > [ VM Type: WEB, PXY ] Result Check"
+  debug:
+    msg: "{{ app_rs_03_1 }}"
+  when: vm_type|lower == "web" or vm_type|lower == "pxy"
+
+- name: "< Application Config - 03-2 > [ VM Type: WAS ] Set Directory Permissions"
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: "{{ item.user }}"
+    group: "3000"
+    recurse: yes
+  register: app_rs_03_2
+  loop:
+    - { dir: "/engn/tomcat", user: "{{ vm_code | lower }}adm" }
+    - { dir: "/sorc/applications", user: "{{ vm_code | lower }}usr" }
+    - { dir: "/logs/tomcat", user: "{{ vm_code | lower }}adm" }
+  when: vm_type|lower == "was"
+
+- name: "< Application Config - 03-2 > [ VM Type: WAS ] Result Check"
+  debug:
+    msg: "{{ app_rs_03_2 }}"
+  when: vm_type|lower == "was"  
