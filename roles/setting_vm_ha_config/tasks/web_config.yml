@@ -1,0 +1,14 @@
+---
+- name: '< Application : WEB > Setting Properties'
+  lineinfile:
+    path: '/engn/apache/conf/workers.properties'
+    regexp: '{{ item.origin }}'
+    line: "{{ item.change }}"
+  loop:
+    - { 'origin':'#worker.instance11.host=172.', 'change':'worker.instance11.host={{ vm_ipaddr_1 }}' }
+    - { 'origin':'#worker.instance21.host=172.', 'change':'worker.instance21.host={{ vm_ipaddr_2 }}' }
+  register: propert_rs
+
+- name: '< Application : WEB > Result Check'
+  debug:
+    msg: '{{ propert_rs }}'
