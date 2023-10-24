@@ -58,7 +58,7 @@
   delegate_to: localhost
   register: rs_create_mha
 
-- name: < HA Service Set : DATABASE -02 > Debugging MHA [ {{ vm_db_type | upper }} ]'
+- name: '< HA Service Set : DATABASE -02 > Debugging MHA [ {{ vm_db_type | upper }} ]'
   debug:
     msg: '{{ rs_create_mha }}'
 
