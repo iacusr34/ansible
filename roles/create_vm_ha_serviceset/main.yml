@@ -1,0 +1,10 @@
+---
+- name: '< HA Service Set -01 > Create a Web Service VM'
+  include_tasks: web_template.yml
+  when: vm_web_ck == 'yes'
+
+- name: < HA Service Set -02 > Create a Was Service VM'
+  include_tasks: was_template.yml
+
+- name: '< HA Service Set -03 > Create a Database Service VM [ {{ vm_db_type }} ]'
+  include_tasks: database_template.yml
