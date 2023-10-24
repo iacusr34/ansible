@@ -1,0 +1,35 @@
+---
+- name: "Common VM Type CODE Get"
+  shell: 'hostname'
+  register: get_hostname
+
+- name: "Common VM Type CODE Set"
+  set_fact:
+    vm_type: '{{ get_hostname.stdout[5:8] | lower }}'
+
+- name: "Common Config Setting"
+  include_tasks: common_config.yml
+
+- name: "Application Config Setting"
+  include_tasks: application_config.yml
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was'
+
+- name: "WEB Server HA Config Setting"
+  include_tasks: web_config.yml
+  when: vm_type|lower == 'web' and vm_purpose|lower == 'prd'
+
+- name: "WAS Server HA Config Setting"
+  include_tasks: was_config.yml
+  when: vm_type|lower == 'was' and vm_purpose|lower == 'prd'
+
+- name: "Database Server HA Config Setting"
+  include_tasks: db_config.yml
+  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' ) 
+
+- name: "Database Config MHA Setting"
+  include_tasks: db_mha_config.yml
+  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' and vm_ipaddr_7 != None ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' and vm_ipaddr_7 != None )
+
+- name: "Application Service Running"
+  include_tasks: running_sevice.yml
+  when: vm_type|lower == 'pxy' or vm_type|lower == 'web' or vm_type|lower == 'was' or vm_type|lower == 'mas' or vm_type|lower == 'mys'
