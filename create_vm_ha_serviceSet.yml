@@ -1,0 +1,6 @@
+---
+- name: 'Create VM HA ServiceSet'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_ha_serviceset
