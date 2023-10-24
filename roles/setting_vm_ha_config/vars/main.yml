@@ -1,6 +1,7 @@
 ---
 vm_purpose:
 vm_type:
+vm_db_type:
 vm_hostname:
 vm_ipaddr_1:
 vm_ipaddr_2:
