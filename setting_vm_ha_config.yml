@@ -1,0 +1,7 @@
+---
+- name: 'Setting VM HA Config'
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - role: setting_vm_ha_config
