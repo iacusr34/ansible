@@ -7,6 +7,10 @@
   set_fact:
     vm_type: '{{ get_hostname.stdout[5:8] | lower }}'
 
+- name: "Common VM Hostname Set"
+  set_fact:
+    vm_hostname: '{{ get_hostname.stdout }}'
+
 - name: "Common Config Setting"
   include_tasks: common_config.yml
 
