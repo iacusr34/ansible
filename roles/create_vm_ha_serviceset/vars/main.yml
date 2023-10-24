@@ -10,5 +10,7 @@ vm_ipaddr_4:
 vm_ipaddr_5:
 vm_ipaddr_6:
 vm_ipaddr_7:
+vm_ipaddr_8:
+vm_ipaddr_9:
 vm_user: 'iacusr'
 vm_pw: 'dlatl00'
