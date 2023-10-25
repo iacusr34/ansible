@@ -26,11 +26,11 @@
 
 - name: '< DATABASE MHA Setting - 01 > Setting Variable Heartbeat IP Address [ {{ vm_hostname }} ]'
   set_fact:
-    vm_heartbeat_ip_mha: '192.168.100.{{ vm_array_3[3] }}'
+    vm_heartbeat_ip_3: '192.168.100.{{ vm_array_3[3] }}'
   when: inventory_hostname == vm_ipaddr_7
 
 - name: '< DATABASE MHA Setting - 01 > Setting Heartbeat IP Address [ {{ vm_hostname }} ]'
-  shell: 'nmcli con add con-name ens256 ifname ens256 type ethernet ip4 {{ vm_heartbeat_ip_mha }}/24 ipv4.method manual autoconnect yes'
+  shell: 'nmcli con add con-name ens256 ifname ens256 type ethernet ip4 {{ vm_heartbeat_ip_3 }}/24 ipv4.method manual autoconnect yes'
   register: heartbeat_result1
   when: inventory_hostname == vm_ipaddr_7
 
