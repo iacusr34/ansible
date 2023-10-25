@@ -37,7 +37,7 @@
   set_fact:
     vm_gw: '{{ vm_ipaddr_1.split(".") }}'
     
-- name: '< Service Set : WEB -03 > Web service virtual machine IP settings'
+- name: '< Service Set : WEB -04 > Web service virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -51,6 +51,6 @@
   register: rs_ip_set_vm
   ignore_errors: true
 
-- name: '< Service Set : WEB -03 > Debugging' 
+- name: '< Service Set : WEB -04 > Debugging' 
   debug:
     msg: '{{ rs_ip_set_vm }}'
