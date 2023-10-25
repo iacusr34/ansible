@@ -1,6 +1,6 @@
 ---
 - name: "< Common Config - 01 > Running DCA Agent"
-  shell: "sh /DCA/AgentInstall.sh"
+  shell: "cd /DCA ; sudo sh ./AgentInstall.sh"
   register: common_rs_01
   ignore_errors: true
 
