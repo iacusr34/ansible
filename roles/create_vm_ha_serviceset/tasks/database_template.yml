@@ -65,8 +65,12 @@
 - name: '< HA Service Set : DATABASE -03 >  DATABASE Service virtual machine booting stand by 30 second [ {{ vm_db_type | upper }} ]'
   pause:
     seconds: 30
+
+- name: '< HA Service Set : DATABASE -04 > Setting IP Address Gateway'
+  set_fact:
+    vm_gw: '{{ vm_ipaddr_5.split(".")[0] }}.{{ vm_ipaddr_5.split(".")[1] }}.{{ vm_ipaddr_5.split(".")[2] }}.1'
     
-- name: '< HA Service Set : DATABASE -04 > DATABASE service virtual machine IP settings [ {{ vm_db_type | upper }} ]'
+- name: '< HA Service Set : DATABASE -05 > DATABASE service virtual machine IP settings [ {{ vm_db_type | upper }} ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -75,7 +79,10 @@
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.method manual autoconnect yes && sudo hostnamectl set-hostname {{ item.hostname }}"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
+                    sudo nmcli con modify ens224 ipv4.ignore-auto-routes yes && 
+                    sudo nmcli con up ens224 && 
+                    sudo hostnamectl set-hostname {{ item.hostname }}"
   delegate_to: localhost
   register: rs_ip_set_vm
   loop:
@@ -84,6 +91,6 @@
     - { 'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v', 'ip_addr':'{{ vm_ipaddr_7 }}' }
   ignore_errors: true
 
-- name: '< HA Service Set : DATABASE -04 > Debugging [ {{ vm_db_type | upper }} ]' 
+- name: '< HA Service Set : DATABASE -05 > Debugging [ {{ vm_db_type | upper }} ]' 
   debug:
     msg: '{{ rs_ip_set_vm }}'
