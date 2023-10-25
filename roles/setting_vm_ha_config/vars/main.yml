@@ -12,6 +12,7 @@ vm_ipaddr_6:
 vm_ipaddr_7:
 vm_ipaddr_8:
 vm_ipaddr_9:
+vm_real_vip:
 vm_heartbeat_ip_1:
 vm_heartbeat_ip_2:
 vm_heartbeat_ip_3:
