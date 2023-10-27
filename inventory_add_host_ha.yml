@@ -1,6 +1,0 @@
----
-- name: "Add New VM(=host) IP to Inventory HA  "
-  hosts: localhost
-  gather_facts: false
-  roles:
-    - role: inventory_add_host_ha
