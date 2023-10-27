@@ -1,3 +1,0 @@
----
-- name: "Add New VM(=host) IP to Inventory"
-  include_tasks: add_host.yml
