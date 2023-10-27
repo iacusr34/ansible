@@ -6,6 +6,6 @@ vm_count:
 vm_ip_list: []
 vm_ipaddr_1:
 vm_ipaddr_2:
-vm_ipaddr_mha:
+vm_ipaddr_3:
 vm_user: 'iacusr'
 vm_pw: 'dlatl00'
