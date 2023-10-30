@@ -14,7 +14,7 @@
     cluster: 'IAAS_iac(D)_Cluster'
     name: '{{ item.hostname }}'
     state: poweredon
-    template: 'TMP_RHEL8.6_60_50_PRD'
+    template: 'TMP_RHEL8.6_60_50_DEV'
     disk:
     - size_gb: 60
       type: thin
