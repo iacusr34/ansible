@@ -1,5 +1,6 @@
 ---
-- name: 'Set list of IP Addresses'
+# Survey를 통해 입력받은 IP 주소를 vm_iparray List에 등록
+- name: '< Check Ping -01 > Set list of IP Addresses'
   set_fact:
     vm_iparray: '{{ vm_iparray | default([]) + [ item ] }}'
   with_items:
@@ -13,7 +14,8 @@
     - { 'ip_addr':'{{ vm_ipaddr_8 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_9 }}' }
 
-- name: 'Check IP addresses Ping'
+# vm_iparray에 등록된 IP주소를 순차적으로 Ping Test로 IP를 사용중인지 확인
+- name: '< Check Ping -02 > Check IP addresses Ping'
   shell: 'ping {{ item.ip_addr }} -c 3
   register: rs_ping
   delegate_to: localhost
@@ -21,13 +23,18 @@
   when: item.ip_addr != none
   ignore_errors: true
 
-- name: 'Extract list of live IP addresses'
+# Ping Tes 결과값을 통해 사용중인 IP 주소를 등록
+# > 사용중인 IP 구분 기준
+#     - 응답, 응답지연의 경우 사용중인 IP로 인지
+#     - 100% packet loss가 아닐 경우 사용중인 IP로 인지
+- name: '< Check Ping -03 > Extract list of live IP addresses'
   set_fact:
     live_ip_list: '{{ live_ip_list | default([]) + [ item.item.ip_addr ] }}'
   loop: '{{ rs_ping.results }}'
   when: item.changed == true and item.stdout is not search('100% packet loss')
 
-- name: 'Check the list OS IP addresses'
+# 사용중인 IP 주소가 등록된 live_ip_list에 값이 존재할 경우 VM 생성 프로세스 중단을 위해 강제 failed 처리
+- name: '< Check Ping -04 > Check the list OS IP addresses'
   debug:
     msg: '다음의 IP 주소들이 사용중인 것으로 확인 됩니다. {{ live_ip_list | replace("u","") }}'
   failed_when: live_ip_list|length > 0
