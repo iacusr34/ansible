@@ -1,0 +1,4 @@
+---
+- name: '< Service Set -01 > Create a Web Service VM'
+  include_tasks: web_template.yml
+  when: vm_web_ck == 'yes'
