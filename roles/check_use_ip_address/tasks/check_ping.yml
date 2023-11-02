@@ -16,7 +16,7 @@
 
 # vm_iparray에 등록된 IP주소를 순차적으로 Ping Test로 IP를 사용중인지 확인
 - name: '< Check Ping -02 > Check IP addresses Ping'
-  shell: 'ping {{ item.ip_addr }} -c 3
+  shell: 'ping {{ item.ip_addr }} -c 3'
   register: rs_ping
   delegate_to: localhost
   loop: '{{ vm_iparray }}'
