@@ -8,5 +8,5 @@ vm_ipaddr_6:
 vm_ipaddr_7:
 vm_ipaddr_8:
 vm_ipaddr_9:
-vm_iparray: []
+vm_ip_list: []
 live_ip_list: []
