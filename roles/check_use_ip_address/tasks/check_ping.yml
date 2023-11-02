@@ -2,7 +2,7 @@
 # Survey를 통해 입력받은 IP 주소를 vm_iparray List에 등록
 - name: '< Check Ping -01 > Set list of IP Addresses'
   set_fact:
-    vm_iparray: '{{ vm_iparray | default([]) + [ item ] }}'
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
     - { 'ip_addr':'{{ vm_ipaddr_1 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_2 }}' }
@@ -19,7 +19,7 @@
   shell: 'ping {{ item.ip_addr }} -c 3'
   register: rs_ping
   delegate_to: localhost
-  loop: '{{ vm_iparray }}'
+  loop: '{{ vm_ip_list }}'
   when: item.ip_addr != none
   ignore_errors: true
 
