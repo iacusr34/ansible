@@ -1,0 +1,33 @@
+---
+- name: 'Set list of IP Addresses'
+  set_fact:
+    vm_iparray: '{{ vm_iparray | default([]) + [ item ] }}'
+  with_items:
+    - { 'ip_addr':'{{ vm_ipaddr_1 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_2 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_3 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_4 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_5 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_6 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_7 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_8 }}' }
+    - { 'ip_addr':'{{ vm_ipaddr_9 }}' }
+
+- name: 'Check IP addresses Ping'
+  shell: 'ping {{ item.ip_addr }} -c 3
+  register: rs_ping
+  delegate_to: localhost
+  loop: '{{ vm_iparray }}'
+  when: item.ip_addr != none
+  ignore_errors: true
+
+- name: 'Extract list of live IP addresses'
+  set_fact:
+    live_ip_list: '{{ live_ip_list | default([]) + [ item.item.ip_addr ] }}'
+  loop: '{{ rs_ping.results }}'
+  when: item.changed == true and item.stdout is not search('100% packet loss')
+
+- name: 'Check the list OS IP addresses'
+  debug:
+    msg: '다음의 IP 주소들이 사용중인 것으로 확인 됩니다. {{ live_ip_list | replace("u","") }}'
+  failed_when: live_ip_list|length > 0
