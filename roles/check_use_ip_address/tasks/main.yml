@@ -1,4 +1,3 @@
 ---
-- name: '< Service Set -01 > Create a Web Service VM'
-  include_tasks: web_template.yml
-  when: vm_web_ck == 'yes'
+- name: '< Check Ping - MAIN > IP address Ping Test'
+  include_tasks: check_ping.yml
