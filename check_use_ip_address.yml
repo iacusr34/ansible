@@ -1,5 +1,5 @@
 ---
-- name: 'Check the IP address in use'
+- name: 'Check use IP addresses'
   hosts: localhost
   gather_facts: false
   roles:
