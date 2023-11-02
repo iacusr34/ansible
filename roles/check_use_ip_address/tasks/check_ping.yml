@@ -34,7 +34,14 @@
   when: item.changed == true and item.stdout is not search('100% packet loss')
 
 # 사용중인 IP 주소가 등록된 live_ip_list에 값이 존재할 경우 VM 생성 프로세스 중단을 위해 강제 failed 처리
-- name: '< Check Ping -04 > Check the list OS IP addresses'
+- name: '< Check Ping -04 > List of IP Addresses in use'
   debug:
     msg: '다음의 IP 주소들이 사용중인 것으로 확인 됩니다. {{ live_ip_list | replace("u","") }}'
+  when: live_ip_list|length > 0
   failed_when: live_ip_list|length > 0
+
+# 사용중인 IP 주소가 없을 경우 안내 메세지
+- name: '< Check Ping -05 > Results of checking the IP address in use'
+  debug:
+    msg: '사용중인 IP 주소는 없는 것으로 확인 되었습니다.'
+  when: live_ip_list|length == 0
