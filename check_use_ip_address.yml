@@ -1,0 +1,6 @@
+---
+- name: 'Check the IP address in use'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: check_use_ip_address
