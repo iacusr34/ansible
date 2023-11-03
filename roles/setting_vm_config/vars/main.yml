@@ -5,8 +5,9 @@ vm_type:
 vm_count:
 vm_ipaddr_1:
 vm_ipaddr_2:
-vm_vip:
 vm_ipaddr_3:
+vm_proxy_vip:
+vm_db_vip:
 vm_heartbeat_ip_1:
 vm_heartbeat_ip_2:
 vm_heartbeat_ip_3:
