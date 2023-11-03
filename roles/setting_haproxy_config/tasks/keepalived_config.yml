@@ -14,7 +14,7 @@
 
 - name: "< haproxy Setting - 02 > Setting keepalived Variable VIP Ip address"
   set_fact:
-    vip_split: '{{ vm_vip.split(".") }}'
+    vip_split: '{{ vm_proxy_vip.split(".") }}'
 
 - name: '< haproxy Setting - 03 > Setting keepalived Config vrrp_instance virtual_router_id'
   lineinfile:
@@ -31,7 +31,7 @@
   lineinfile:
     path: '/etc/keepalived/keepalived.conf'
     regexp: '1.1.1.10'
-    line: '      {{ vm_vip }}'
+    line: '      {{ vm_proxy_vip }}'
   register: keep_result_03
 
 - name: "< haproxy Setting - 04 > Result Check"
