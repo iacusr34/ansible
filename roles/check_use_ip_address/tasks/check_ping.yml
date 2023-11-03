@@ -13,6 +13,8 @@
     - { 'ip_addr':'{{ vm_ipaddr_7 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_8 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_9 }}' }
+    - { 'ip_addr':'{{ vm_proxy_vip }}' }
+    - { 'ip_addr':'{{ vm_db_vip }}' }
 
 # vm_iparray에 등록된 IP주소로 Ping Test 수행
 - name: '< Check Ping -02 > Check IP addresses Ping'
