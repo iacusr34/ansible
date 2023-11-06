@@ -1,10 +1,10 @@
 ---
-- name: '< Service Set -01 > Create a Web Service VM'
+- name: '< MAIN : WEB > [ {{ vm_purpose }} ] Launch Create VM Web Service Template'
   include_tasks: web_template.yml
   when: vm_web_ck == 'yes'
 
-- name: < Service Set -02 > Create a Was Service VM'
+- name: '< MAIN : WAS > [ {{ vm_purpose }} ] Launch Create VM WAS Service Template'
   include_tasks: was_template.yml
 
-- name: '< Service Set -03 > Create a Database Service Vm [ {{ vm_db_type }} ]'
+- name: '< MAIN : Database > [ {{ vm_purpose }} ] Launch Create VM Database Service Template [ DB Type is {{ vm_db_type }} ]'
   include_tasks: database_template.yml
