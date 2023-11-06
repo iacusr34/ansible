@@ -1,0 +1,65 @@
+---
+- name: '< Database : Create VM -01 > New Create a virtual machine from a template [ VM Type is MAS or MYS ]'
+  vmware_guest:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    cluster: 'IAAS_iac(D)_Cluster'
+    name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    state: poweredon
+    template: 'TMP_RHEL8.6_DEV_{{ vm_type | upper }}'
+    disk:
+    - size_gb: 60
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    - size_gb: 370
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    hardware:
+      memory_mb: 4096
+      num_cpus: 2
+      scsi: paravirtual
+      mem_reservation: 4096
+      cpu_shares_level: "normal"
+      mem_shares_level: "normal"
+  delegate_to: localhost
+  register: deploy
+  with_sequence: start=1 end={{ vm_count }}
+
+- name: < Database : Create VM -01 > Debuging
+  debug:
+    msg: '{{ deploy }}'
+
+- name: '< Database : Create VM -02 > New virtual machine booting stand by 30 second'
+  pause:
+    seconds: 30
+
+- name: '< Database : Create VM -03 > New virtual machine Setting IP Address Gateway'
+  set_fact:
+    vm_gw: '{{ vm_ipaddr_1.split(".")[0] }}.{{ vm_ipaddr_1.split(".")[1] }}.{{ vm_ipaddr_1.split(".")[2] }}.1'
+
+- name: '< Database : Create VM -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< Database : Create VM -04 > New Create a virtual machine IP Setting  [ VM Type is MAS or MYS ]'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /IAAS_Datacenter/vm
+    datacenter: IAAS_Datacenter
+    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v'
+    vm_username: 'iacusr'
+    vm_password: '{{ vm_pw }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_ipaddr_1 }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
+                    sudo nmcli con modify ens224 ipv4.ignore-auto-routes yes && 
+                    sudo nmcli con up ens224 && 
+                    sudo hostnamectl set-hostname {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ item }}v"
+  delegate_to: localhost
+  register: ip_result
+  with_sequence: start=1 end={{ vm_count }}
+  ignore_errors: true
+
+- name: '< Database : Create VM -04 > Debuging'
+  debug:
+    msg: '{{ ip_result }}'
