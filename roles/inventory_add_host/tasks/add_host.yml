@@ -1,5 +1,5 @@
 ---
-- name: 'New vm host IP address variable setting'
+- name: '< Inventory -01 > New VM(=Host) IP address Variable Setting'
   set_fact:
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
@@ -13,7 +13,7 @@
     - { 'ip_addr':'{{ vm_ipaddr_8 }}' }
     - { 'ip_addr':'{{ vm_ipaddr_9 }}' }
   
-- name: "Add New VM(=host) IP to Inventory API Call"
+- name: '< Inventory -02 > Add New VM(=Host) IP address to Inventory API Call'
   uri:
     url: http://172.20.49.121/api/v2/inventories/12/hosts/
     method: POST
@@ -28,6 +28,6 @@
   register: api
   when: item.ip_addr != none
 
-- name: 'Result Check'
+- name: '< Inventory -02 > Debuging'
   debug:
-    msg: "{{ api }}"
+    msg: '{{ api }}'
