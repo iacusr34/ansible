@@ -1,7 +1,4 @@
 ---
-#- name: new create vm use template
-#  include_tasks: use_template.yml
-
 - name: '< MAIN : Application > [ {{ vm_purpose }} ] Launch Create VM Application Template'
   include_tasks: application_template.yml
   when: vm_type|lower == 'web' or vm_type|lower == 'was'
