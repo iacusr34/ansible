@@ -1,5 +1,5 @@
 ---
-- name: '< Service Set : DATABASE -01 > Creating a database service virtual machine [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM -01 > Creating a database service virtual machine [ DB Type is {{ vm_db_type | upper }} ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -25,19 +25,23 @@
   delegate_to: localhost
   register: rs_create_vm
 
-- name: '< Service Set : DATABASE -01 > Debugging [ {{ vm_db_type | upper }} ]' 
+- name: '< DATABASE : Create VM -01 > Debuging' 
   debug:
     msg: '{{ rs_create_vm }}'
 
-- name: '< Service Set : DATABASE -02 > DATABASE Service virtual machine booting stand by 30 second [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM -02 > virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< Service Set : DATABASE -03 > Setting IP Address Gateway'
+- name: '< DATABASE : Create VM -03 > virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_3.split(".")[0] }}.{{ vm_ipaddr_3.split(".")[1] }}.{{ vm_ipaddr_3.split(".")[2] }}.1'
-    
-- name: '< Service Set : DATABASE -03 > DATABASE service virtual machine IP settings [ {{ vm_db_type | upper }} ]'
+
+- name: '< DATABASE : Create VM -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< DATABASE : Create VM -03 > Create a virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -54,6 +58,6 @@
   register: rs_ip_set_vm
   ignore_errors: true
 
-- name: '< Service Set : WEB -03 > Debugging [ {{ vm_db_type | upper }} ]' 
+- name: '< DATABASE : Create VM -04 > Debuging'
   debug:
     msg: '{{ rs_ip_set_vm }}'
