@@ -1,5 +1,5 @@
 ---
-- name: '< Service Set : WEB -01 > Creating a web service virtual machine'
+- name: '< WEB : Create VM -01 > Creating a web service virtual machine'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -25,19 +25,23 @@
   delegate_to: localhost
   register: rs_create_vm
 
-- name: '< Service Set : WEB -01 > Debugging' 
+- name: '< WEB : Create VM -01 > Debuging' 
   debug:
     msg: '{{ rs_create_vm }}'
 
-- name: '< Service Set : WEB -02 > Web Service virtual machine booting stand by 30 second'
+- name: '< WEB : Create VM -02 > virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< Service Set : WEB -03 > Setting IP Address Gateway'
+- name: '< WEB : Create VM -03 > virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_1.split(".")[0] }}.{{ vm_ipaddr_1.split(".")[1] }}.{{ vm_ipaddr_1.split(".")[2] }}.1'
+
+- name: '< WEB : Create VM -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
     
-- name: '< Service Set : WEB -04 > Web service virtual machine IP settings'
+- name: '< WEB : Create VM -04 > Create a virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -54,6 +58,6 @@
   register: rs_ip_set_vm
   ignore_errors: true
 
-- name: '< Service Set : WEB -04 > Debugging' 
+- name: '< WEB : Create VM -04 > Debuging' 
   debug:
     msg: '{{ rs_ip_set_vm }}'
