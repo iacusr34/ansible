@@ -26,7 +26,7 @@
   register: deploy
   with_sequence: start=1 end={{ vm_count }}
 
-- name: < Database : Create VM -01 > Debuging
+- name: '< Database : Create VM -01 > Debuging'
   debug:
     msg: '{{ deploy }}'
 
