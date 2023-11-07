@@ -1,5 +1,5 @@
 ---
-- name: 'New Create a virtual machine from a MHA template [ VM type is Mysql, MariaDB ]'
+- name: '< Database MHA : Create VM(HA) -01 > New Create a virtual machine from a MHA template [ VM type is Mysql, MariaDB ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -25,19 +25,23 @@
   delegate_to: localhost
   register: deploy
 
-- name: debugging 
+- name: '< Database MHA : Create VM(HA) -01 > Debuging' 
   debug:
     msg: '{{ deploy }}'
 
-- name: 'New virtual machine booting stand by 30 second'
+- name: '< Database MHA : Create VM(HA) -02 > New virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: 'New virtual machine Setting IP Address Gateway'
+- name: '< Database MHA : Create VM(HA) -03 > New virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_3.split(".")[0] }}.{{ vm_ipaddr_3.split(".")[1] }}.{{ vm_ipaddr_3.split(".")[2] }}.1'
-    
-- name: 'New Create a virtual machine IP and Hostname Setting [ Mysql, MariaDB ]'
+
+- name: '< Database MHA : Create VM(HA) -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< Database MHA : Create VM(HA) -04 > New Create a virtual machine IP Setting [ Mysql, MariaDB ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -54,6 +58,6 @@
   register: ip_result
   ignore_errors: true
 
-- name: 'New virtual machine Setting IP Address Debug'
+- name: '< Database MHA : Create VM(HA) -04 > Debuging'
   debug:
     msg: '{{ ip_result }}'
