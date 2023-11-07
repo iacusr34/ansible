@@ -1,5 +1,5 @@
 ---
-- name: '< HA Service Set : DATABASE -01 > Creating a database service virtual machine [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM(HA) -01 > Creating a database service virtual machine [ DB Type is {{ vm_db_type | upper }} ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -28,11 +28,11 @@
     - '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}1v'
     - '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}2v'
 
-- name: '< HA Service Set : DATABASE -01 > Debugging [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM(HA) -01 > Debuging'
   debug:
     msg: '{{ rs_create_vm }}'
 
-- name: '< HA Service Set : DATABASE -02 > Creating a database MHA service virtual machine [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM(HA) -02 > Creating a database MHA service virtual machine [ DB Type is {{ vm_db_type | upper }} ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -58,19 +58,23 @@
   delegate_to: localhost
   register: rs_create_mha
 
-- name: '< HA Service Set : DATABASE -02 > Debugging MHA [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM(HA) -02 > Debuging MHA'
   debug:
     msg: '{{ rs_create_mha }}'
 
-- name: '< HA Service Set : DATABASE -03 >  DATABASE Service virtual machine booting stand by 30 second [ {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM(HA) -03 > virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< HA Service Set : DATABASE -04 > Setting IP Address Gateway'
+- name: '< DATABASE : Create VM(HA) -04 > virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_5.split(".")[0] }}.{{ vm_ipaddr_5.split(".")[1] }}.{{ vm_ipaddr_5.split(".")[2] }}.1'
-    
-- name: '< HA Service Set : DATABASE -05 > DATABASE service virtual machine IP settings [ {{ vm_db_type | upper }} ]'
+
+- name: '< DATABASE : Create VM(HA) -04 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< DATABASE : Create VM(HA) -05 > Create a virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -91,6 +95,6 @@
     - { 'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v', 'ip_addr':'{{ vm_ipaddr_7 }}' }
   ignore_errors: true
 
-- name: '< HA Service Set : DATABASE -05 > Debugging [ {{ vm_db_type | upper }} ]' 
+- name: '< DATABASE : Create VM(HA) -05 > Debugging [ {{ vm_db_type | upper }} ]' 
   debug:
     msg: '{{ rs_ip_set_vm }}'
