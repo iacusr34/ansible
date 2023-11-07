@@ -1,12 +1,12 @@
 ---
-- name: 'Setting variables for new VM configuration'
+- name: '< Haproxy : Create VM(HA) -01 > Setting variables for new VM configuration'
   set_fact:
     vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
   with_items:
     - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy1v', 'ip_addr':'{{ vm_ipaddr_1 }}' }
     - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}pxy2v', 'ip_addr':'{{ vm_ipaddr_2 }}' }
 
-- name: 'New Create a virtual machine from a HA template [ VM type Haproxy ]'
+- name: '< Haproxy : Create VM(HA) -02 > New Create a virtual machine from a HA template [ VM type Haproxy ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -33,19 +33,23 @@
   register: deploy
   loop: '{{ vm_ip_list }}'
 
-- name: debugging 
+- name: '< Haproxy : Create VM(HA) -02 > Debuging' 
   debug:
     msg: '{{ deploy }}'
 
-- name: 'New virtual machine booting stand by 30 second'
+- name: '< Haproxy : Create VM(HA) -03 > New virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: 'New virtual machine Setting IP Address Gateway'
+- name: '< Haproxy : Create VM(HA) -04 > New virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_1.split(".")[0] }}.{{ vm_ipaddr_1.split(".")[1] }}.{{ vm_ipaddr_1.split(".")[2] }}.1'
-    
-- name: 'New Create a virtual machine IP and Hostname Setting [ VM type is Haproxy ]'
+
+- name: '< Haproxy : Create VM(HA) -04 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< Haproxy : Create VM(HA) -05 > New Create a virtual machine IP Setting [ VM type is Haproxy ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -63,6 +67,6 @@
   loop: '{{ vm_ip_list }}'
   ignore_errors: true
 
-- name: 'New virtual machine Setting IP Address Debug'
+- name: '< Haproxy : Create VM(HA) -05 > Debuging'
   debug:
     msg: '{{ ip_result }}'
