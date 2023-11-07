@@ -1,5 +1,5 @@
 ---
-- name: '< HA Service Set : WAS -01 > Creating a was service virtual machine'
+- name: '< WAS : Create VM(HA) -01 > Creating a was service virtual machine'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -28,19 +28,23 @@
     - '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}was1v'
     - '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}was2v'
 
-- name: '< HA Service Set : WAS -01 > Debugging' 
+- name: '< WAS : Create VM(HA) -01 > Debuging' 
   debug:
     msg: '{{ rs_create_vm }}'
 
-- name: '< HA Service Set : WAS -02 > WAS Service virtual machine booting stand by 30 second'
+- name: '< WAS : Create VM(HA) -02 > virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< HA Service Set : WAS -03 > Setting IP Address Gateway'
+- name: '< WAS : Create VM(HA) -03 > virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_3.split(".")[0] }}.{{ vm_ipaddr_3.split(".")[1] }}.{{ vm_ipaddr_3.split(".")[2] }}.1'
-    
-- name: '< HA Service Set : WAS -04 > WAS service virtual machine IP settings'
+
+- name: '< WAS : Create VM(HA) -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< WAS : Create VM(HA) -04 > Create a virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -60,6 +64,6 @@
     - { 'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}was2v', 'ip_addr':'{{ vm_ipaddr_4 }}' }
   ignore_errors: true
 
-- name: '< HA Service Set : WAS-04 > Debugging' 
+- name: '< WAS : Create VM(HA) -04 > Debuging' 
   debug:
     msg: '{{ rs_ip_set_vm }}'
