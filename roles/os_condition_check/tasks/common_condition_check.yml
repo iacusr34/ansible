@@ -49,7 +49,7 @@
 
 - name: '< Common -05 > Set Filesystem Disk Usabe'
   set_fact:
-    rs_disk_used: "{{ get_diskused.stdout }}"
+    rs_disk_used: "'{{ get_diskused.stdout }}'"
   when: get_diskused.stdout != ""
 
 - name: '< Common -05 > Set Filesystem Disk Useable Message'
@@ -75,7 +75,7 @@
 
 - name: '< Common -07 > Set NTP Server Config'
   set_fact:
-    rs_ntp_set: "{{ get_ntp.stdout.replace('\n',' | ') }}"
+    rs_ntp_set: "'{{ get_ntp.stdout.replace('\n',' | ') }}'"
   when: get_ntp.stdout != ''
 
 - name: '< Common -08 > Get NTP Service Running Check'
