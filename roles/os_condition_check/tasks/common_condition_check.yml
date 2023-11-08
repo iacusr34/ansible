@@ -72,6 +72,7 @@
 - name: '< Common -07 > Get NTP Server Config'
   shell: 'cat /etc/chrony.conf | egrep -v "^#|^$" | grep iburst'
   register: get_ntp
+  ignore_errors: true
 
 - name: '< Common -07 > Set NTP Server Config'
   set_fact:
