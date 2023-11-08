@@ -1,12 +1,12 @@
 ---
 - name: "Haproxy Config TCP or Proxy Setting"
   include_tasks: haproxy_tcp_config.yml
-  when: vm_type|lower == 'hpxy' and proxy_type|lower == 'tcp'
+  when: vm_type|lower == 'pxy' and proxy_type|lower == 'tcp'
 
 - name: "Haproxy Config WEB Setting"
   include_tasks: haproxy_web_config.yml
-  when: vm_type|lower == 'hpxy' and proxy_type|lower == 'web'
+  when: vm_type|lower == 'pxy' and proxy_type|lower == 'web'
 
 - name: "Keepalived Config Setting"
   include_tasks: keepalived_config.yml
-  when: vm_purpose|lower == 'prd' and vm_type|lower == 'hpxy'
+  when: vm_purpose|lower == 'prd' and vm_type|lower == 'pxy'
