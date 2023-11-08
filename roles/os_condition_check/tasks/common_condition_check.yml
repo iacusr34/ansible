@@ -49,7 +49,7 @@
 
 - name: '< Common -05 > Set Filesystem Disk Usabe'
   set_fact:
-    rs_disk_used: "'{{ get_diskused.stdout }}'"
+    rs_disk_used: "'{{ get_diskused.stdout.replace('\n',' | ') }}'"
   when: get_diskused.stdout != ""
 
 - name: '< Common -05 > Set Filesystem Disk Useable Message'
@@ -62,7 +62,7 @@
 
 - name: '< Common -06 > Set Filesystem Disk i-node Usabe'
   set_fact:
-    rs_inode_used: "{{ get_inodeused.stdout }}"
+    rs_inode_used: "{{ get_inodeused.stdout.replace('\n',' | ') }}"
   when: get_diskused.stdout != ""
 
 - name: '< Common -06 > Set Filesystem Disk i-node Useable Message'
