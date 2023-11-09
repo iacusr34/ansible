@@ -5,8 +5,8 @@
     regexp: '{{ item.origin }}'
     line: "{{ item.change }}"
   loop:
-    - { 'origin':'#worker.instance11.host=172.', 'change':'worker.instance11.host={{ vm_ipaddr_1 }}' }
-    - { 'origin':'#worker.instance21.host=172.', 'change':'worker.instance21.host={{ vm_ipaddr_2 }}' }
+    - { 'origin':'#worker.instance11.host=172.', 'change':'worker.instance11.host={{ vm_ipaddr_3 }}' }
+    - { 'origin':'#worker.instance21.host=172.', 'change':'worker.instance21.host={{ vm_ipaddr_4 }}' }
   register: propert_rs
 
 - name: '< Application : WEB > Result Check'
