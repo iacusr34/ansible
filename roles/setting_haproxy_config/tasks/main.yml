@@ -9,4 +9,4 @@
 
 - name: "Keepalived Config Setting"
   include_tasks: keepalived_config.yml
-  when: vm_purpose|lower == 'prd' and vm_type|lower == 'pxy'
+  when: ( vm_purpose|lower == 'test' or vm_purpose|lower == 'prd' ) and vm_type|lower == 'pxy'
