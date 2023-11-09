@@ -1,13 +1,13 @@
 ---
-- name: '< DATABASE : Create VM -01 > Creating a database service virtual machine [ DB Type is {{ vm_db_type | upper }} ]'
+- name: '< DATABASE : Create VM -01 > Creating a database service virtual machine [ DB Type is {{ vm_db_type|upper }} ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     cluster: 'IAAS_iac(D)_Cluster'
-    name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}1v'
+    name: '{{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v'
     state: poweredon
-    template: 'TMP_RHEL8.6_{{ vm_purpose | upper }}_{{ vm_db_type | upper }}'
+    template: 'TMP_RHEL8.6_{{ "PRD" if ( vm_purpose|lower == "test" ) else vm_purpose|upper }}_{{ vm_db_type|upper }}'
     disk:
     - size_gb: 60
       type: thin
@@ -46,14 +46,14 @@
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}1v'
+    vm_id: '{{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v'
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
     vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_ipaddr_3 }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
                     sudo nmcli con modify ens224 ipv4.ignore-auto-routes yes && 
                     sudo nmcli con up ens224 && 
-                    sudo hostnamectl set-hostname {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_db_type | lower }}1v"
+                    sudo hostnamectl set-hostname {{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v"
   delegate_to: localhost
   register: rs_ip_set_vm
   ignore_errors: true
