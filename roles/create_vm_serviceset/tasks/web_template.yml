@@ -1,12 +1,4 @@
 ---
-- name: 'debug 1'
-  debug:
-    msg: '{{ vm_purpose }}'
-
-- name: 'debug 2'
-  debug:
-    msg: '{{ "PRD" if( vm_purpose|lower == "test" ) else vm_purpose|upper }}'
-
 - name: '< WEB : Create VM -01 > Creating a web service virtual machine'
   vmware_guest:
     validate_certs: false
@@ -15,7 +7,7 @@
     cluster: 'IAAS_iac(D)_Cluster'
     name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}web1v'
     state: poweredon
-    template: 'TMP_RHEL8.6_{{ "PRD" if ( vm_purpose|lower == "test" ) else vm_purpose|upper }}_WEB'
+    template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_WEB'
     disk:
     - size_gb: 60
       type: thin
