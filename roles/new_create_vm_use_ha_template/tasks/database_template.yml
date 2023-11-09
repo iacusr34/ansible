@@ -6,7 +6,12 @@
     - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}1v', 'ip_addr':'{{ vm_ipaddr_1 }}' }
     - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}2v', 'ip_addr':'{{ vm_ipaddr_2 }}' }
 
-- name: '< Database : Create VM(HA) -02 > New Create a virtual machine from a HA template [ VM type is Mysql, MariaDB ]'
+- name: '< Database : Create VM(HA) -02 > Change if the purpose is test'
+  set_fact:
+    vm_purpose: 'prd'
+  when: vm_purpose == 'test'
+  
+- name: '< Database : Create VM(HA) -03 > New Create a virtual machine from a HA template [ VM type is Mysql, MariaDB ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -33,23 +38,23 @@
   register: deploy
   loop: '{{ vm_ip_list }}'
 
-- name: '< Database : Create VM(HA) -02 > Debuging' 
+- name: '< Database : Create VM(HA) -03 > Debuging' 
   debug:
     msg: '{{ deploy }}'
 
-- name: '< Database : Create VM(HA) -03 > New virtual machine booting stand by 30 second'
+- name: '< Database : Create VM(HA) -04 > New virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< Database : Create VM(HA) -04 > New virtual machine Setting IP Address Gateway'
+- name: '< Database : Create VM(HA) -05 > New virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_1.split(".")[0] }}.{{ vm_ipaddr_1.split(".")[1] }}.{{ vm_ipaddr_1.split(".")[2] }}.1'
 
-- name: '< Database : Create VM(HA) -04 > Debuging'
+- name: '< Database : Create VM(HA) -05 > Debuging'
   debug:
     msg: '{{ vm_gw }}'
 
-- name: '< Database : Create VM(HA) -05 > New Create a virtual machine IP Setting [ Mysql, MariaDB ]'
+- name: '< Database : Create VM(HA) -06 > New Create a virtual machine IP Setting [ Mysql, MariaDB ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
@@ -67,6 +72,6 @@
   loop: '{{ vm_ip_list }}'
   ignore_errors: true
 
-- name: '< Database : Create VM(HA) -05 > Debuging'
+- name: '< Database : Create VM(HA) -06 > Debuging'
   debug:
     msg: '{{ ip_result }}'
