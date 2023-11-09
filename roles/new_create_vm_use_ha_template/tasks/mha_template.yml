@@ -1,11 +1,22 @@
 ---
-- name: '< Database MHA : Create VM(HA) -01 > New Create a virtual machine from a MHA template [ VM type is Mysql, MariaDB ]'
+- name: '< Database MHA : Create VM(HA) -01 > Setting variables for new VM configuration'
+  set_fact:
+    vm_ip_list: '{{ vm_ip_list | default([]) + [ item ] }}'
+  with_items:
+    - {'hostname':'{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v', 'ip_addr':'{{ vm_ipaddr_3 }}' }
+
+- name: '< Database MHA : Create VM(HA) -02 > Change if the purpose is test'
+  set_fact:
+    vm_purpose: 'prd'
+  when: vm_purpose == 'test'
+
+- name: '< Database MHA : Create VM(HA) -03 > New Create a virtual machine from a MHA template [ VM type is Mysql, MariaDB ]'
   vmware_guest:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
     cluster: 'IAAS_iac(D)_Cluster'
-    name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v'
+    name: '{{ item.hostname }}'
     state: poweredon
     template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_{{ vm_type | upper }}_MHA'
     disk:
@@ -24,40 +35,42 @@
       mem_shares_level: "normal"
   delegate_to: localhost
   register: deploy
+  loop: '{{ vm_ip_list }}'
 
-- name: '< Database MHA : Create VM(HA) -01 > Debuging' 
+- name: '< Database MHA : Create VM(HA) -03 > Debuging' 
   debug:
     msg: '{{ deploy }}'
 
-- name: '< Database MHA : Create VM(HA) -02 > New virtual machine booting stand by 30 second'
+- name: '< Database MHA : Create VM(HA) -04 > New virtual machine booting stand by 30 second'
   pause:
     seconds: 30
 
-- name: '< Database MHA : Create VM(HA) -03 > New virtual machine Setting IP Address Gateway'
+- name: '< Database MHA : Create VM(HA) -05 > New virtual machine Setting IP Address Gateway'
   set_fact:
     vm_gw: '{{ vm_ipaddr_3.split(".")[0] }}.{{ vm_ipaddr_3.split(".")[1] }}.{{ vm_ipaddr_3.split(".")[2] }}.1'
 
-- name: '< Database MHA : Create VM(HA) -03 > Debuging'
+- name: '< Database MHA : Create VM(HA) -05 > Debuging'
   debug:
     msg: '{{ vm_gw }}'
 
-- name: '< Database MHA : Create VM(HA) -04 > New Create a virtual machine IP Setting [ Mysql, MariaDB ]'
+- name: '< Database MHA : Create VM(HA) -06 > New Create a virtual machine IP Setting [ Mysql, MariaDB ]'
   vmware_vm_shell:
     validate_certs: false
     folder: /IAAS_Datacenter/vm
     datacenter: IAAS_Datacenter
-    vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v'
+    vm_id: '{{ item.hostname }}'
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
     vm_shell: "/usr/bin/sudo"
-    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_ipaddr_3 }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ item.ip_addr }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
                     sudo nmcli con modify ens224 ipv4.ignore-auto-routes yes && 
                     sudo nmcli con up ens224 && 
-                    sudo hostnamectl set-hostname {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}mha1v"
+                    sudo hostnamectl set-hostname {{ item.hostname }}"
   delegate_to: localhost
   register: ip_result
+  loop: '{{ vm_ip_list }}'
   ignore_errors: true
 
-- name: '< Database MHA : Create VM(HA) -04 > Debuging'
+- name: '< Database MHA : Create VM(HA) -06 > Debuging'
   debug:
     msg: '{{ ip_result }}'
