@@ -7,7 +7,7 @@
     cluster: 'IAAS_iac(D)_Cluster'
     name: '{{ item }}'
     state: poweredon
-    template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_WEB'
+    template: 'TMP_RHEL8.6_{{ "PRD" if ( vm_purpose|lower == "test" ) else vm_purpose|upper }}_WEB'
     disk:
     - size_gb: 60
       type: thin
