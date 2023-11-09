@@ -1,5 +1,5 @@
 ---
-- name: "< Application Config - 01 > [ VM Type: WEB, PXY, WAS ] Create User {{ vm_code | lower }}adm & {{ vm_code | lower }}usr"
+- name: "< Application Config - 01 > [ VM Type: WEB, WAS ] Create User {{ vm_code | lower }}adm & {{ vm_code | lower }}usr"
   user:
     name: "{{ item.user }}"
     uid: "{{ item.uid }}"
@@ -10,21 +10,21 @@
     - { user: "{{ vm_code | lower }}adm", uid: "3100" }
     - { user: "{{ vm_code | lower }}usr", uid: "3200" }
 
-- name: "< Application Config - 01 > [ VM Type: WEB, PXY, WAS ] Result Check"
+- name: "< Application Config - 01 > [ VM Type: WEB, WAS ] Result Check"
   debug:
     msg: "{{ app_rs_01 }}"
 
-- name: "< Application Config - 02 > [ VM Type: WEB, PXY, WAS ] Add sudo privileges to the {{ vm_code | lower }}adm User"
+- name: "< Application Config - 02 > [ VM Type: WEB, WAS ] Add sudo privileges to the {{ vm_code | lower }}adm User"
   copy:
     content: "{{ vm_code | lower }}adm ALL=(ALL) NOPASSWD:ALL"
     dest: "/etc/sudoers.d/{{ vm_code | lower }}adm"
   register: app_rs_02
 
-- name: "< Application Config - 02 > [ VM Type: WEB, PXY, WAS ] Result Check"
+- name: "< Application Config - 02 > [ VM Type: WEB, WAS ] Result Check"
   debug:
     msg: "{{ app_rs_02 }}"
 
-- name: "< Application Config - 03-1 > [ VM Type: WEB, PXY ] Set Directory Permissions"
+- name: "< Application Config - 03-1 > [ VM Type: WEB ] Set Directory Permissions"
   file:
     path: "{{ item.dir }}"
     state: directory
@@ -36,12 +36,12 @@
     - { dir: "/engn/apache", user: "{{ vm_code | lower }}adm" }
     - { dir: "/sorc/webdocs", user: "{{ vm_code | lower }}usr" }
     - { dir: "/logs/apache", user: "{{ vm_code | lower }}adm" }
-  when: vm_type|lower == "web" or vm_type|lower == "pxy"
+  when: vm_type|lower == "web"
 
-- name: "< Application Config - 03-1 > [ VM Type: WEB, PXY ] Result Check"
+- name: "< Application Config - 03-1 > [ VM Type: WEB ] Result Check"
   debug:
     msg: "{{ app_rs_03_1 }}"
-  when: vm_type|lower == "web" or vm_type|lower == "pxy"
+  when: vm_type|lower == "web"
 
 - name: "< Application Config - 03-2 > [ VM Type: WAS ] Set Directory Permissions"
   file:
