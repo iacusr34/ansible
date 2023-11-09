@@ -1,4 +1,12 @@
 ---
+- name: 'debug 1'
+  debug:
+    msg: '{{ vm_purpose }}'
+
+- name: 'debug 2'
+  debug:
+    msg: '{{ "PRD" if( vm_purpose|lower == "test" ) else vm_purpose|upper }}'
+
 - name: '< WEB : Create VM -01 > Creating a web service virtual machine'
   vmware_guest:
     validate_certs: false
