@@ -24,11 +24,11 @@
 
 - name: "Database Server HA Config Setting"
   include_tasks: db_config.yml
-  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' ) 
+  when: ( vm_type|lower == 'mas' or vm_type|lower == 'mys' ) and ( vm_purpose|lower == 'prd' or vm_purpose|lower == 'test' )
 
 - name: "Database Config MHA Setting"
   include_tasks: db_mha_config.yml
-  when: ( vm_type|lower == 'mas' and vm_purpose|lower == 'prd' and vm_ipaddr_3 != None ) or ( vm_type|lower == 'mys' and vm_purpose|lower == 'prd' and vm_ipaddr_3 != None )
+  when: vm_ipaddr_3 != None and ( vm_type|lower == 'mas' or vm_type|lower == 'mys' ) and ( vm_purpose|lower == 'prd' or vm_purpose|lower == 'test' )
 
 - name: "Application Service Running"
   include_tasks: running_sevice.yml
