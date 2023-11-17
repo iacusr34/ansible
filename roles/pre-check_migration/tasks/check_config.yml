@@ -1,0 +1,155 @@
+---
+# Config -01 : Filesystem 구성 정보 확인
+- name: '< Check : Config -01 > Get Filesystem'
+  shell: 'df -h'
+  register: get_filesystem
+
+# Config -02 : Network Routing의 현재 상태와 Config 설정 확인
+# Routing 현재 상태 CLI 확인
+- name: '< Check : Config -02_1 > Get Network Routing [ CLI ]'
+  shell: 'netstat -rn'
+  register: get_route1
+
+# Routing Config 설정 확인
+- name: '< Check : Config -02_2 > Get Network Routing [ File ]'
+  shell: 'cat /etc/sysconfig/network-script/route-*'
+  register: get_route2
+  ignore_errors: true
+
+# Config -03 : DNS nameserver 설정 확인
+- name: '< Check : Config -03 > Get Resolv'
+  shell: 'cat /etc/resolv.conf | egrep -v "^#|^$" '
+  register: get_resolv
+
+# Config -04 : NTP 또는 chrony의 Time 동기화 서비스 설정 및 동작 확인
+# NTP Service 동기화 여부 확인
+- name: '< Check : Config -04_1 > Get NTP Status [ ntpq ]'
+  shell: 'ntpq -p'
+  register: get_ntp
+  ignore_errors: true
+
+# NTP Service가 수행되고 있을 경우 NTP Config 설정 확인
+- name: '< Check : Config -04_2 > When NTP Service is running'
+  shell: 'cat /etc/ntp.conf | egrep -v "^#|^$" | grep server'
+  register: get_ntp_config
+  when: get_ntp.rc == 0
+
+# NTP Service가 수행되지 않을 경우 Chrony Service 동기화 여부 확인
+- name: '< Check : Config -04_3 > Get Chrony Status [ chronyc sources ]'
+  shell: 'chronyc sources'
+  register: get_chrony
+  ignore_errors: true
+
+# Chrony Service가 수행되고 있을 경우 Chrony Config 설정 확인
+- name: '< Check : Config -04_4 > When Chrony Service is running'
+  shell: 'cat /etc/chrony.conf | egrep -v "^#|^$" | grep server'
+  register: get_chrony_config
+  when: get_chrony.rc == 0
+
+- name: '< Check : Config -05_1 > Get sar file list'
+  shell: 'ls -al /var/log/sa'
+  register: get_sarfile
+  ignore_errors: true
+
+- name: '< Check : Config -05_2 > Get sar Status'
+  shell: 'sar | head -10'
+  register: get_sarstatus
+  ignore_errors: true
+
+- name: '< Check : Config -06 > Get Crontab list'
+  shell: 'sudo crontab -l'
+  register: get_crontab
+  ignore_errors: true
+
+- name: '< Check : Config -07_1 > Get Sendmail Process'
+  shell: 'ps -ef | grep -i sendmail | grep -v grep'
+  register: get_ps_sendmail
+  ignore_errors: true
+
+- name: '< Check : config -07_2 > Get postfix Process'
+  shell: 'ps -ef | grep -I postfix | grep -v grep'
+  register: get_ps_postfix
+  ignore_errors: true
+
+- name: '< Check : Config -07_3 > check rpm package sendmail'
+  shell: 'rpm -qa | grep sendmail'
+  register: get_rpm_sendmail
+  ignore_errors: true
+
+- name: '< Check : Config -08_1 > Get iptables status [ RHEL 6 ]'
+  shell: 'service iptables status'
+  register: get_iptables6
+  ignore_errors: true
+  when: var_major == 6
+
+- name: '< Check : Config -08_2 > Get iptables chkconfig setting [ RHEL 6 ]'
+  shell: 'chkconfig --list | grep iptables'
+  register: get_chkconfig
+  when: var_major == 6
+
+- name: '< Check : Config -08_3 > Get iptables status [ RHEL 7 ]'
+  shell: 'systemctl status iptables'
+  register: get_iptables7
+  when: var_major == 7
+
+- name: '< Check : Config -09 > Get Config Selinux'
+  shell: 'cat /etc/selinux/config | egrep -v "^#|^$" | grep SELINUX='
+  register: get_selinux
+
+- name: '< Check : Config -10_1 > Get syslog Setting'
+  shell: 'ps -ef | grep syslog | grep -v grep'
+  register: get_syslog
+  ignore_errors: true
+
+- name: '< Check : Config -10_2 > Get syslog Status'
+  shell: 'rsyslogd -n'
+  register: get_syslogd
+  ignore_errors: true
+
+- name: '< Check : Config -11 > Get Whatab Process Status'
+  shell: 'ps -ef | grep root | grep -i whatap | grep -v grep'
+  register: get_whatap
+  ignore_errors: true
+
+- name: '< Check : Config -12_1 > Get Filesystem Mount'
+  shell: 'df -Th'
+  register: get_mount
+
+- name: '< Check : Config -12_2 > Get fstab Config'
+  shell: 'cat /etc/fstab | egrep -v "^#|^$"'
+  register: get_fstab
+
+- name: '< Check : Config > Set Result'
+  set_fact:
+    rs_filesystem: '{{ get_filesystem.stdout }}'
+    rs_route: "{{ get_route1.stdout }} \n\n------------\n\n Route Config File : \n {{ get_route2.stdout if( get_route2.rc == 0 ) else get_route2.stderr }}"
+    rs_resolv: '{{ get_resolv.stdout }}'
+    rs_sar: '{{ "OK" if( get_sarfile.rc == 0 and get_sarstatus.rc == 0 ) else "Not Search File or Not Running sysstat" }}'
+    rs_crontab: '{{ "OK" if( get_crontab.rc == 1 ) else get_crontab.stdout }}'
+    rs_sendmail: "{{ 'OK' if ( get_ps_sendmail.rc > 0 and get_ps_postfix.rc > 0 and get_rpm_sendmail.rc > 0 ) else 'Process sendmail : '~ get_ps_sendmail.stdout ~'\n Process postfix : '~ get_ps_postfix.stdout ~'\n RPM Package : '~ get_rpm_sendmail.stdout }}"
+    rs_selinux: '{{ "OK" if( get_selinux.stdout is search("disabled") ) else get_selinux.stdout }}'
+    rs_syslog: "{{ 'OK' if( get_syslog.rc == 0 or get_syslogd.rc == 0 ) else 'Process syslog : '~ get_syslog.stdout ~'\n syslogd status : '~ get_syslogd }}"
+    rs_whatap: '{{ "OK" if( get_whatap.rc == 0 ) else get_whatap.stdout }}'
+    rs_mount: '{{ get_mount.stdout }}'
+    rs_fstab: '{{ get_fstab.stdout }}'
+    rs_nfs: '{{ "OK" if( get_mount.stdout is not search("nfs") ) else get_mount.stdout }}'
+
+- name: '< Check : Config > Set Result iptables [ RHEL 6 ]'
+  set_fact:
+    rs_iptables: "{{ 'OK' if( get_iptables6.rc > 0 and get_chkconfig.stdout is not search('on') ) else 'Service status : \n'~ get_iptables6.stdout ~'\n\n------------\n\nchkconfig setting : \n'~ get_chkconfig.stdout }}"
+  when: var_major == 6
+
+- name: '< Check : Config > Set Result iptables [ RHEL 7 ]'
+  set_fact:
+    rs_iptables: '{{ "OK" if( get_iptables7.rc > 0 or get_iptables7.stdout is search("dead") ) else get_iptables7.stdout }}'
+  when: var_major == 7
+
+- name: '< Check : Config > Set Result NTP [ Running NTP Service ]'
+  set_fact:
+    rs_ntp: "NTP : OK \n\n------------\n\nConfig 설정 : \n {{ get_ntp_config.stdout }}"
+  when: get_ntp.rc == 0
+
+- name: '< Check : config > Set Result NTP [ Running Chrony Service ]'
+  set_fact:
+    rs_ntp: "Chrony : OK \n\n------------\n\nConfig 설정 : \n {{ get_chrony_config.stdout }}"
+  when: get_chrony.rc == 0
