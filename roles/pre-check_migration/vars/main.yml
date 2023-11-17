@@ -1,10 +1,5 @@
 ---
-# Playbook 수행간 사용될 전역 변수 정의
-var_major: ''
-
 # 결과값 저장 변수 생성
-rs_ostype: ''
-rs_osversion: ''
 rs_logs: ''
 rs_filesystem: ''
 rs_route: ''
