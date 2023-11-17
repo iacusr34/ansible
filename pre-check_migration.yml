@@ -1,0 +1,6 @@
+---
+- name: 'Pre-check Migration'
+  hosts: all
+  gather_facts: false
+  roles:
+    - role: pre-check_migration
