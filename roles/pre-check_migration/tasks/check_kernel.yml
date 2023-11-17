@@ -4,11 +4,6 @@
   shell: 'ulimit -a | egrep "open|max user"'
   register: get_openfiles
 
-- name: '< Check : kernel -01 > Set Result'
-  set_fact:
-    rs_openfiles: '{{ get_openfiles.stdout_lines[0] }}'
-    rs_userfiles: '{{ get_openfiles.stdout_lines[1] }}'
-
 # kernel -02 : 자원에 대한 한계 설정 값 가져오기
 - name: '< Check : kernel -02 > Get limit settings for all resources'
   shell: 'ulimit -Ha'
@@ -17,7 +12,7 @@
 # kernel -03 : MSG Queue 설정 값 가져오기
 - name: '< Check : kernel -03 > Get MSG Queue'
   shell: 'sysctl -a | grep kernel.msgm'
-  register: get_msg
+  register: get_msgq
 
 # kernel -04 : sysctl net [ core, rmem, wmem, max_backlog, vm.swappiness ] 설정 가져오기
 - name: '< Check : kernel -04 > Get sysctl Config Setting'
@@ -34,7 +29,7 @@
   set_fact:
     rs_openfiles: '{{ get_openfiles.stdout_lines[0] }}'
     rs_userfiles: '{{ get_openfiles.stdout_lines[1] }}'
-    rs_msg: '{{ get_msg.stdout }}'
+    rs_msgq: '{{ get_msgq.stdout }}'
     rs_conn: '{{ get_sysctl.stdout_lines[1] }}'
     rs_rmem: '{{ get_sysctl.stdout_lines[2] }}'
     rs_wmem: '{{ get_sysctl.stdout_lines[3] }}'
