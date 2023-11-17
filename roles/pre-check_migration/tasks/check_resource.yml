@@ -1,0 +1,21 @@
+---
+# Resource -01 : CPU 사용량 확인
+- name: '< Check : Resource -01 > Get CPU Usage'
+  shell: "top -b -n 1"
+  register: get_cpu
+
+# Resource -02 : Memory 사용량 확인
+- name: '< Check : Resource -02 > Get Memory Usabe'
+  shell: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
+  register:  get_memory
+
+# Resource -03 : Disk 사용량 확인
+- name: '< Common -05 > Get Filesystem Disk Usabe'
+  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 60) {print $1, $2 }'"
+  register: get_diskused
+
+- name: '< Check : Resource > Set Result'
+  set_fact:
+    rs_cpuused: '{{ 100 - get_cpu.stdout_lines[2].split(",")[3].split(".")[0]|int }} %'
+    rs_memused: '{{ (get_memory.stdout.split(" ")[1]|int / get_memory.stdout.split(" ")[0]|int * 100)|round|int }} %'
+    rs_diskused: "{{ 'OK' if( get_diskused.stdout == 0 ) else get_diskused.stdout }}"
