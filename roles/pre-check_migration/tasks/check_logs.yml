@@ -1,0 +1,10 @@
+---
+# Log -01 : 시스템 하드웨어 fault 로그 확인
+- name: '< Check : Log -01 > Messages Log [ Fault | Error | Fail ]'
+  shell: 'cat /var/log/messages | egrep -iv "default|ansible" | grep -E "fault|error|fail" | head -3'
+  register: get_logs
+  ignore_errors: true
+
+- name: '< Check -01 > Set Result'
+  set_fact:
+    rs_logs: '{{ "OK" if( get_logs.rc == 0 ) else get_logs.stdout }}'
