@@ -1,0 +1,48 @@
+---
+- name: '< MAIN : Common -01 > Get Date'
+  shell: 'echo $(date +"%Y%m%d%H%M%S")'
+  register: get_date
+  delegate_to: localhost
+  run_once: yes
+
+- name: '< MAIN : Common -02 > Get Hostname'
+  shell: 'hostname'
+  register: get_hostname
+
+- name: '< MAIN : Common -03 > Get OS Type and Version'
+  shell: 'cat /etc/os-release | egrep -i "name|version"'
+  register: get_os_release
+
+- name: '< MAIN : Common > Set OS Defualt'
+  set_fact:
+    rs_ostype: "{{ get_os_release.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
+    rs_osversion: "{{ get_os_release.stdout_lines[2].replace('VERSION_ID=','').replace('\"','') }}"
+    var_major: "{{ get_os_release.stdout_lines[2].replace('VERSION_ID=','').replace('\"','').split('.')[0]|int }}"
+
+- name: '< MAIN : Logs > Check Log Status'
+  include_tasks: check_logs.yml
+
+- name: '< MAIN : Config > Check Config Status'
+  include_tasks: check_config.yml
+
+- name: '< MAIN : kernel > Check kernel Status'
+  include_tasks: check_kernel.yml
+
+- name: '< MAIN : Result -01 > Create a CSV file to store the results'
+  file:
+    path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
+    state: touch
+  delegate_to: localhost
+  run_once: true
+
+- name: '< MAIN : Result -02 > Add a title to the resulting file'
+  lineinfile:
+    path: '/root/work/projects/migration_check_{{ get_date.stdout }}.csv'
+    line: "HOSTNAME, OS TYPE, OS VERSION, ERROR LOGS, FILESYSTEM, NETWORK\nROUTE SETTING, DNS\nSETTING , NTP\nSTATUS, SAR\nSTATUS, CRONTAB\nSETTING, SENDMAIL\nPROCESS STATUS, IPTABLES\nSERVICE STATUS, SELINUX\nDISABLE, SYSLOG\nSTATUS, ROOT\nPROCESS CHECK, FILESYSTEM\nMOUNT, FSTAB\nSETTING, NFS\nSTATUS, ULIMIT\nPROCESS MAX FILE, ULIMIT\nUSER MAX FILE, SYSCTL\nMSG Queue, SYSCTL\nCORE, SYSCTL\nRMEM, SYSCTL\nWMEM, SYSCTL\nBACKLOG, SYSCTL\nSWAP, MTU, CPU\nUSED, MEMORY\nUSED, DISK\nUSED, DCA AGENT\nSTATUS, SNMS AGENT\nSTATUS, SSR AGENT\nSTATUS,BESCLIENT Agent\nSTATUS"
+  delegate_to: localhost
+
+- name: '< MAIN : Result -03 > Add a result to the resulting file'
+  lineinfile:
+    path: '/root/work/projects/migration_check_{{ get_date.stdout }}.csv'
+    line: '"{{ get_hostname.stdout }}","{{ rs_ostype }}","{{ rs_osversion }}","{{ rs_logs }}","{{ rs_filesystem }}","{{ rs_route }}","{{ rs_resolv }}","{{ rs_ntp }}","{{ rs_sar }}","{{ rs_crontab }}","{{ rs_sendmail }}","{{ rs_iptables }}","{{ rs_selinux }}","{{ rs_syslog }}","{{ rs_whatap }}","{{ rs_mount }}","{{ rs_fstab }}","{{ rs_nfs }}","{{ rs_openfiles }}","{{ rs_userfiles }}","{{ rs_msgq }}","{{ rs_conn }}","{{ rs_rmem }}","{{ rs_wmem }}","{{ rs_backlog }}","{{ rs_swap }}","{{ rs_mtu }}","{{ rs_cpuused }}","{{ rs_memused }}","{{ rs_diskused }}","{{ rs_dca }}","{{ rs_snms }}","{{ rs_ssr }}","{{ rs_besclient }}"'
+  delegate_to: localhost
