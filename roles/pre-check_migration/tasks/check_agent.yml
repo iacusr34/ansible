@@ -1,0 +1,32 @@
+---
+# Agent -01 : DCA Agent 기동 확인
+- name: '< Check : Agent -01 > Get process status of DCA agent'
+  shell: 'ps -ef| grep DCA'
+  register: get_dca
+  ignore_errors: true
+
+# Agent -02 : SNMS Agent 기동 확인
+- name: '< Check : Agent -01 > Get process status of SNMS agent'
+  shell: 'ps -ef| grep -i sms'
+  register: get_snms
+  ignore_errors: true
+
+# Agent -03 : SolidStep Agent 기동 확인
+- name: '< Check : Agent -01 > Get process status of SolidStep agent'
+  shell: 'ps -ef| grep -i ssr'
+  register: get_ssr
+  ignore_errors: true
+
+# Agent -04 : 자산관리 Agent 기동 확인
+- name: '< Check : Agent -01 > Get process status of besclient agent'
+  shell: 'ps -ef| grep -I besclient'
+  register: get_besclient
+  ignore_errors: true
+
+# Agent Result Set
+- name: '< Check : Agent > Set Result'
+  set_fact:
+    rs_dca: '{{ get_dca.stdout }}'
+    rs_snms: '{{ get_snms.stdout }}'
+    rs_ssr: '{{ get_ssr.stdout }}'
+    rs_besclient: '{{ get_besclient.stdout }}'
