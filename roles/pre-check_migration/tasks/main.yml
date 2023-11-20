@@ -28,6 +28,12 @@
 - name: '< MAIN : kernel > Check kernel Status'
   include_tasks: check_kernel.yml
 
+- name: '< MAIN : Resource > Check Resource Status'
+  include_tasks: check_resource.yml
+
+- name: '< MAIN : Agetn > Check Standard Agent Status'
+  include_tasks: check_agent.yml
+
 - name: '< MAIN : Result -01 > Create a CSV file to store the results'
   file:
     path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
