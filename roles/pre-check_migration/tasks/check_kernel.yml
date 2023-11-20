@@ -19,12 +19,13 @@
 - name: '< Check : kernel -04 > Get sysctl Config Setting'
   shell: 'sysctl -a | egrep "somaxconn|tcp_rmem|tcp_wmem|max_backlog|vm.swappiness"'
   register: get_sysctl
+  become: true
   ignore_errors: true
 
 # kernel -05 : MTU 사이즈 가져오기
 - name: '< Check : kernel -05 > Get MTU Size Setting'
-#  shell: 'ifconfig -a|grep mtu'
-  shell: 'ip a | grep mtu'
+  shell: 'ifconfig -a|grep mtu'
+  become: true
   register: get_mtu
 
 # kernel 수집 값의 출력을 위한 전역 변수 값 설정
