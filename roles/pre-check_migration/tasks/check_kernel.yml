@@ -13,6 +13,7 @@
 - name: '< Check : kernel -03 > Get MSG Queue'
   shell: 'sysctl -a | grep kernel.msgm'
   register: get_msgq
+  ignore_errors: true
 
 # kernel -04 : sysctl net [ core, rmem, wmem, max_backlog, vm.swappiness ] 설정 가져오기
 - name: '< Check : kernel -04 > Get sysctl Config Setting'
@@ -29,7 +30,7 @@
   set_fact:
     rs_openfiles: '{{ get_openfiles.stdout_lines[0] }}'
     rs_userfiles: '{{ get_openfiles.stdout_lines[1] }}'
-    rs_msgq: '{{ get_msgq.stdout }}'
+    rs_msgq: '{{ get_msgq.stdout if( get_msgq.rc == 0 ) else "No Set MSG Queue" }}'
     rs_conn: '{{ get_sysctl.stdout_lines[1] }}'
     rs_rmem: '{{ get_sysctl.stdout_lines[2] }}'
     rs_wmem: '{{ get_sysctl.stdout_lines[3] }}'
