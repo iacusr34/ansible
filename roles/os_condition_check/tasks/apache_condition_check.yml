@@ -1,15 +1,9 @@
 ---
-- name: '< Apache -01 >  Get Apache Service [ Apache proxy, Web ]'
+- name: '< Condition : Apache -01 > Get Apache Service [ Apache proxy, Web ]'
   shell: 'ps -eo comm,etime,user | grep httpd'
   register: get_apache
   ignore_errors: true
 
-- name: '< Apache -01 >  Set Apache Service is Running [ Apache proxy, Web ]'
+- name: '< Condition : Apache > Set Result'
   set_fact:
-    rs_svc_running: 'Apache : Running'
-  when: get_apache.rc == 0
-  
-- name: '< Apache -01 >  Set Apache Service is Not Running [ Apache proxy, Web ]'
-  set_fact:
-    rs_svc_running: 'Apache : Not Running'
-  when: get_apache.rc != 0
+    rs_svc_running: '{{ "Apache : Running" if( get_apache.rc == 0 ) else "Apache : Not Running" }}'
