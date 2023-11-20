@@ -1,6 +1,6 @@
 ---
 rs_hostname: ""
-rs_os_type: ""
+rs_os_family: ""
 rs_os_version: ""
 rs_ip_addr: ""
 rs_cpu_used: ""
