@@ -1,91 +1,51 @@
 ---
-- name: '< Common -01 > Get OS Type and Version'
+- name: '< Condition : Common -01 > Get OS Type and Version'
   shell: 'cat /etc/os-release | egrep -i "name|version"'
   register: get_os_type
 
-- name: '< Common -01 > Set OS Type'
-  set_fact:
-    rs_os_family: "{{ get_os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
-
-- name: '< Common -01 > Set OS Version'
-  set_fact:
-    rs_os_version: "{{ get_os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}"
-
-- name: '< Common -02 > Get OS IP Address'
+- name: '< Condition : Common -02 > Get OS IP Address'
   shell: ip -4 -o a | awk '{ print "device[ "$2" ] > ipaddr[ "$4" ]" }' | grep -v lo
   register: get_ipaddr
 
-- name: '< Common -02> Set OS IP Address'
-  set_fact:
-    rs_ip_addr: "{{ get_ipaddr.stdout.replace('\n',' | ') }}"
-
-- name: '< Common -03 > Get CPU Usage'
+- name: '< Condition : Common -03 > Get CPU Usage'
   shell: "top -b -n 1"
   register: get_top
 
-- name: '< Common -03 > Set CPU Usage'
-  set_fact:
-    rs_cpu_used: "{{ 100 - get_top.stdout_lines[2].split(',')[3].split('.')[0]|int }}"
-
-- name: '< Common -03 > Set CPU Useable Message'
-  set_fact:
-    rs_cpu_msg: "{{ 'Non-Compliant ('~ rs_cpu_used ~'%)' if (rs_cpu_used|int >= 80) else 'Compliant ('~ rs_cpu_used ~'%)' }}"
-
-- name: '< Common -04 > Get Memory Usabe'
+- name: '< Condition : Common -04 > Get Memory Usabe'
   shell: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
   register:  get_memory
 
-- name: '< Common -04 > Set Memory Usabe'
-  set_fact:
-    rs_mem_used: '{{ (get_memory.stdout.split(" ")[1]|int / get_memory.stdout.split(" ")[0]|int * 100)|round|int }}'
-
-- name: '< Common -04 > Set Memory Useable Message'
-  set_fact:
-    rs_mem_msg: "{{ 'Non-Compliant ('~ rs_mem_used ~' %)' if (rs_mem_used|int >= 80) else 'Compliant ('~ rs_mem_used ~' %)' }}"
-
-- name: '< Common -05 > Get Filesystem Disk Usabe'
+- name: '< Condition : Common -05 > Get Filesystem Disk Usabe'
   shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2 }'"
   register: get_diskused
 
-- name: '< Common -05 > Set Filesystem Disk Usabe'
-  set_fact:
-    rs_disk_used: "'{{ get_diskused.stdout.replace('\n',' | ') }}'"
-  when: get_diskused.stdout != ""
-
-- name: '< Common -05 > Set Filesystem Disk Useable Message'
-  set_fact:
-    rs_disk_msg: "{{ 'Non-Compliant' if ( rs_disk_used != '' ) else 'Compliant' }}"
-
-- name: '< Common -06 > Get Filesystem Disk i-node Usabe'
+- name: '< Condition : Common -06 > Get Filesystem Disk i-node Usabe'
   shell: "df -PTi | egrep -v 'devtmpfs|tmpfs|Filesystem' | awk '{print $6 $7}'| awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2}'"
   register: get_inodeused
 
-- name: '< Common -06 > Set Filesystem Disk i-node Usabe'
-  set_fact:
-    rs_inode_used: "{{ get_inodeused.stdout.replace('\n',' | ') }}"
-  when: get_diskused.stdout != ""
-
-- name: '< Common -06 > Set Filesystem Disk i-node Useable Message'
-  set_fact:
-    rs_inode_msg: "{{ 'Non-Compliant' if ( rs_inode_used != '' ) else 'Compliant' }}"
-
-- name: '< Common -07 > Get NTP Server Config'
+- name: '< Condition : Common -07 > Get NTP Server Config'
   shell: 'cat /etc/chrony.conf | egrep -v "^#|^$" | grep iburst'
   register: get_ntp
   ignore_errors: true
 
-- name: '< Common -07 > Set NTP Server Config'
-  set_fact:
-    rs_ntp_set: "'{{ get_ntp.stdout.replace('\n',' | ') }}'"
-  when: get_ntp.stdout != ''
-
-- name: '< Common -08 > Get NTP Service Running Check'
+- name: '< Condition : Common -08 > Get NTP Service Running Check'
   systemd:
     name: chronyd
   register: get_ntp_run
   when: rs_ntp_set != ''
 
-- name: '< Common -08 > Set NTP Service Running Check'
+- name: '< Condition : Common > Set Result'
   set_fact:
-    rs_ntp_run: '{{ get_ntp_run.status.ActiveState }}'
-  when: rs_ntp_set != ''
+    rs_os_family: '{{ get_os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}'
+    rs_os_version: '{{ get_os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}'
+    rs_ip_addr: '{{ get_ipaddr.stdout }}'
+    rs_cpu_used: '{{ 100 - get_top.stdout_lines[2].split(',')[3].split('.')[0]|int }}'
+    rs_cpu_msg: '{{ "Non-Compliant ("~ rs_cpu_used ~"%)" if (rs_cpu_used|int >= 80) else "Compliant ("~ rs_cpu_used ~"%)" }}'
+    rs_mem_used: '{{ (get_memory.stdout.split(" ")[1]|int / get_memory.stdout.split(" ")[0]|int * 100)|round|int }}'
+    rs_mem_msg: '{{ "Non-Compliant ("~ rs_mem_used ~" %)" if (rs_mem_used|int >= 80) else "Compliant ("~ rs_mem_used ~" %)" }}'
+    rs_disk_used: '{{ get_diskused.stdout if( get_diskused.stdout != "" ) }}'
+    rs_disk_msg: '{{ "Non-Compliant" if( rs_disk_used != '' ) else "Compliant" }}'
+    rs_inode_used: '{{ get_inodeused.stdout if( get_inodeused.stdout != "" ) }}'
+    rs_inode_msg: '{{ "Non-Compliant" if( rs_inode_used != '' ) else "Compliant" }}'
+    rs_ntp_set: '{{ get_ntp.stdout if( get_ntp.stdout != "" ) }}'
+    rs_ntp_run: '{{ get_ntp_run.status.ActiveState if( rs_ntp_set != "" ) }}'
