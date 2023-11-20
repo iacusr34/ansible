@@ -39,9 +39,9 @@
     rs_os_family: "{{ get_os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
     rs_os_version: "{{ get_os_type.stdout_lines[1].replace('VERSION=','').replace('\"','') }}"
     rs_ip_addr: '{{ get_ipaddr.stdout }}'
-    rs_cpu_used: '{{ 100 - get_top.stdout_lines[2].split(",")[3].split(".")[0]|int }}'
+    rs_cpu_used: "{{ 100 - get_top.stdout_lines[2].split(',')[3].split('.')[0]|int }}"
     rs_cpu_msg: '{{ "Non-Compliant ("~ rs_cpu_used ~"%)" if (rs_cpu_used|int >= 80) else "Compliant ("~ rs_cpu_used ~"%)" }}'
-    rs_mem_used: '{{ (get_memory.stdout.split(" ")[1]|int / get_memory.stdout.split(" ")[0]|int * 100)|round|int }}'
+    rs_mem_used: "{{ (get_memory.stdout.split(' ')[1]|int / get_memory.stdout.split(' ')[0]|int * 100)|round|int }}"
     rs_mem_msg: '{{ "Non-Compliant ("~ rs_mem_used ~" %)" if (rs_mem_used|int >= 80) else "Compliant ("~ rs_mem_used ~" %)" }}'
     rs_disk_used: '{{ get_diskused.stdout if( get_diskused.stdout != "" ) else "" }}'
     rs_disk_msg: '{{ "Non-Compliant" if( rs_disk_used != "" ) else "Compliant" }}'
