@@ -19,6 +19,7 @@
 - name: '< Check : kernel -04 > Get sysctl Config Setting'
   shell: 'sysctl -a | egrep "somaxconn|tcp_rmem|tcp_wmem|max_backlog|vm.swappiness"'
   register: get_sysctl
+  ignore_errors: true
 
 # kernel -05 : MTU 사이즈 가져오기
 - name: '< Check : kernel -05 > Get MTU Size Setting'
@@ -30,10 +31,10 @@
   set_fact:
     rs_openfiles: '{{ get_openfiles.stdout_lines[0] }}'
     rs_userfiles: '{{ get_openfiles.stdout_lines[1] }}'
-    rs_msgq: '{{ get_msgq.stdout if( get_msgq.rc == 0 ) else "No Set MSG Queue" }}'
-    rs_conn: '{{ get_sysctl.stdout_lines[1] }}'
-    rs_rmem: '{{ get_sysctl.stdout_lines[2] }}'
-    rs_wmem: '{{ get_sysctl.stdout_lines[3] }}'
-    rs_backlog: '{{ get_sysctl.stdout_lines[0] }}'
-    rs_swap: '{{ get_sysctl.stdout_lines[4] }}'
+    rs_msgq: '{{ get_msgq.stdout if( get_msgq.rc == 0 ) else get_msgq.stderr }}'
+    rs_conn: '{{ get_sysctl.stdout_lines[1] if( get_sysctl.rc == 0 ) else get_sysctl.stderr }}'
+    rs_rmem: '{{ get_sysctl.stdout_lines[2] if( get_sysctl.rc == 0 ) else get_sysctl.stderr }}'
+    rs_wmem: '{{ get_sysctl.stdout_lines[3] if( get_sysctl.rc == 0 ) else get_sysctl.stderr }}'
+    rs_backlog: '{{ get_sysctl.stdout_lines[0] if( get_sysctl.rc == 0 ) else get_sysctl.stderr }}'
+    rs_swap: '{{ get_sysctl.stdout_lines[4] if( get_sysctl.rc == 0 ) else get_sysctl.stderr }}'
     rs_mtu: '{{ get_mtu.stdout }}'
