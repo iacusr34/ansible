@@ -1,21 +1,17 @@
 ---
-- name: '< Haproxy -01 > Get Haproxy Service'
+- name: '< Condition : Haproxy -01 > Get Haproxy Service'
   systemd:
     name: haproxyd
   register: get_haproxy
   ignore_errors: true
   when: rs_svc_running is search('Not Running')
-
-- name: '< Haproxy -01 > Set Haproxy Service'
-  set_fact:
-    rs_svc_running: 'Haproxy : {{ get_haproxy.status.ActiveState }}'
-  when: rs_svc_running is search('Not Running')
     
-- name: '< Haproxy -02 > Get keepalived Service'
+- name: '< Condition : Haproxy -02 > Get keepalived Service'
   systemd:
     name: keepalived
   register: get_keepalived
 
-- name: '< Haproxy -02 > Set Keepalived Service'
+- name: '< Condition : Haproxy -02 > Set Keepalived Service'
   set_fact:
+    rs_svc_running: 'Haproxy : {{ get_haproxy.status.ActiveState }}'
     rs_svc2_running: 'keepliaved : {{ get_keepalived.status.ActiveState }}'
