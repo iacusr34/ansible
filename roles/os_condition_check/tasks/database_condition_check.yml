@@ -1,38 +1,38 @@
 ---
-- name: '< Database -01 > Check Mariadb Service'
+- name: '< Condition : Database -01 > Check Mariadb Service'
   systemd:
     name: mariadb
   register: get_mas
   when: rs_hostname[5:8]|lower == 'mas'
 
-- name: '< Database -01 > Set Mariadb Service'
+- name: '< Condition : Database -01 > Set Mariadb Service'
   set_fact:
     rs_svc_running: ' MariaDB Service : {{ get_mas.status.ActiveState }}'
   when: rs_hostname[5:8]|lower == 'mas'
 
-- name: '< Database -02 > Check Mysql Service'
+- name: '< Condition : Database -02 > Check Mysql Service'
   systemd:
     name: mysqld
   register: get_mys
   when: rs_hostname[5:8]|lower == 'mys'
 
-- name: '< Database -02 > Set Mysql Service'
+- name: '< Condition : Database -02 > Set Mysql Service'
   set_fact:
     rs_svc_running: ' Mysql Service : {{ get_mys.status.ActiveState }}'
   when: rs_hostname[5:8]|lower == 'mys'
 
-- name: '< Database -03 > Check MHA Service'
+- name: '< Condition : Database -03 > Check MHA Service'
   shell: "masterha_check_status --conf=/engn001/mha/conf/mha.cnf"
   register: get_mha
   when: rs_hostname[5:8]|lower == 'mha'
   ignore_errors: true
 
-- name: '< Database -03 > Set MHA Service Running'
+- name: '< Condition : Database -03 > Set MHA Service Running'
   set_fact:
     rs_svc_running: ' MHA Service : Running'
   when: rs_hostname[5:8]|lower == 'mha' and get_mha.stdout is search('0:PING_OK')
 
-- name: '< Database -03 > Set MHA Service Not Running'
+- name: '< Condition : Database -03 > Set MHA Service Not Running'
   set_fact:
     rs_svc_running: ' MHA Service : Not Running'
   when: rs_hostname[5:8]|lower == 'mha' and get_mha.stdout is not search('0:PING_OK')
