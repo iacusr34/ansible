@@ -1,18 +1,8 @@
 ---
-- name: '< WAS -01 > Get Was Service'
+- name: '< Condition : WAS -01 > Get Was Service'
   shell: 'ps -ef | grep tomcat | grep Bootstrap'
   register: get_was
 
-- name: '< WAS -01 > Set Was Service Process Running '
+- name: '< Condition : WAS > Set Result'
   set_fact:
-    rs_svc_running: 'Tomcat : Running'
-  when: get_was.stdout is search('startup')
-
-- name: '< WAS -01 > Set Was Service Process Not Running'
-  set_fact:
-    rs_svc_running: 'Tomcat : Not Running'
-  when: get_was.stdout is not search('startup')
-
-
-
-
+    rs_svc_running: '{{ "Tomcat : Running" if( get_was.stdout is search("startup") ) else "Tomcat : Not Running" }}'
