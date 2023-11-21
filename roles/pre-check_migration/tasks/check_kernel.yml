@@ -27,7 +27,8 @@
   become: true
   register: get_mtu
 
-# kernel 수집 값의 출력을 위한 전역 변수 값 설정
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
 - name: '< Check : kernel > Set Result'
   set_fact:
     rs_openfiles: '{{ get_openfiles.stdout_lines[0] }}'
