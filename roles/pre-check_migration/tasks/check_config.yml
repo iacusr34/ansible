@@ -57,8 +57,9 @@
   ignore_errors: true
 
 - name: '< Check : Config -06 > Get Crontab list'
-  shell: 'sudo crontab -l'
+  shell: 'crontab -l'
   register: get_crontab
+  become: true
   ignore_errors: true
 
 - name: '< Check : Config -07_1 > Get Sendmail Process'
