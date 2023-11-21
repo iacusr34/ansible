@@ -140,12 +140,12 @@
 
 - name: '< Check : Config > Set Result iptables and firewalld [ RHEL 7 ]'
   set_fact:
-    rs_iptables: "{{ 'OK' if( ( get_iptables.status.ActiveState|lower != 'active' and get_firewalld.status.ActiveState|lower != 'active' ) else 'iptables status : \n'~ get_iptables.status.ActiveState ~'\n\n------------\n\nfirewalld status : \n'~ get_firewalld.status.ActiveState }}"
+    rs_iptables: "{{ 'OK' if( get_iptables.status.ActiveState|lower != 'active' and get_firewalld.status.ActiveState|lower != 'active' ) else 'iptables status : \n'~ get_iptables.status.ActiveState ~'\n\n------------\n\nfirewalld status : \n'~ get_firewalld.status.ActiveState }}"
   when: var_major|int == 7
 
 - name: '< Check : Config > Set Result firewalld [ RHEL 8 ]'
   set_fact:
-    rs_iptables: "{{ 'OK' if( ( get_firewalld.status.ActiveState|lower != 'active' ) else 'firewalld status : \n'~ get_firewalld.status.ActiveState }}"
+    rs_iptables: "{{ 'OK' if( get_firewalld.status.ActiveState|lower != 'active' ) else 'firewalld status : \n'~ get_firewalld.status.ActiveState }}"
   when: var_major|int > 7
 
 - name: '< Check : Config > Set Result NTP [ Running NTP Service ]'
