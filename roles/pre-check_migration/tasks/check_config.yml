@@ -80,19 +80,19 @@
   shell: 'service iptables status'
   register: get_iptables6
   ignore_errors: true
-  when: var_major == 6
+  when: var_major == 6|int
 
 - name: '< Check : Config -08_2 > Get iptables status [ RHEL 7 or Higher ]'
   shell: 'systemctl status iptables '
   register: get_iptables7
   ignore_errors: true
-  when: var_major >= 7
+  when: var_major >= 7|int
 
 - name: '< Check : Config -08_3 > Get firewalld status [ RHEL 7 or Higher ]'
   shell: 'systemctl status firewall'
   register: get_firewalld
   ignore_errors: true
-  when: var_major >= 7
+  when: var_major >= 7|int
 
 - name: '< Check : Config -09 > Get Config Selinux'
   shell: 'cat /etc/selinux/config | egrep -v "^#|^$" | grep SELINUX='
