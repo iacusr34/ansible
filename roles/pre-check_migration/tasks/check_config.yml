@@ -82,15 +82,17 @@
   ignore_errors: true
   when: var_major == 6
 
-- name: '< Check : Config -08_2 > Get iptables chkconfig setting [ RHEL 6 ]'
-  shell: 'chkconfig --list | grep iptables'
-  register: get_chkconfig
-  when: var_major == 6
-
-- name: '< Check : Config -08_3 > Get iptables status [ RHEL 7 ]'
-  shell: 'systemctl status iptables'
+- name: '< Check : Config -08_2 > Get iptables status [ RHEL 7 or Higher ]'
+  shell: 'systemctl status iptables '
   register: get_iptables7
-  when: var_major == 7
+  ignore_errors: true
+  when: var_major >= 7
+
+- name: '< Check : Config -08_3 > Get firewalld status [ RHEL 7 or Higher ]'
+  shell: 'systemctl status firewall'
+  register: get_firewalld
+  ignore_errors: true
+  when: var_major >= 7
 
 - name: '< Check : Config -09 > Get Config Selinux'
   shell: 'cat /etc/selinux/config | egrep -v "^#|^$" | grep SELINUX='
@@ -107,7 +109,7 @@
   ignore_errors: true
 
 - name: '< Check : Config -11 > Get Whatab Process Status'
-  shell: 'ps -ef | grep root | grep -i whatap | grep -v grep'
+  shell: 'ps -ef | grep root | grep -i whatap'
   register: get_whatap
   ignore_errors: true
 
@@ -129,20 +131,20 @@
     rs_sendmail: "{{ 'OK' if ( get_ps_sendmail.rc > 0 and get_ps_postfix.rc > 0 and get_rpm_sendmail.rc > 0 ) else 'Process sendmail : '~ get_ps_sendmail.stdout ~'\n Process postfix : '~ get_ps_postfix.stdout ~'\n RPM Package : '~ get_rpm_sendmail.stdout }}"
     rs_selinux: '{{ "OK" if( get_selinux.stdout is search("disabled") ) else get_selinux.stdout }}'
     rs_syslog: "{{ 'OK' if( get_syslog.rc == 0 or get_syslogd.rc == 0 ) else 'Process syslog : '~ get_syslog.stdout ~'\n syslogd status : '~ get_syslogd }}"
-    rs_whatap: '{{ "OK" if( get_whatap.rc == 0 ) else get_whatap.stdout }}'
+    rs_whatap: '{{ get_whatap.stdout }}'
     rs_mount: '{{ get_mount.stdout }}'
     rs_fstab: '{{ get_fstab.stdout }}'
     rs_nfs: '{{ "OK" if( get_mount.stdout is not search("nfs") ) else get_mount.stdout }}'
 
 - name: '< Check : Config > Set Result iptables [ RHEL 6 ]'
   set_fact:
-    rs_iptables: "{{ 'OK' if( get_iptables6.rc > 0 and get_chkconfig.stdout is not search('on') ) else 'Service status : \n'~ get_iptables6.stdout ~'\n\n------------\n\nchkconfig setting : \n'~ get_chkconfig.stdout }}"
+    rs_iptables: "{{ 'OK' if( get_iptables6.rc > 0 ) else 'Service status : \n'~ get_iptables6.stdout }}"
   when: var_major == 6
 
-- name: '< Check : Config > Set Result iptables [ RHEL 7 ]'
+- name: '< Check : Config > Set Result iptables [ RHEL 7 or Higher ]'
   set_fact:
-    rs_iptables: '{{ "OK" if( get_iptables7.rc > 0 or get_iptables7.stdout is search("dead") ) else get_iptables7.stdout }}'
-  when: var_major == 7
+    rs_iptables: "{{ 'OK' if( ( get_iptables7.rc > 0 or get_iptables7.stdout is search('dead') ) and ( get_firewalld.rc > 0 or get_firewalld.stdout is search('dead') ) ) else 'iptables status : \n'~ get_iptables7.stdout ~'\n\n------------\n\nfirewalld status : \n'~ get_firewalld.stdout }}"
+  when: var_major >= 7
 
 - name: '< Check : Config > Set Result NTP [ Running NTP Service ]'
   set_fact:
