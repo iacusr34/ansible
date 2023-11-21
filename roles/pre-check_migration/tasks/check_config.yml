@@ -46,44 +46,55 @@
   register: get_chrony_config
   when: get_chrony.rc == 0
 
+# Config -05 : sar 서비스 동작 확인
+# sar file의 유무를 확인
 - name: '< Check : Config -05_1 > Get sar file list'
   shell: 'ls -al /var/log/sa'
   register: get_sarfile
   ignore_errors: true
 
+# sar 서비스 동작 여부 확인
 - name: '< Check : Config -05_2 > Get sar Status'
   shell: 'sar | head -10'
   register: get_sarstatus
   ignore_errors: true
 
+# Config -06 : root 계정의 Crontab 설정 유무 확인
 - name: '< Check : Config -06 > Get Crontab list'
   shell: 'crontab -l'
   register: get_crontab
   become: true
   ignore_errors: true
 
+# Config -07 : Sendmail 데몬 구동 여부 확인
+# Sendmail Process 동작 유무 확인
 - name: '< Check : Config -07_1 > Get Sendmail Process'
   shell: 'ps -ef | grep -i sendmail | grep -v grep'
   register: get_ps_sendmail
   ignore_errors: true
 
+# Sendmail 관련 postfix Process 동작 유무 확인
 - name: '< Check : config -07_2 > Get postfix Process'
   shell: 'ps -ef | grep -I postfix | grep -v grep'
   register: get_ps_postfix
   ignore_errors: true
 
+# Sendmail Package 설치 유무 확인
 - name: '< Check : Config -07_3 > check rpm package sendmail'
   shell: 'rpm -qa | grep sendmail'
   register: get_rpm_sendmail
   ignore_errors: true
 
+# Config -08 : iptables 또는 firewall 서비스 동작 유무 확인
+# RHEL 6 또는 7 버전에서 iptables 서비스 동작 유무 확인
 - name: '< Check : Config -08_1 > Get iptables status [ RHEL 6 or RHEL 7]'
   systemd:
     name: iptables
   register: get_iptables
   ignore_errors: true
-  when: var_major|int == 6 or var_major|int == 7
+  when: var_major|int <= 7
 
+# RHEL 7 이상의 버전에서 firewalld 서비스 동작 유무 확인
 - name: '< Check : Config -08_2 > Get firewalld status [ RHEL 7 or Higher ]'
   systemd:
     name: firewalld
@@ -91,33 +102,44 @@
   ignore_errors: true
   when: var_major|int >= 7
 
+# Config -09 : Selinux 비활성화 유무 확인
 - name: '< Check : Config -09 > Get Config Selinux'
   shell: 'cat /etc/selinux/config | egrep -v "^#|^$" | grep SELINUX='
   register: get_selinux
 
+# Config -10 : syslog process 또는 syslog 데몬 동작 유무 확인
+# syslog process 동작 유무 확인
 - name: '< Check : Config -10_1 > Get syslog Setting'
   shell: 'ps -ef | grep syslog | grep -v grep'
   register: get_syslog
   ignore_errors: true
 
+# syslog 데몬 동작 유무 확인
 - name: '< Check : Config -10_2 > Get syslog Status'
   shell: 'rsyslogd -n'
   register: get_syslogd
   ignore_errors: true
 
+# Config -11 : root 권한으로 실행중인 Process 확인 ( 필수 : whatap Process동작 확인 )
 - name: '< Check : Config -11 > Get Whatab Process Status'
   shell: 'ps -ef | grep root | grep -i whatap'
   register: get_whatap
   ignore_errors: true
 
+# Config -12 : 파일 시스템의 Mount 정보 확인 
+# df 명령어를 통해 filesystem 구성 정보 확인.
+# 출력된 정보를 참조하여 NFS 설정 여부도 추가 확인.
 - name: '< Check : Config -12_1 > Get Filesystem Mount'
   shell: 'df -Th'
   register: get_mount
 
+# filesystem 구성 Config 설정 정보 확인
 - name: '< Check : Config -12_2 > Get fstab Config'
   shell: 'cat /etc/fstab | egrep -v "^#|^$"'
   register: get_fstab
 
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
 - name: '< Check : Config > Set Result'
   set_fact:
     rs_filesystem: '{{ get_filesystem.stdout }}'
