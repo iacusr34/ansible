@@ -23,7 +23,8 @@
   register: get_besclient
   ignore_errors: true
 
-# Agent Result Set
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
 - name: '< Check : Agent > Set Result'
   set_fact:
     rs_dca: '{{ get_dca.stdout }}'
