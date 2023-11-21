@@ -150,10 +150,10 @@
 
 - name: '< Check : Config > Set Result NTP [ Running NTP Service ]'
   set_fact:
-    rs_ntp: "NTP : OK \n\n------------\n\nConfig 설정 : \n {{ get_ntp_config.stdout }}"
+    rs_ntp: "NTP : OK \n\n------------\n\nNTP Config 설정 : \n {{ get_ntp_config.stdout }}"
   when: get_ntp.rc == 0
 
 - name: '< Check : config > Set Result NTP [ Running Chrony Service ]'
   set_fact:
-    rs_ntp: "Chrony : OK \n\n------------\n\nConfig 설정 : \n {{ get_chrony_config.stdout }}"
+    rs_ntp: "Chrony : OK \n\n------------\n\nChrony Config 설정 : \n {{ get_chrony_config.stdout }}"
   when: get_chrony.rc == 0
