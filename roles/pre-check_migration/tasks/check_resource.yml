@@ -14,6 +14,8 @@
   shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 60) {print $1, $2 }'"
   register: get_diskused
 
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
 - name: '< Check : Resource > Set Result'
   set_fact:
     rs_cpuused: '{{ 100 - get_cpu.stdout_lines[2].split(",")[3].split(".")[0]|int }} %'
