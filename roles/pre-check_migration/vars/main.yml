@@ -1,4 +1,7 @@
 ---
+# 전역 변수 생성
+var_major: ''
+
 # 결과값 저장 변수 생성
 rs_logs: ''
 rs_filesystem: ''
