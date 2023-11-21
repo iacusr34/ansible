@@ -11,7 +11,7 @@
 
 # Resource -03 : Disk 사용량 확인
 - name: '< Common -05 > Get Filesystem Disk Usabe'
-  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 30) {print $1, $2 }'"
+  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 60) {print $1, $2 }'"
   register: get_diskused
 
 - name: '< Check : Resource > Set Result'
