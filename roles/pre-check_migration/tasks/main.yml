@@ -1,39 +1,49 @@
 ---
+# CSV 타입으로 생성될 결과 파일명에 사용될 날자값 호출
 - name: '< MAIN : Common -01 > Get Date'
   shell: 'echo $(date +"%Y%m%d%H%M%S")'
   register: get_date
   delegate_to: localhost
   run_once: yes
 
+# 공통 : 수집 정보가 적용된 호스트를 식별하기 위한 hostname 정보 호출
 - name: '< MAIN : Common -02 > Get Hostname'
   shell: 'hostname'
   register: get_hostname
 
+# 공통 : OS Type 및 버전 정보 수집
 - name: '< MAIN : Common -03 > Get OS Type and Version'
   shell: 'cat /etc/os-release | egrep -i "name|version"'
   register: get_os_release
 
+# 공통 : OS 기본 정보의 Global 변수 설정
 - name: '< MAIN : Common > Set OS Defualt'
   set_fact:
     rs_ostype: "{{ get_os_release.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
     rs_osversion: "{{ get_os_release.stdout_lines[2].replace('VERSION_ID=','').replace('\"','') }}"
     var_major: "{{ get_os_release.stdout_lines[2].replace('VERSION_ID=','').replace('\"','').split('.')[0]|int }}"
 
+# Log 정보 수집 Playbook 수행
 - name: '< MAIN : Logs > Check Log Status'
   include_tasks: check_logs.yml
 
+# OS 구성 요소 및 Config 설정 정보 수집 Playbook 수행
 - name: '< MAIN : Config > Check Config Status'
   include_tasks: check_config.yml
 
+# kernel 설정 정보 수집 Playbook 수행
 - name: '< MAIN : kernel > Check kernel Status'
   include_tasks: check_kernel.yml
 
+# Resource 사용 현황 정보 수집 Playbook 수행
 - name: '< MAIN : Resource > Check Resource Status'
   include_tasks: check_resource.yml
 
+# 관리용 Agent 동작 정보 수집 Playbook 수행
 - name: '< MAIN : Agetn > Check Standard Agent Status'
   include_tasks: check_agent.yml
 
+# 수집된 결과를 저장하기 위한 CSV File 생성 - 최초 한번만 실행 됨.
 - name: '< MAIN : Result -01 > Create a CSV file to store the results'
   file:
     path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
@@ -41,6 +51,7 @@
   delegate_to: localhost
   run_once: true
 
+# 생성된 CSV File 내부에 항목별 Title 추가 - 최초 한번만 실행 됨.
 - name: '< MAIN : Result -02 > Add a title to the resulting file'
   lineinfile:
     path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
@@ -48,6 +59,7 @@
   delegate_to: localhost
   run_once: true
 
+# 생성된 CSV File 내부에 수집된 정보를 호스트별 순차적으로 추가 저장 됨. 
 - name: '< MAIN : Result -03 > Add a result to the resulting file'
   lineinfile:
     path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
