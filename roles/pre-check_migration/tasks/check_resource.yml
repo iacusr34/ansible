@@ -11,11 +11,11 @@
 
 # Resource -03 : Disk 사용량 확인
 - name: '< Common -05 > Get Filesystem Disk Usabe'
-  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 60) {print $1, $2 }'"
+  shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 30) {print $1, $2 }'"
   register: get_diskused
 
 - name: '< Check : Resource > Set Result'
   set_fact:
     rs_cpuused: '{{ 100 - get_cpu.stdout_lines[2].split(",")[3].split(".")[0]|int }} %'
     rs_memused: '{{ (get_memory.stdout.split(" ")[1]|int / get_memory.stdout.split(" ")[0]|int * 100)|round|int }} %'
-    rs_diskused: "{{ 'OK' if( get_diskused.stdout == 0 ) else get_diskused.stdout }}"
+    rs_diskused: "{{ 'OK' if( get_diskused.stdout == '' ) else get_diskused.stdout }}"
