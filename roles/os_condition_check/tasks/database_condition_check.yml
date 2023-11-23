@@ -1,4 +1,5 @@
 ---
+# Database -01 : Mariadb 데몬 상태 확인
 - name: '< Condition : Database -01 > Check Mariadb Service'
   systemd:
     name: mariadb
@@ -10,6 +11,7 @@
     rs_svc_running: ' MariaDB Service : {{ get_mas.status.ActiveState }}'
   when: rs_hostname[5:8]|lower == 'mas'
 
+# Database -02 : MySQL 데몬 상태 확인
 - name: '< Condition : Database -02 > Check Mysql Service'
   systemd:
     name: mysqld
@@ -21,6 +23,7 @@
     rs_svc_running: ' Mysql Service : {{ get_mys.status.ActiveState }}'
   when: rs_hostname[5:8]|lower == 'mys'
 
+# Database -03 : MHA 서비스 상태 확인
 - name: '< Condition : Database -03 > Check MHA Service'
   shell: "masterha_check_status --conf=/engn001/mha/conf/mha.cnf"
   register: get_mha
@@ -29,10 +32,5 @@
 
 - name: '< Condition : Database -03 > Set MHA Service Running'
   set_fact:
-    rs_svc_running: ' MHA Service : Running'
-  when: rs_hostname[5:8]|lower == 'mha' and get_mha.stdout is search('0:PING_OK')
-
-- name: '< Condition : Database -03 > Set MHA Service Not Running'
-  set_fact:
-    rs_svc_running: ' MHA Service : Not Running'
-  when: rs_hostname[5:8]|lower == 'mha' and get_mha.stdout is not search('0:PING_OK')
+    rs_svc_running: 'MHA Service : {{ "Running" if( get_mha.stdout is search("0:PING_OK") else "Not Running" }}'
+  when: rs_hostname[5:8]|lower == 'mha'
