@@ -1,58 +1,63 @@
 ---
+# CSV 타입으로 생성될 결과 파일명에 사용될 날자값 호출
 - name: '< Main > Get Date'
   shell: 'echo $(date +"%Y%m%d%H%M%S")'
   register: get_date
-  delegate_to: localhost
   run_once: yes
 
+# 공통 : Condition 체크 대상 호스트명 호출
 - name: '< Main > Get Hostname'
   shell: 'hostname'
   register: get_hostname
 
+# 공통 : 호스트명의 Global 변수 설정
 - name: '< Main > Set Hostname'
   set_fact:
     rs_hostname: '{{ get_hostname.stdout }}'
-    
+
+# 호스트의 OS 정보 및 자원 사용 정보 수집
 - name: '< Main > Common OS Condition check'
   include_tasks: common_condition_check.yml
 
+# Web Service 동작 상태 확인 Playbook 수행
 - name: '< Main > Apache Service Condition check [ Apache Proxy, WEB ]'
   include_tasks: apache_condition_check.yml
   when: rs_hostname[5:8]|lower == 'pxy' or rs_hostname[5:8]|lower == 'web'
 
+# Was Service 동작 상태 확인 Playbook 수행
 - name: '< Main > WAS Service Condition check [ WAS ]'
   include_tasks: was_condition_check.yml
   when: rs_hostname[5:8]|lower == 'was'
 
+# Database Service 동작 상태 확인 Playbook 수행
 - name: '< Main > Database Service Condition check [ MariaDB, Mysql ]'
   include_tasks: database_condition_check.yml
   when: rs_hostname[5:8]|lower == 'mas' or rs_hostname[5:8]|lower == 'mys' or rs_hostname[5:8]|lower == 'mha'
 
+# Haproxy Service 동작 상태 확인 Playbook 수행
 - name: '< Main > Haproxy Service Condition check'
   include_tasks: haproxy_condition_check.yml
   when: rs_hostname[5:8]|lower == 'pxy'
 
-- name: 'main task debug'
-  debug:
-    msg: '{{ rs_hostname }} | {{ rs_os_family }} | {{ rs_os_version }} | {{ rs_ip_addr }} | {{ rs_cpu_msg }} | {{ rs_mem_msg }} | {{ rs_disk_msg }} | {{ rs_disk_used }} | {{ rs_inode_msg }} | {{ rs_inode_used }} | {{ rs_ntp_set }} | {{ rs_ntp_run }} | {{ rs_svc_running }}'
-
-- name: 'create result file'
+# 수집된 결과를 저장하기 위한 CSV File 생성 - 최초 한번만 실행.
+- name: '< MAIN : Result -01 > Create a CSV file to store the results'
   file:
-    path: '/var/lib/awx/projects/result/{{ get_date.stdout }}_condition_result.csv'
+    path: '/var/lib/awx/projects/result/condition_check_{{ get_date.stdout }}.csv'
     state: touch
   delegate_to: localhost
   run_once: yes
 
-- name: 'result file add title'
+# 생성된 CSV File 내부 항목별 Title 추가 - 최초 한번만 실행 됨.
+- name: '< MAIN : Result -02 > Add a title to the resulting file'
   lineinfile:
-    path: '/var/lib/awx/projects/result/{{ get_date.stdout }}_condition_result.csv'
+    path: '/var/lib/awx/projects/result/condition_check_{{ get_date.stdout }}.csv'
     line: 'Hostname, OS Type, OS Version, IP Address, CPU 사용량, Memory 사용량, Disk 상태, Disk 사용량, i-node 상태, i-node 사용량, NTP설정, Chrony 상태, Service 1 상태, Service 2 상태'
   delegate_to: localhost
   run_once: yes
 
-
-- name: 'result file add'
+# 생성된 CSV File 내부에 수집된 정보를 호스트별 순차적으로 추가 저장 됨. 
+- name: '< MAIN : Result -03 > Add a result to the resulting file'
   lineinfile:
-    path: '/var/lib/awx/projects/result/{{ get_date.stdout }}_condition_result.csv'
+    path: '/var/lib/awx/projects/result/condition_check_{{ get_date.stdout }}.csv'
     line: '"{{ rs_hostname }}","{{ rs_os_family }}","{{ rs_os_version }}","{{ rs_ip_addr }}","{{ rs_cpu_msg }}","{{ rs_mem_msg }}","{{ rs_disk_msg }}","{{ rs_disk_used }}","{{ rs_inode_msg }}","{{ rs_inode_used }}","{{ rs_ntp_set }}","{{ rs_ntp_run }}","{{ rs_svc_running }}","{{ rs_svc2_running }}"'
   delegate_to: localhost
