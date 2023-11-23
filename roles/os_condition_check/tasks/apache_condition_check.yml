@@ -1,9 +1,11 @@
 ---
-- name: '< Condition : Apache -01 > Get Apache Service [ Apache proxy, Web ]'
+# Apache -01 :  Web 서비스 Process 확인
+- name: '< Condition : Apache -01 > Get Apache web Service status'
   shell: 'ps -eo comm,etime,user | grep httpd'
   register: get_apache
   ignore_errors: true
 
+# 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
 - name: '< Condition : Apache > Set Result'
   set_fact:
     rs_svc_running: '{{ "Apache : Running" if( get_apache.rc == 0 ) else "Apache : Not Running" }}'
