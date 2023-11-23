@@ -1,39 +1,49 @@
 ---
+# Common -01 : OS 릴리즈 정보 수집
 - name: '< Condition : Common -01 > Get OS Type and Version'
   shell: 'cat /etc/os-release | egrep -i "name|version"'
   register: get_os_type
 
+# Common -02 : Host에 할당된 NIC 및 IP 주소 정보 수집
 - name: '< Condition : Common -02 > Get OS IP Address'
   shell: ip -4 -o a | awk '{ print "device[ "$2" ] > ipaddr[ "$4" ]" }' | grep -v lo
   register: get_ipaddr
 
+# Common -03 : CPU 사용량 확인
 - name: '< Condition : Common -03 > Get CPU Usage'
   shell: "top -b -n 1"
   register: get_top
 
+# Common -04 : Memory 사용량 확인
 - name: '< Condition : Common -04 > Get Memory Usabe'
   shell: "free -m | egrep -iv 'total|swap' | awk '{ print $2,$3}'"
   register:  get_memory
 
+# Common -05 : Disk 사용량 확인 ( 80% 이상 사용중인 파티션 출력 )
 - name: '< Condition : Common -05 > Get Filesystem Disk Usabe'
   shell: "df -PTh | egrep -v 'Filesystem|devtmpfs|tmpfs' | awk '{print $6 $7}' | awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2 }'"
   register: get_diskused
 
+# Common -06 : i-node 사용량 확인 ( 80% 이상 사용중인 파티션 출력 )
 - name: '< Condition : Common -06 > Get Filesystem Disk i-node Usabe'
   shell: "df -PTi | egrep -v 'devtmpfs|tmpfs|Filesystem' | awk '{print $6 $7}'| awk -v OFS='%\t : ' -F% '($1 >= 80) {print $1, $2}'"
   register: get_inodeused
 
+# Common -07 : Chrony 서비스 Config 설정 확인
 - name: '< Condition : Common -07 > Get NTP Server Config'
   shell: 'cat /etc/chrony.conf | egrep -v "^#|^$" | grep iburst'
   register: get_ntp
   ignore_errors: true
 
+# Common -08 : Chrony 데몬 서비스 동작 확인 
 - name: '< Condition : Common -08 > Get NTP Service Running Check'
   systemd:
     name: chronyd
   register: get_ntp_run
-  when: rs_ntp_set != ''
+  when: get_ntp.stdout != "" 
 
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
 - name: '< Condition : Common > Set Result'
   set_fact:
     rs_os_family: "{{ get_os_type.stdout_lines[0].replace('NAME=','').replace('\"','') }}"
@@ -44,7 +54,7 @@
     rs_disk_used: '{{ get_diskused.stdout if( get_diskused.stdout != "" ) else "" }}'
     rs_inode_used: '{{ get_inodeused.stdout if( get_inodeused.stdout != "" ) else "" }}'
     rs_ntp_set: '{{ get_ntp.stdout if( get_ntp.stdout != "" ) else "" }}'
-    rs_ntp_run: '{{ get_ntp_run.status.ActiveState if( rs_ntp_set != "" ) else "" }}'
+    rs_ntp_run: '{{ get_ntp_run.status.ActiveState if( get_ntp.stdout != "" ) else "" }}'
 
 - name: '< Condition : Common > Set Result Message'
   set_fact:
