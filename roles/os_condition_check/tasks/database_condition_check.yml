@@ -32,5 +32,5 @@
 
 - name: '< Condition : Database -03 > Set MHA Service Running'
   set_fact:
-    rs_svc_running: 'MHA Service : {{ "Running" if( get_mha.stdout is search("0:PING_OK") else "Not Running" }}'
+    rs_svc_running: 'MHA Service : {{ "Running" if( get_mha.stdout is search("0:PING_OK") ) else "Not Running" }}'
   when: rs_hostname[5:8]|lower == 'mha'
