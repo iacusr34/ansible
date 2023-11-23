@@ -1,17 +1,21 @@
 ---
+# Haproxy -01 : Haproxy 데몬 상태 확인
 - name: '< Condition : Haproxy -01 > Get Haproxy Service'
   systemd:
     name: haproxyd
   register: get_haproxy
   ignore_errors: true
   when: rs_svc_running is search('Not Running')
-    
+
+# Haproxy -02 : keepalived 데몬 상태 확인
 - name: '< Condition : Haproxy -02 > Get keepalived Service'
   systemd:
     name: keepalived
   register: get_keepalived
 
-- name: '< Condition : Haproxy -02 > Set Keepalived Service'
+# 상기 수집된 정보를 CSV File로 출력하기 위해 전역 변수에 저장.
+# 수집 결과 저장시 이상 유무 조건을 체크하여 저장 처리
+- name: '< Condition : Haproxy > Set Result'
   set_fact:
     rs_svc_running: 'Haproxy : {{ get_haproxy.status.ActiveState }}'
     rs_svc2_running: 'keepliaved : {{ get_keepalived.status.ActiveState }}'
