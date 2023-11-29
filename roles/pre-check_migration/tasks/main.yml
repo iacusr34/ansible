@@ -70,3 +70,4 @@
 - name: '< MAIN : Result -04 > Result CSV Filename'
   debug:
     msg: 'Result Filename : migration_check_{{ get_date.stdout }}.csv'
+  run_once: true
