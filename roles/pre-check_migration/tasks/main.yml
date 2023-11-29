@@ -65,3 +65,8 @@
     path: '/var/lib/awx/projects/result/migration_check_{{ get_date.stdout }}.csv'
     line: '"{{ get_hostname.stdout }}","{{ rs_ostype }}","{{ rs_osversion }}","{{ rs_logs }}","{{ rs_filesystem }}","{{ rs_route }}","{{ rs_resolv }}","{{ rs_ntp }}","{{ rs_sar }}","{{ rs_crontab }}","{{ rs_sendmail }}","{{ rs_iptables }}","{{ rs_selinux }}","{{ rs_syslog }}","{{ rs_whatap }}","{{ rs_mount }}","{{ rs_fstab }}","{{ rs_nfs }}","{{ rs_openfiles }}","{{ rs_userfiles }}","{{ rs_msgq }}","{{ rs_conn }}","{{ rs_rmem }}","{{ rs_wmem }}","{{ rs_backlog }}","{{ rs_swap }}","{{ rs_mtu }}","{{ rs_cpuused }}","{{ rs_memused }}","{{ rs_diskused }}","{{ rs_dca }}","{{ rs_snms }}","{{ rs_ssr }}","{{ rs_besclient }}"'
   delegate_to: localhost
+
+# 최종 결과가 저장된 CSV Filename 출력.
+- name: '< MAIN : Result -04 > Result CSV Filename'
+  debug:
+    msg: 'Result Filename : migration_check_{{ get_date.stdout }}.csv'
