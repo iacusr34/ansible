@@ -7,12 +7,12 @@
   register: keep_result_01
   when: inventory_hostname == vm_ipaddr_2
 
-- name: "< haproxy Setting - 01 > Result Check"
+- name: '< haproxy Setting - 01 > Result Check'
   debug:
-    msg: "{{ keep_result_01 }}"
+    msg: '{{ keep_result_01 }}'
   when: inventory_hostname == vm_ipaddr_2
 
-- name: "< haproxy Setting - 02 > Setting keepalived Variable VIP Ip address"
+- name: '< haproxy Setting - 02 > Setting keepalived Variable VIP Ip address'
   set_fact:
     vip_split: '{{ vm_proxy_vip.split(".") }}'
 
@@ -23,9 +23,9 @@
     line: '   virtual_router_id {{ vip_split[3] }}'
   register: keep_result_02
 
-- name: "< haproxy Setting - 03 > Result Check"
+- name: '< haproxy Setting - 03 > Result Check'
   debug:
-    msg: "{{ keep_result_02 }}"
+    msg: '{{ keep_result_02 }}'
 
 - name: '< haproxy Setting - 04 > Setting keepalived Config vrrp_instance virtual_ipadderss'
   lineinfile:
@@ -34,17 +34,17 @@
     line: '      {{ vm_proxy_vip }}'
   register: keep_result_03
 
-- name: "< haproxy Setting - 04 > Result Check"
+- name: '< haproxy Setting - 04 > Result Check'
   debug:
-    msg: "{{ keep_result_03 }}"
+    msg: '{{ keep_result_03 }}'
 
-- name: "< haproxy Setting - 05 > Running Keepalived"
+- name: '< haproxy Setting - 05 > Running Keepalived'
   systemd:
     name: keepalived
     state: started
     enabled: true
   register: keep_result_04
 
-- name: "< haproxy Setting - 05 > Result Check"
+- name: '< haproxy Setting - 05 > Result Check'
   debug:
-    msg: "{{ keep_result_04 }}"
+    msg: '{{ keep_result_04 }}'
