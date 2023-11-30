@@ -1,14 +1,4 @@
 ---
-- name: "< Running Service > Apache Proxy started"
-  shell: "/engn/apache/bin/apachectl start"
-  register: pxy_status
-  when: vm_type|lower == 'pxy'
-
-- name: "< Running Service > Apache Proxy status"
-  debug:
-    msg: "{{ pxy_status.stdout_lines }}"
-  when: vm_type|lower == 'pxy'
-
 - name: "< Running Service > Apache Web started"
   shell: "/engn/apache/bin/apachectl start"
   register: web_status
