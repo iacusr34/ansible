@@ -64,8 +64,8 @@
     line: '--haproxy.scrape-uri="http://{{ item }}/stats;csv"'
   register: result_06
   loop:
-    - {{ vm_ipaddr_1 }}
-    - {{ vm_ipaddr_2 }}
+    - '{{ vm_ipaddr_1 }}'
+    - '{{ vm_ipaddr_2 }}'
   when: inventory_hostname == item
 
 - name: '< Haproxy {{ proxy_type|upper }} Setting - 06 > Result Check'
