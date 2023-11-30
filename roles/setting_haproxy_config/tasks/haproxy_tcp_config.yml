@@ -16,9 +16,9 @@
 
 - name: '< Haproxy {{ proxy_type|upper }} Setting - 02 > Result Check'
   debug:
-    msg: "'{{ result_02 }}'
+    msg: '{{ result_02 }}'
     
-- name: '"< Haproxy {{ proxy_type|upper }} Setting - 03 > Initialize the {{ proxy_type|upper }} Server member'
+- name: '< Haproxy {{ proxy_type|upper }} Setting - 03 > Initialize the {{ proxy_type|upper }} Server member'
   lineinfile:
     path: '/etc/haproxy/haproxy.cfg'
     regexp: '{{ item }}'
@@ -60,7 +60,7 @@
 - name: '< Haproxy {{ proxy_type|upper }} Setting - 06 > modify Haproxy-exporter CLI'
   lineinfile:
     path: '/engn/haproxy/haproxy-prom-exporter.sh'
-    regexp: '--haproxy.scrape-uri="http://1.1.1.10:11936/stats;csv"'
+    regexp: '--haproxy.scrape-uri="http://1.1.1.20:11936/stats;csv"'
     line: '--haproxy.scrape-uri="http://{{ item }}/stats;csv"'
   register: result_06
   loop:
