@@ -56,4 +56,26 @@
 - name: '< Haproxy {{ proxy_type|upper }} Setting - 05 > Result Check'
   debug:
     msg: '{{ result_05 }}'
-    
+
+- name: '< Haproxy {{ proxy_type|upper }} Setting - 06 > modify Haproxy-exporter CLI'
+  lineinfile:
+    path: '/engn/haproxy/haproxy-prom-exporter.sh'
+    regexp: '--haproxy.scrape-uri="http://1.1.1.10:11936/stats;csv"'
+    line: '--haproxy.scrape-uri="http://{{ item }}/stats;csv"'
+  register: result_06
+  loop:
+    - {{ vm_ipaddr_1 }}
+    - {{ vm_ipaddr_2 }}
+  when: inventory_hostname == item
+
+- name: '< Haproxy {{ proxy_type|upper }} Setting - 06 > Result Check'
+  debug:
+    msg: '{{ result_06 }}'
+
+- name: '< Haproxy {{ proxy_type|upper }} Setting - 07 > Running Container Haproxy-exporter'
+  shell: 'sh /engn/haproxy/haproxy-prom-exporter.sh'
+  register: result_07
+
+- name: '< Haproxy {{ proxy_type|upper }} Setting - 07 > Result Check'
+  debug:
+    msg: '{{ result_07 }}'
