@@ -1,75 +1,75 @@
 ---
-- name: "< Haproxy WEB Setting - 01 > WEB Config Template Copy"
-  shell: "cp /engn/haproxy/conf/haproxy.web.cfg /engn/haproxy/conf/haproxy.cfg"
+- name: '< Haproxy WEB Setting - 01 > WEB Config Template Copy'
+  shell: 'cp /engn/haproxy/conf/haproxy.web.cfg /etc/haproxy/haproxy.cfg'
   register: result_01
 
-- name: "< Haproxy WEB Setting - 01 > Result Check"
+- name: '< Haproxy WEB Setting - 01 > Result Check'
   debug:
-    msg: "{{ result_01 }}"
+    msg: '{{ result_01 }}'
     
-- name: "< Haproxy WEB Setting - 02 > Add WEB Server member"
+- name: '< Haproxy WEB Setting - 02 > Add WEB Server member'
   lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    insertafter: "   server s2 192.168.1.26:80 check fall 5 inter 2000 rise"
-    line: "{{ item }}"
+    path: '/etc/haproxy/haproxy.cfg'
+    insertafter: '   server s2 192.168.1.26:80 check fall 5 inter 2000 rise'
+    line: '{{ item }}'
   register: result_02
   loop:
-    - "   server s2 {{ vm_member_2 }}:80 check fall 5 inter 2000 rise"
-    - "   server s1 {{ vm_member_1 }}:80 check fall 5 inter 2000 rise"
+    - '   server s2 {{ vm_member_2 }}:80 check fall 5 inter 2000 rise'
+    - '   server s1 {{ vm_member_1 }}:80 check fall 5 inter 2000 rise'
 
-- name: "< Haproxy WEB Setting - 02 > Result Check"
+- name: '< Haproxy WEB Setting - 02 > Result Check'
   debug:
-    msg: "{{ result_02 }}"
+    msg: '{{ result_02 }}'
     
-- name: "< Haproxy WEB Setting - 03 > Remove Default Config line"
+- name: '< Haproxy WEB Setting - 03 > Remove Default Config line'
   lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    regexp: "{{ item }}"
+    path: '/etc/haproxy/haproxy.cfg'
+    regexp: '{{ item }}'
     state: absent
   register: result_03
   loop:
-    - "   server s1 192.168.1.25:80 check fall 5 inter 2000 rise 2"
-    - "   server s2 192.168.1.26:80 check fall 5 inter 2000 rise 2"
+    - '   server s1 192.168.1.25:80 check fall 5 inter 2000 rise 2'
+    - '   server s2 192.168.1.26:80 check fall 5 inter 2000 rise 2'
 
-- name: "< Haproxy WEB Setting - 03 > Result Check"
+- name: '< Haproxy WEB Setting - 03 > Result Check'
   debug:
-    msg: "{{ result_03 }}"
+    msg: '{{ result_03 }}'
     
-- name: "< Haproxy WEB Setting - 04 > Add WEB SSL Server member"
+- name: '< Haproxy WEB Setting - 04 > Add WEB SSL Server member'
   lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    insertafter: "   server s2 192.168.1.26:443 check fall 5 inter 2000 rise"
-    line: "{{ item }}"
+    path: '/etc/haproxy/haproxy.cfg'
+    insertafter: '   server s2 192.168.1.26:443 check fall 5 inter 2000 rise'
+    line: '{{ item }}'
   register: result_04
   loop:
-    - "   server s2 {{ vm_member_2 }}:443 check fall 5 inter 2000 rise"
-    - "   server s1 {{ vm_member_1 }}:443 check fall 5 inter 2000 rise"
+    - '   server s2 {{ vm_member_2 }}:443 check fall 5 inter 2000 rise'
+    - '   server s1 {{ vm_member_1 }}:443 check fall 5 inter 2000 rise'
 
-- name: "< Haproxy WEB Setting - 04 > Result Check"
+- name: '< Haproxy WEB Setting - 04 > Result Check'
   debug:
-    msg: "{{ result_04 }}"
+    msg: '{{ result_04 }}'
     
-- name: "< Haproxy WEB Setting - 05 > Remove SSL Default Config line"
+- name: '< Haproxy WEB Setting - 05 > Remove SSL Default Config line'
   lineinfile:
-    path: "/engn/haproxy/conf/haproxy.cfg"
-    regexp: "{{ item }}"
+    path: '/etc/haproxy/haproxy.cfg'
+    regexp: '{{ item }}'
     state: absent
   register: result_05
   loop:
-    - "   server s1 192.168.1.25:443 check fall 5 inter 2000 rise 2"
-    - "   server s2 192.168.1.26:443 check fall 5 inter 2000 rise 2"
+    - '   server s1 192.168.1.25:443 check fall 5 inter 2000 rise 2'
+    - '   server s2 192.168.1.26:443 check fall 5 inter 2000 rise 2'
 
-- name: "< Haproxy WEB Setting - 05 > Result Check"
+- name: '< Haproxy WEB Setting - 05 > Result Check'
   debug:
-    msg: "{{ result_05 }}"
+    msg: '{{ result_05 }}'
 
-- name: "< Haproxy WEB Setting - 06 > Running Haproxy"
+- name: '< Haproxy WEB Setting - 06 > Running Haproxy'
   systemd:
     name: haproxy
     state: started
     enabled: true
   register: result_06
 
-- name: "< Haproxy WEB Setting - 06 > Result Check"
+- name: '< Haproxy WEB Setting - 06 > Result Check'
   debug:
-    msg: "{{ result_06 }}"
+    msg: '{{ result_06 }}'
