@@ -41,7 +41,7 @@
 - name: '< haproxy Setting - 05 > Running Keepalived'
   systemd:
     name: keepalived
-    state: started
+    state: restarted
     enabled: true
   register: keep_result_04
 
