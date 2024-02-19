@@ -2,9 +2,9 @@
 - name: '< WAS : Create VM -01 > Creating a was service virtual machine'
   vmware_guest:
     validate_certs: false
-    folder: /IAAS_Datacenter/vm
-    datacenter: IAAS_Datacenter
-    cluster: 'IAAS_iac(D)_Cluster'
+    folder: /{{ var_folder }}/vm
+    datacenter: '{{ var_datacenter }}'
+    cluster: '{{ var_cluster }}'
     name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}was1v'
     state: poweredon
     template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_WAS'
@@ -44,8 +44,8 @@
 - name: '< WAS : Create VM -04 > Create a virtual machine IP settings'
   vmware_vm_shell:
     validate_certs: false
-    folder: /IAAS_Datacenter/vm
-    datacenter: IAAS_Datacenter
+    folder: /{{ var_folder }}/vm
+    datacenter: '{{ var_datacenter }}'
     vm_id: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}was1v'
     vm_username: '{{ vm_user }}'
     vm_password: '{{ vm_pw }}'
