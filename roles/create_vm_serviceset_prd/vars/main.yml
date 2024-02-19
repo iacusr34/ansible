@@ -1,0 +1,13 @@
+---
+vm_purpose:
+vm_code:
+vm_web_ck:
+vm_db_type:
+vm_ipaddr_1:
+vm_ipaddr_2:
+vm_ipaddr_3:
+vm_user: 'iacusr'
+vm_pw: 'dlatl00'
+var_folder: "PAAS_Datacenter"
+var_datacenter: "PAAS_Datacenter"
+var_cluster: "PAAS_dev_Cluster"
