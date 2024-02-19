@@ -1,0 +1,63 @@
+---
+- name: '< DATABASE : Create VM -01 > Creating a database service virtual machine [ DB Type is {{ vm_db_type|upper }} ]'
+  vmware_guest:
+    validate_certs: false
+    folder: /{{ var_folder }}/vm
+    datacenter: '{{ var_datacenter }}'
+    cluster: '{{ var_cluster }}'
+    name: '{{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v'
+    state: poweredon
+    template: 'TMP_RHEL8.6_{{ vm_purpose|upper }}_{{ vm_db_type|upper }}'
+    disk:
+    - size_gb: 60
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    - size_gb: 370
+      type: thin
+      datastore: DIAAS_OS_NAS11
+    hardware:
+      memory_mb: 8192
+      num_cpus: 4 
+      scsi: paravirtual
+      mem_reservation: 8192
+      cpu_shares_level: "normal"
+      mem_shares_level: "normal"
+  delegate_to: localhost
+  register: rs_create_vm
+
+- name: '< DATABASE : Create VM -01 > Debuging' 
+  debug:
+    msg: '{{ rs_create_vm }}'
+
+- name: '< DATABASE : Create VM -02 > virtual machine booting stand by 30 second'
+  pause:
+    seconds: 30
+
+- name: '< DATABASE : Create VM -03 > virtual machine Setting IP Address Gateway'
+  set_fact:
+    vm_gw: '{{ vm_ipaddr_3.split(".")[0] }}.{{ vm_ipaddr_3.split(".")[1] }}.{{ vm_ipaddr_3.split(".")[2] }}.1'
+
+- name: '< DATABASE : Create VM -03 > Debuging'
+  debug:
+    msg: '{{ vm_gw }}'
+
+- name: '< DATABASE : Create VM -03 > Create a virtual machine IP settings'
+  vmware_vm_shell:
+    validate_certs: false
+    folder: /{{ var_folder }}/vm
+    datacenter: '{{ var_datacenter }}'
+    vm_id: '{{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v'
+    vm_username: '{{ vm_user }}'
+    vm_password: '{{ vm_pw }}'
+    vm_shell: "/usr/bin/sudo"
+    vm_shell_args: "nmcli con add con-name ens192 ifname ens192 type ethernet ip4 {{ vm_ipaddr_3 }}/24 ipv4.gateway {{ vm_gw }} ipv4.method manual autoconnect yes && 
+                    sudo nmcli con modify ens224 ipv4.ignore-auto-routes yes && 
+                    sudo nmcli con up ens224 && 
+                    sudo hostnamectl set-hostname {{ vm_purpose[0:1]|lower }}{{ vm_code|lower }}{{ vm_db_type|lower }}1v"
+  delegate_to: localhost
+  register: rs_ip_set_vm
+  ignore_errors: true
+
+- name: '< DATABASE : Create VM -04 > Debuging'
+  debug:
+    msg: '{{ rs_ip_set_vm }}'
