@@ -1,0 +1,6 @@
+---
+- name: 'Create vm Template PRD'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_template_prd
