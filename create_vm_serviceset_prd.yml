@@ -1,0 +1,6 @@
+---
+- name: 'Create VM ServiceSet PRD'
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - role: create_vm_serviceset_prd
