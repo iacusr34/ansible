@@ -8,3 +8,6 @@ vm_ipaddr_2:
 vm_ipaddr_3:
 vm_user: 'iacusr'
 vm_pw: 'dlatl00'
+var_folder: "IAAS_Datacenter"
+var_datacenter: "IAAS_Datacenter"
+var_cluster: "IAAS_iac(D)_Cluster"
