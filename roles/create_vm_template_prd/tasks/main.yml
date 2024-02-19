@@ -1,0 +1,12 @@
+---
+- name: '< MAIN : Application > [ {{ vm_purpose }} ] Launch Create VM Application Template'
+  include_tasks: application_template.yml
+  when: vm_type|lower == 'web' or vm_type|lower == 'was'
+
+- name: '< MAIN : Database > [ {{ vm_purpose }} ] Launch Create VM Database Template'
+  include_tasks: database_template.yml
+  when: vm_type|lower == 'mas' or vm_type|lower == 'mys'
+
+- name: '< MAIN : Other > [ {{ vm_purpose }} ] Launch Create VM Other Template'
+  include_tasks: other_template.yml
+  when: vm_type|lower != 'web' and vm_type|lower != 'was' and vm_type|lower != 'mas' and vm_type|lower != 'mys'
