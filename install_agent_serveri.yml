@@ -1,0 +1,6 @@
+---
+- name: 'Install Agent Server-i'
+  hosts: all
+  gather_facts: false
+  roles:
+    - role: install_agent_serveri
