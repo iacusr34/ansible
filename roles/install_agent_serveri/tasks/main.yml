@@ -1,0 +1,13 @@
+---
+- name: '< MAIN > Check if install Server-i Agent'
+  shell: 'ps -eo comm,etime,user | grep piagenta'
+  register: check_agent
+  ignore_errors: true
+
+- name: '< MAIN : INSTALL > Install Agent Server-i'
+  include_tasks: install_agent.yml
+  when: check_agent.rc == 1 
+
+- name: '< MAIN : RUNNING > Running Agent Server-i'
+  include_tasks: running_agent.yml
+  when: install_success == 'y'
