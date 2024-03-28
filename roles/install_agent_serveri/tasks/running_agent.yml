@@ -1,0 +1,28 @@
+---
+- name: '< RUNNING -01 > Running Agent Server-i'
+  shell: '/opt/serveri/serveri/bin/piagenta'
+  register: rs_running_01
+
+- name: '< RUNNING -01 > Result Check'
+  debug:
+    msg: '{{ rs_running_01 }}'
+    
+- name: '< RUNNING -02 > Check Process Agent Server-i'
+  shell: 'ps -ef | grep DPIAGENTA'
+  register: rs_running_02
+  
+- name: '< RUNNING -02 > Result Check'
+  debug:
+    msg: '{{ rs_running_02.stdout_lines }}'
+    
+- name: '< RUNNING -03 > Check Log Agent Server-i'
+  shell: "cat /opt/serveri/serveri/ProgramData/log/piagent.log | grep 'Login successfully'"
+  register: rs_running_03
+  
+- name: '< RUNNING -03 > Result Check'
+  debug:
+    msg: '{{ rs_running_03.stdout }}'
+    
+- name: '< RUNNING -04 > Running State Agent Server-i'
+  debug:
+    msg: '{{ "Server-i Agent : Running" if( rs_running_02.rc == 0 and rs_running_03.rc ==0 ) else "Server-i Agent : Not Running" }}'
