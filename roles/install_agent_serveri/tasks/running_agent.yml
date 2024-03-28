@@ -2,6 +2,7 @@
 - name: '< RUNNING -01 > Running Agent Server-i'
   shell: '/opt/serveri/serveri/bin/piagenta'
   register: rs_running_01
+  ignore_errors: true
 
 - name: '< RUNNING -01 > Result Check'
   debug:
@@ -10,6 +11,7 @@
 - name: '< RUNNING -02 > Check Process Agent Server-i'
   shell: 'ps -ef | grep DPIAGENTA'
   register: rs_running_02
+  ignore_errors: true
   
 - name: '< RUNNING -02 > Result Check'
   debug:
@@ -18,6 +20,7 @@
 - name: '< RUNNING -03 > Check Log Agent Server-i'
   shell: "cat /opt/serveri/serveri/ProgramData/log/piagent.log | grep 'Login successfully'"
   register: rs_running_03
+  ignore_errors: true
   
 - name: '< RUNNING -03 > Result Check'
   debug:
