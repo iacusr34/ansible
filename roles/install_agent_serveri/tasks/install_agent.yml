@@ -1,48 +1,66 @@
 ---
-- name: '< INSTALL -01 > Create Directory Server-i'
+- name: '< INSTALL -01 > Check if Install file'
+  stat: path=/opt/serveri/install/setenv.sh
+  register: rs_install_01
+  
+- name: '< INSTALL -01 > Result Check'
+  debug:
+    msg: '{{ rs_install_01 }}'
+
+- name: '< INSTALL -02 > Install Directory initialization'
+  file:
+    path: /opt/serveri/install
+    state: absent
+  register: rs_install_02
+  
+- name: '< INSTALL -02 > Result Check'
+  debug:
+    msg: '{{ rs_install_02 }}'
+
+- name: '< INSTALL -03 > Create Directory Server-i'
   file:
     path: /opt/serveri/install
     state: directory
     owner: root
     group: root
     mode: '0755'
-  register: rs_install_01
-  
-- name: '< INSTALL -01 > Result Check'
-  debug:
-    msg: '{{ rs_install_01 }}'
-    
-- name: '< INSTALL -02 > Download Agent File Server-i'
-  shell: 'wget --no-check-certificate -O /opt/serveri/install/agent.zip https://172.21.235.24/agent/agent.zip'
-  
-- name: '< INSTALL -03 > Unzip file [ agent.zip ]'
-  shell: 'unzip /opt/serveri/install/agent.zip -d /opt/serveri/install/'
   register: rs_install_03
   
 - name: '< INSTALL -03 > Result Check'
   debug:
     msg: '{{ rs_install_03 }}'
     
-- name: '< INSTALL -04 > Change Script setenv.sh'
-  copy:
-    src: '/data/awx-data/file/agent/setenv.sh'
-    dest: '/opt/serveri/install/'
-    backup: yes
-  register: rs_install_04
+- name: '< INSTALL -04 > Download Agent File Server-i'
+  shell: 'wget --no-check-certificate -O /opt/serveri/install/agent.zip https://172.21.235.24/agent/agent.zip'
   
-- name: '< INSTALL -04 > Result Check'
-  debug:
-    msg: '{{ rs_install_04 }}'
-    
-- name: '< INSTALL -05 > Install Agent Server-i'
-  shell: 'cd /opt/serveri/install; sh ./setenv.sh'
+- name: '< INSTALL -05 > Unzip file [ agent.zip ]'
+  shell: 'unzip /opt/serveri/install/agent.zip -d /opt/serveri/install/'
   register: rs_install_05
   
 - name: '< INSTALL -05 > Result Check'
   debug:
     msg: '{{ rs_install_05 }}'
+    
+- name: '< INSTALL -06 > Change Script setenv.sh'
+  copy:
+    src: '/data/awx-data/file/agent/setenv.sh'
+    dest: '/opt/serveri/install/'
+    backup: yes
+  register: rs_install_06
+  
+- name: '< INSTALL -06 > Result Check'
+  debug:
+    msg: '{{ rs_install_06 }}'
+    
+- name: '< INSTALL -07 > Install Agent Server-i'
+  shell: 'cd /opt/serveri/install; sh ./setenv.sh'
+  register: rs_install_07
+  
+- name: '< INSTALL -07 > Result Check'
+  debug:
+    msg: '{{ rs_install_07 }}'
 
-- name: '< INSTALL -06 > Set Server-i Agent Installation Results'
+- name: '< INSTALL -08 > Set Server-i Agent Installation Results'
   set_fact:
     install_success: 'y'
-  when: rs_install_05.rc == 0
+  when: rs_install_07.rc == 0
