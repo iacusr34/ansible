@@ -43,7 +43,7 @@
     
 - name: '< INSTALL -06 > Change Script setenv.sh'
   copy:
-    src: '/data/awx-data/file/agent/setenv.sh'
+    src: '/var/lib/awx/projects/file/agent/setenv.sh'
     dest: '/opt/serveri/install/'
     backup: yes
   register: rs_install_06
