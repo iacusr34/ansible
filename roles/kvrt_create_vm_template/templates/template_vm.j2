@@ -1,0 +1,105 @@
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-boot
+  namespace: vm-workspace
+spec:
+  storage:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 60Gi
+    storageClassName: hitachi-sc
+  source:
+    pvc:
+      namespace: kubevirt-os-images
+      name: dv-tmp-rhel89-{{ vm_purpose | lower }}-boot
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-data
+  namespace: vm-workspace
+spec:
+  storage:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 50Gi
+    storageClassName: hitachi-sc
+  source:
+    pvc:
+      namespace: kubevirt-os-images
+      name: dv-tmp-rhel89-{{ vm_purpose | lower }}-data
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  generation: 2
+  labels:
+    kubevirt.io/os: linux
+  name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v'
+  namespace: vm-workspace
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v
+    spec:
+      domain:
+        cpu:
+          cores: 2
+        devices:
+          disks:
+          - disk:
+              bus: scsi
+            name: disk0
+          - disk:
+              bus: scsi
+            name: cloudinitvolume
+          - disk:
+              bus: scsi
+            name: disk1
+          interfaces:
+            - bridge: {}
+              model: virtio
+              name: default
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 4096M
+      networks:
+        - multus:
+            networkName: default/service-vlan53-impressed-bird
+          name: default
+      volumes:
+      - name: disk0
+        persistentVolumeClaim:
+          claimName: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-boot
+      - name: cloudinitvolume
+        cloudInitNoCloud:
+          userData: |-
+            #cloud-config
+            ssh_pwauth: True
+            disable_root: false
+            chpasswd:
+              list: |
+                root:dlatl00
+              expire: false
+          networkData: |
+            version: 2
+            ethernets:
+              enp1s0:
+                addresses:
+                - '{{ vm_ipaddr_1 }}/24
+                gateway4: '{{ vm_gw }}'
+                nameservers:
+                  addresses: [172.30.111.100]
+      - name: disk1
+        persistentVolumeClaim:
+          claimName: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-data
