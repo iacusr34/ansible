@@ -1,0 +1,6 @@
+---
+- name: 'Kubevirt Power on the VM'
+  hosts: kvrtbas
+  gather_facts: false
+  roles:
+    - role: kvrt_power_on_vm
