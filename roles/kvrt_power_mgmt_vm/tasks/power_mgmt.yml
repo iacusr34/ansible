@@ -14,7 +14,7 @@
     msg: '{{ var_cluster }}'
 
 - name: '< Power on -02- > [KVRT] Login'
-  shell: oc login {{ kvrt_account | b64decode }} --server=https://api.{{ var_cluster }}.lguplus.co.kr:6443 --insecure-skip-tls-verify=true'
+  shell: 'oc login {{ kvrt_account | b64decode }} --server=https://api.{{ var_cluster }}.lguplus.co.kr:6443 --insecure-skip-tls-verify=true'
   register: result_01
 
 - name: '< Power on -02- > Debug'
