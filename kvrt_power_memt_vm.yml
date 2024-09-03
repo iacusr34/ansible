@@ -1,0 +1,6 @@
+---
+- name: '[KVRT] Power management of VM'
+  hosts: kvrtbas
+  gather_facts: false
+  roles:
+    - role: kvrt_power_mgmt_vm
