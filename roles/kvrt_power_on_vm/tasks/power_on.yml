@@ -1,0 +1,33 @@
+---
+- name: '< Power on -01- > KVRT Check the purpose [ {{ var_purpose }} ]'
+  set_fact:
+    var_cluster: 'pkvrt-k8s'
+  when: var_purpose == 'prd'
+
+- name: '< Power on -01- > KVRT Check the purpose [ {{ var_purpose }} ]'
+  set_fact:
+    var_cluster: 'dkvrt-k8s'
+  when: var_purpose == 'dev'
+
+- name: '< Power on -01- > Debug'
+  debug:
+    msg: '{{ var_cluster }}'
+
+- name: '< Power on -02- > KVRT Login'
+  shell: oc login {{ kvrt_account | b64decode }} --server=https://api.{{ var_cluster }}.lguplus.co.kr:6443 --insecure-skip-tls-verify=true'
+  register: result_01
+
+- name: '< Power on -02- > Debug'
+  debug:
+    msg: '{{ result_01.stdout_lines[2] }}'
+
+- name: '< Power on -03- > Power state on VM'
+  shell: 'virtctl start {{ var_vmname }} -n {{ var_namespace }}'
+  register: result_02
+
+- name: '< Power on -03- > Debug'
+  debug:
+    msg: '{{ result_02.stdout }}'
+
+- name: '< Power on -04- > KVRT Logout'
+  shell: 'oc logout'
