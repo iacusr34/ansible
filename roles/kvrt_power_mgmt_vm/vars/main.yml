@@ -1,7 +1,8 @@
 ---
 kvrt_account: 'LXUgYWRtaW4gLXAgZGplbWFsczEh'
 running_check: ''
+var_purpose: ''
 var_namespace: ''
 var_vmname: ''
-var_cluster: ''
 var_state: ''
+var_cluster: ''
