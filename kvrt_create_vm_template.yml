@@ -1,6 +1,6 @@
 ---
 - name: 'Create VM for kubevirt'
-  hosts: all
+  hosts: kvrtbas
   gather_facts: false
   roles:
     - role: kvrt_create_vm_template
