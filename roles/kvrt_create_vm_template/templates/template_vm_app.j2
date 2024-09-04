@@ -1,39 +1,37 @@
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
-kind: DataVolume
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-boot
-  namespace: vm-workspace
+  name: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-boot
+  namespace: {{ var_namespace }}
 spec:
-  storage:
-    accessModes:
-      - ReadWriteMany
-    resources:
-      requests:
-        storage: 60Gi
-    storageClassName: hitachi-sc
-  source:
-    pvc:
-      namespace: kubevirt-os-images
-      name: dv-tmp-rhel89-{{ vm_purpose | lower }}-{{ vm_type | lower }}-boot
+  accessModes:
+    - ReadWriteMany
+  volumeMode: {{ var_volumemode }}
+  resources:
+    requests:
+      storage: 60Gi
+  storageClassName: {{ var_storageclass }}
+  dataSource:
+    kind: PersistentVolumeClaim
+    name: pvc-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-boot
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
-kind: DataVolume
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-data
-  namespace: vm-workspace
+  name: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-data
+  namespace: {{ var_namespace }}
 spec:
-  storage:
-    accessModes:
-      - ReadWriteMany
-    resources:
-      requests:
-        storage: 50Gi
-    storageClassName: hitachi-sc
-  source:
-    pvc:
-      namespace: kubevirt-os-images
-      name: dv-tmp-rhel89-{{ vm_purpose | lower }}-{{ vm_type | lower }}-data
+  accessModes:
+    - ReadWriteMany
+  volumeMode: {{ var_volumemode }}
+  resources:
+    requests:
+      storage: 70Gi
+  storageClassName: {{ var_storageclass }}
+  dataSource:
+    kind: PersistentVolumeClaim
+    name: pvc-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-data
 ---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
@@ -41,14 +39,14 @@ metadata:
   generation: 2
   labels:
     kubevirt.io/os: linux
-  name: '{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v'
-  namespace: vm-workspace
+  name: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
+  namespace: {{ var_namespace }}
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: {{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v
+        kubevirt.io/domain: {{ var_namespace }}{{ var_type }}{{ var_count }}v
     spec:
       domain:
         cpu:
@@ -67,7 +65,7 @@ spec:
           interfaces:
             - bridge: {}
               model: virtio
-              name: default
+              name: service-network
         machine:
           type: q35
         resources:
@@ -75,12 +73,14 @@ spec:
             memory: 4096M
       networks:
         - multus:
-            networkName: default/service-vlan53-impressed-bird
-          name: default
+            networkName: default/{{ var_network }}
+          name: service-network
+      nodeSelector:
+        node-role.kubernetes.io/worker: ''
       volumes:
       - name: disk0
         persistentVolumeClaim:
-          claimName: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-boot
+          claimName: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-boot
       - name: cloudinitvolume
         cloudInitNoCloud:
           userData: |-
@@ -96,10 +96,10 @@ spec:
             ethernets:
               enp1s0:
                 addresses:
-                - '{{ vm_ipaddr_1 }}/24
-                gateway4: '{{ vm_gw }}'
+                - '{{ var_ipaddr }}/24
+                gateway4: '{{ var_gw }}'
                 nameservers:
                   addresses: [172.30.111.100]
       - name: disk1
         persistentVolumeClaim:
-          claimName: dv-{{ vm_purpose[0:1] | lower }}{{ vm_code | lower }}{{ vm_type | lower }}{{ vm_count }}v-data
+          claimName: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-data
