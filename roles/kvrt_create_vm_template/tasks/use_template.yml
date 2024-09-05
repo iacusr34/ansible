@@ -43,7 +43,7 @@
 
 - name: '< Create VM -05- > Debug'
   debug:
-    msg: '{{ result_04.stdout_lines }}
+    msg: '{{ result_04.stdout_lines }}'
 
 - name: 'Kubevirt Logout'
   shell: 'oc logout'
