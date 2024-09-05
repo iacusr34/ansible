@@ -1,0 +1,21 @@
+---
+- name: '< MAIN : Setting > Set variable [ PRD ]'
+  set_fact:
+    var_cluster: 'pkvrt-k8s'
+    var_storageclass: 'netapp-sc-nfs'
+    var_network: 'service-vlan51-civilian-cattle'
+    var_volumemode: 'Filesystem'
+    var_gw: '{{ var_ipaddr.split(".")[0] }}.{{ var_ipaddr.split(".")[1] }}.{{ var_ipaddr.split(".")[2] }}.1'
+  when: var_purpose == 'prd'
+
+- name: '< MAIN : Setting > Set variable [ DEV ]'
+  set_fact:
+    var_cluster: 'dkvrt-k8s'
+    var_storageclass: 'hitachi-sc'
+    var_network: 'service-vlan53-slippery-snail'
+    var_volumemode: 'Block'
+    var_gw: '{{ var_ipaddr.split(".")[0] }}.{{ var_ipaddr.split(".")[1] }}.{{ var_ipaddr.split(".")[2] }}.1'
+  when: var_purpose == 'dev'
+
+- name: '< MAIN : Create VM > [ {{ var_purpose | upper }} ] Launch create VM Template'
+  include_tasks: use_template.yml
