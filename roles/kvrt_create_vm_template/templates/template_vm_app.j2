@@ -10,11 +10,11 @@ spec:
   volumeMode: {{ var_volumemode }}
   resources:
     requests:
-      storage: 60Gi
+      storage: 70Gi
   storageClassName: {{ var_storageclass }}
   dataSource:
     kind: PersistentVolumeClaim
-    name: pvc-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-boot
+    name: dv-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-boot
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -31,7 +31,7 @@ spec:
   storageClassName: {{ var_storageclass }}
   dataSource:
     kind: PersistentVolumeClaim
-    name: pvc-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-data
+    name: dv-tmp-rhel810-{{ var_purpose }}-{{ var_type }}-data
 ---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
