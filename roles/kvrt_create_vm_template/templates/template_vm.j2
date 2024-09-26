@@ -10,11 +10,11 @@ spec:
   volumeMode: {{ var_volumemode }}
   resources:
     requests:
-      storage: 60Gi
+      storage: 70Gi
   storageClassName: {{ var_storageclass }}
   dataSource:
     kind: PersistentVolumeClaim
-    name: pvc-tmp-rhel810-{{ var_purpose }}-boot
+    name: dv-tmp-rhel810-{{ var_purpose }}-boot
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -31,7 +31,7 @@ spec:
   storageClassName: {{ var_storageclass }}
   dataSource:
     kind: PersistentVolumeClaim
-    name: pvc-tmp-rhel810-{{ var_purpose }}-data
+    name: dv-tmp-rhel810-{{ var_purpose }}-data
 ---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
@@ -39,14 +39,14 @@ metadata:
   generation: 2
   labels:
     kubevirt.io/os: linux
-  name: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
+  name: {{ var_namespace }}{{ var_type }}{{ var_count }}v
   namespace: {{ var_namespace }}
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: {{ var_namespace }}{{ var_type }}{{ var_count }}v
+        kubevirt.io/domain: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
     spec:
       domain:
         cpu:
@@ -85,7 +85,7 @@ spec:
         cloudInitNoCloud:
           userData: |-
             #cloud-config
-            ssh_pwauth: True
+            ssh_pwauth: true
             disable_root: false
             chpasswd:
               list: |
