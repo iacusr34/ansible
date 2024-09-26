@@ -39,14 +39,14 @@ metadata:
   generation: 2
   labels:
     kubevirt.io/os: linux
-  name: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
+  name: {{ var_namespace }}{{ var_type }}{{ var_count }}v
   namespace: {{ var_namespace }}
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: {{ var_namespace }}{{ var_type }}{{ var_count }}v
+        kubevirt.io/domain: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
     spec:
       domain:
         cpu:
@@ -85,7 +85,7 @@ spec:
         cloudInitNoCloud:
           userData: |-
             #cloud-config
-            ssh_pwauth: True
+            ssh_pwauth: true
             disable_root: false
             chpasswd:
               list: |
@@ -97,7 +97,7 @@ spec:
               enp1s0:
                 addresses:
                 - '{{ var_ipaddr }}/24'
-                gateway4: '{{ var_gw }}'
+                gateway4: {{ var_gw }}
                 nameservers:
                   addresses: [172.30.111.100]
       - name: disk1
