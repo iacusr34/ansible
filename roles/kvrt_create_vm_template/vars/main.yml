@@ -4,9 +4,11 @@ var_purpose: ''
 var_cluster: ''
 var_namespace: ''
 var_type: ''
-var_count: 1
-var_ipaddr: ''
+var_count: ''
+var_ipaddr1: ''
+var_ipaddr2: ''
 var_gw: ''
 var_storageclass: ''
 var_network: ''
 var_volumemode: ''
+var_vminfo: []
