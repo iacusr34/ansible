@@ -1,36 +1,14 @@
 ---
-- name: '< MAIN : Setting > Set variable [ PRD ]'
-  set_fact:
-    var_cluster: 'pkvrt-k8s'
-    var_storageclass: 'netapp-sc-nfs'
-    var_network: 'service-vlan51-civilian-cattle'
-    var_volumemode: 'Filesystem'
-    var_gw: '{{ var_ipaddr1.split(".")[0] }}.{{ var_ipaddr1.split(".")[1] }}.{{ var_ipaddr1.split(".")[2] }}.1'
-  when: var_purpose == 'prd'
+- name: '< MAIN : Setting > Set Global Variables'
+  include_tasks: setting_variables.yml
 
-- name: '< MAIN : Setting > Set variable [ DEV ]'
-  set_fact:
-    var_cluster: 'dkvrt-k8s'
-    var_storageclass: 'hitachi-sc'
-    var_network: 'service-vlan53-slippery-snail'
-    var_volumemode: 'Block'
-    var_gw: '{{ var_ipaddr1.split(".")[0] }}.{{ var_ipaddr1.split(".")[1] }}.{{ var_ipaddr1.split(".")[2] }}.1'
-  when: var_purpose == 'dev'
+- name: '< MAIN : Login > Kubevirt Login'
+  shell: 'oc login {{ kvrt_account | b64decode }} --server=https://api.{{ var_cluster }}.lguplus.co.kr:6443 --insecure-skip-tls-verify=true'
+  register: result_01
 
-- name: '< MAIN : Setting > Set VM Information [ hostname, ip address ] ( VM Count 1 )'
-  set_fact:
-    var_vminfo: '{{ var_vminfo | default([]) + [ item ] }}'
-  with_items:
-    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}1v','ipaddr':'{{ var_ipaddr1 }}' }
-  when: var_count|int == 1
-
-- name: '< MAIN : Setting > Set VM Information [ hostname, ip address ] ( VM Count 2 )'
-  set_fact:
-    var_vminfo: '{{ var_vminfo | default([]) + [ item ] }}'
-  with_items:
-    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}1v','ipaddr':'{{ var_ipaddr1 }}' }
-    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}2v','ipaddr':'{{ var_ipaddr2 }}' }
-  when: var_count|int == 2
+- name: '< MAIN : Login > Debug'
+  debug:
+    msg: '{{ result_01 }}'
   
 - name: '< MAIN : Create VM > [ {{ var_purpose | upper }} ] Launch create VM Template'
   include_tasks: use_template.yml
@@ -42,11 +20,11 @@
 
 - name: '< MAIN : Check VM > Check the created virtual machine'
   shell: 'oc get pvc,vmi -n {{ var_namespace | lower}} | grep "{{ var_namespace | lower }}"'
-  register: result_03
+  register: result_04
 
 - name: '< Create VM -03- > Debug'
   debug:
-    msg: '{{ result_03.stdout_lines }}'
+    msg: '{{ result_04.stdout_lines }}'
 
 - name: '< MAIN : Logout > Kubevirt Logout'
   shell: 'oc logout'
