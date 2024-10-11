@@ -5,7 +5,7 @@
     var_storageclass: 'netapp-sc-nfs'
     var_network: 'service-vlan51-civilian-cattle'
     var_volumemode: 'Filesystem'
-    var_gw: '{{ var_ipaddr.split(".")[0] }}.{{ var_ipaddr.split(".")[1] }}.{{ var_ipaddr.split(".")[2] }}.1'
+    var_gw: '{{ var_ipaddr1.split(".")[0] }}.{{ var_ipaddr1.split(".")[1] }}.{{ var_ipaddr1.split(".")[2] }}.1'
   when: var_purpose == 'prd'
 
 - name: '< MAIN : Setting > Set variable [ DEV ]'
@@ -14,7 +14,7 @@
     var_storageclass: 'hitachi-sc'
     var_network: 'service-vlan53-slippery-snail'
     var_volumemode: 'Block'
-    var_gw: '{{ var_ipaddr.split(".")[0] }}.{{ var_ipaddr.split(".")[1] }}.{{ var_ipaddr.split(".")[2] }}.1'
+    var_gw: '{{ var_ipaddr1.split(".")[0] }}.{{ var_ipaddr1.split(".")[1] }}.{{ var_ipaddr1.split(".")[2] }}.1'
   when: var_purpose == 'dev'
 
 - name: '< MAIN : Setting > Set VM Information [ hostname, ip address ] ( VM Count 1 )'
