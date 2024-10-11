@@ -3,24 +3,24 @@
   template:
     src: template_vm_app.j2
     dest: /tmp/create-vm-{{ item.hostname }}.yml
-  register: result_01
+  register: result_02
   when: var_type != 'def'
 
 - name: '< Create VM -01- > Copy the default jinja template [ vm name : {{ item.hostname }} ]'
   template:
     src: template_vm.j2
     dest: /tmp/create-vm-{{ item.hostname }}.yml
-  register: result_01
+  register: result_02
   when: var_type == 'def'
 
 - name: '< Create VM -01- > Debug'
   debug:
-    msg: '{{ result_01 }}'
+    msg: '{{ result_02 }}'
 
 - name: '< Create VM -02- > Create Virtual Machine [ vm name : {{ item.hostname }} ]'
   shell: oc apply -f /tmp/create-vm-{{ item.hostname }}.yml
-  register: result_02
+  register: result_03
 
 - name: '< Create VM -02- > Debug [ vm name : {{ item.hostname }} ]'
   debug:
-    msg: '{{ result_02.stdout_lines }}'
+    msg: '{{ result_03.stdout_lines }}'
