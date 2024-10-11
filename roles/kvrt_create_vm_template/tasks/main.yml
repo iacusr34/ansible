@@ -34,6 +34,7 @@
   
 - name: '< MAIN : Create VM > [ {{ var_purpose | upper }} ] Launch create VM Template'
   include_tasks: use_template.yml
+  loop: '{{ var_vminfo }}'
 
 - name: '< MAIN : Waiting > Wait 70 Seconds for new virtual machine to booting'
   pause:
