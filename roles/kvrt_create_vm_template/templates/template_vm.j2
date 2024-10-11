@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-boot
+  name: pvc-{{ item.hostname }}-boot
   namespace: {{ var_namespace }}
 spec:
   accessModes:
@@ -19,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-data
+  name: pvc-{{ item.hostname }}-data
   namespace: {{ var_namespace }}
 spec:
   accessModes:
@@ -39,14 +39,14 @@ metadata:
   generation: 2
   labels:
     kubevirt.io/os: linux
-  name: {{ var_namespace }}{{ var_type }}{{ var_count }}v
+  name: {{ item.hostname }}
   namespace: {{ var_namespace }}
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: '{{ var_namespace }}{{ var_type }}{{ var_count }}v'
+        kubevirt.io/domain: '{{ item.hostname }}'
     spec:
       domain:
         cpu:
@@ -80,7 +80,7 @@ spec:
       volumes:
       - name: disk0
         persistentVolumeClaim:
-          claimName: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-boot
+          claimName: pvc-{{ item.hostname }}-boot
       - name: cloudinitvolume
         cloudInitNoCloud:
           userData: |-
@@ -96,10 +96,10 @@ spec:
             ethernets:
               enp1s0:
                 addresses:
-                - '{{ var_ipaddr }}/24'
+                - '{{ item.ipaddr }}/24'
                 gateway4: '{{ var_gw }}'
                 nameservers:
                   addresses: [172.30.111.100]
       - name: disk1
         persistentVolumeClaim:
-          claimName: pvc-{{ var_namespace }}{{ var_type }}{{ var_count }}v-data
+          claimName: pvc-{{ item.hostname }}-data
