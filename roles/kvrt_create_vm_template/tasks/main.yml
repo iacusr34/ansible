@@ -17,5 +17,35 @@
     var_gw: '{{ var_ipaddr.split(".")[0] }}.{{ var_ipaddr.split(".")[1] }}.{{ var_ipaddr.split(".")[2] }}.1'
   when: var_purpose == 'dev'
 
+- name: '< MAIN : Setting > Set VM Information [ hostname, ip address ] ( VM Count 1 )'
+  set_fact:
+    var_vminfo: '{{ var_vminfo | default([]) + [ item ] }}'
+  with_items:
+    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}1v','ipaddr':'{{ var_ipaddr1 }}' }
+  when: var_count|int == 1
+
+- name: '< MAIN : Setting > Set VM Information [ hostname, ip address ] ( VM Count 2 )'
+  set_fact:
+    var_vminfo: '{{ var_vminfo | default([]) + [ item ] }}'
+  with_items:
+    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}1v','ipaddr':'{{ var_ipaddr1 }}' }
+    - { 'hostname':'{{ var_namespace | lower }}{{ var_type }}2v','ipaddr':'{{ var_ipaddr2 }}' }
+  when: var_count|int == 2
+  
 - name: '< MAIN : Create VM > [ {{ var_purpose | upper }} ] Launch create VM Template'
   include_tasks: use_template.yml
+
+- name: '< MAIN : Waiting > Wait 70 Seconds for new virtual machine to booting'
+  pause:
+    seconds: 70
+
+- name: '< MAIN : Check VM > Check the created virtual machine'
+  shell: 'oc get pvc,vmi -n {{ var_namespace | lower}} | grep "{{ var_namespace | lower }}"'
+  register: result_03
+
+- name: '< Create VM -03- > Debug'
+  debug:
+    msg: '{{ result_03.stdout_lines }}'
+
+- name: '< MAIN : Logout > Kubevirt Logout'
+  shell: 'oc logout'
