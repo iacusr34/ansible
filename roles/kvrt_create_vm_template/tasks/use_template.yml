@@ -1,15 +1,15 @@
 ---
-- name: '< Create VM -01- > Copy the application jinja template'
+- name: '< Create VM -01- > Copy the application jinja template [ vm name : {{ item.hostname }} ]'
   template:
     src: template_vm_app.j2
-    dest: /tmp/create-vm.yml
+    dest: /tmp/create-vm-{{ item.hostname }}.yml
   register: result_01
   when: var_type != 'def'
 
-- name: '< Create VM -01- > Copy the default jinja template'
+- name: '< Create VM -01- > Copy the default jinja template [ vm name : {{ item.hostname }} ]'
   template:
     src: template_vm.j2
-    dest: /tmp/create-vm.yml
+    dest: /tmp/create-vm-{{ item.hostname }}.yml
   register: result_01
   when: var_type == 'def'
 
@@ -17,33 +17,10 @@
   debug:
     msg: '{{ result_01 }}'
 
-- name: '< Create VM -02- > kubevirt login'
-  shell: 'oc login {{ kvrt_account | b64decode }} --server=https://api.{{ var_cluster }}.lguplus.co.kr:6443 --insecure-skip-tls-verify=true'
+- name: '< Create VM -02- > Create Virtual Machine [ vm name : {{ item.hostname }} ]'
+  shell: oc apply -f /tmp/create-vm-{{ item.hostname }}.yml
   register: result_02
 
-- name: '< Create VM -02- > Debug'
+- name: '< Create VM -02- > Debug [ vm name : {{ item.hostname }} ]'
   debug:
-    msg: '{{ result_02 }}'
-
-- name: '< Create VM -03- > Create Virtual Machine'
-  shell: oc apply -f /tmp/create-vm.yml
-  register: result_03
-
-- name: '< Create VM -03- > Debug'
-  debug:
-    msg: '{{ result_03.stdout_lines }}'
-
-- name: '< Create VM -04- > Wait 70 Seconds for new virtual machine to boot'
-  pause:
-    seconds: 70
-
-- name: '< Create VM -05- > Check the created virtual machine'
-  shell: 'oc get pvc,vmi,pod -n {{ var_namespace }} | grep "{{ var_namespace }}{{ var_type }}"'
-  register: result_04
-
-- name: '< Create VM -05- > Debug'
-  debug:
-    msg: '{{ result_04.stdout_lines }}'
-
-- name: 'Kubevirt Logout'
-  shell: 'oc logout'
+    msg: '{{ result_02.stdout_lines }}'
