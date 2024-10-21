@@ -1,7 +1,0 @@
----
-- name: 'Install the basic agent'
-  hosts: all
-  gather_facts: false
-  become: true
-  roles:
-    - role: install_agent
