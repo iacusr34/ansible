@@ -1,0 +1,73 @@
+---
+- name: '< INSTALL : Server-i -01- > Create the directory /secure/somansa'
+  file:
+    path: /secure/somansa/
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  register: result_01
+
+- name: '< INSTALL : Server-i -01- > Debug'
+  debug:
+    msg: '{{ result_01 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -02- > Mount the lv_somansa Volume'
+  mount:
+    path: /secure/somansa/
+    src: /dev/mapper/appvg01-lv_somansa
+    fstype: ext4
+    state: mounted
+  register: result_02
+
+- name: '< INSTALL : Server-i -02- > Debug'
+  debug:
+    msg: '{{ result_02 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -03- > Create the directory /secure/somansa/src'
+  file:
+    path: /secure/somansa/src
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  register: result_03
+
+- name: '< INSTALL : Server-i -03- > Debug'
+  debug:
+    msg: '{{ result_03 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -04- > Download Agent File Server-i'
+  shell: 'wget --no-check-certificate https://172.30.200.94:18443/agent/Online_Linux.zip -O /secure/somansa/src/Online_Linux.zip'
+  register: result_04
+
+- name: '< INSTALL : Server-i -04- > Debug'
+  debug:
+    msg: '{{ result_04 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -05- > Unzip file [ Online_Linux.zip ]'
+  shell: 'unzip /secure/somansa/src/Online_Linux.zip -d /secure/somansa/src/'
+  register: result_05
+
+- name: '< INSTALL : Server-i -05- > Debug'
+  debug:
+    msg: '{{ result_05 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -06- > Install Agent Server-i'
+  shell: 'cd /secure/somansa/src ; sh ./setenv.sh -p /secure/somansa/ -a 172.30.200.95 -i y -n 18443 --openjdk y'
+  register: result_06
+
+- name: '< INSTALL : Server-i -06- > Debug'
+  debug:
+    msg: '{{ result_06 }}'
+  tags: debugging
+
+- name: '< INSTALL : Server-i -07- > Set Server-i Agent Intallation Results'
+  set_fact:
+    serveri_success: 'y'
+  when: result_06.rc == 0
