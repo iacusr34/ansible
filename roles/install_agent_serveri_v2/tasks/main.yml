@@ -1,0 +1,22 @@
+---
+- name: '< MAIN : Check -01- > Check if process is running'
+  shell: 'ps -eo comm,etime,user | grep piagenta'
+  ignore_errors: true
+  register: ck_rs01
+
+- name: '< MAIN : Check -02- > Check if it is installed'
+  shell: 'ls -lsth /secure/somansa | grep serveri'
+  ignore_errors: true
+  register: ck_rs02
+
+- name: '< MAIN : Check -03- > Set verification results'
+  set_fact:
+    serveri_check: '{{ "not installed" if( ck_rs01.rc == 1 and ck_rs02.rc == 1 ) else "installed" }}'
+
+- name: '< MAIN : Check -04- > Check the variable for Server-i'
+  debug:
+    var: serveri_check
+
+- name: '< MAIN : INSTALL > Install Agent Server-i'
+  include_tasks: install_agent.yml
+  when: serveri_check == 'not installed'
