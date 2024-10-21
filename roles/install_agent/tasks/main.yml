@@ -1,0 +1,3 @@
+---
+- name: '< MAIN : INSTALL -01- > Install Agent Server-i'
+  include_tasks: install_serveri.yml
