@@ -1,0 +1,89 @@
+---
+- name: '< Common Config -01_1- > Setting password complexity [ password-auth ]'
+  lineinfile:
+    path: '/etc/pam.d/password-auth'
+    insertafter: 'auth        required                                        pam_deny.so'
+    line: '{{ item }}'
+  loop:
+    - 'auth        required                                        pam_failock.so preauth silent audit deny=5 unlock_time=600'
+    - 'auth        [default=die]                                   pam_failock.so authfail aidot deny=5 unlock_time=600'
+
+- name: '< Common Config -01_2- > Setting password complexity [ password-auth ]'
+  lineinfile:
+    path: '/etc/pam.d/password-auth'
+    insertafter: 'account     required                                        pam_permit.so'
+    line: 'account     required                                        pam_failock.so'
+
+- name: '< Common Config -01- > Result Check'
+  shell: 'cat /etc/pam.d/password-auth | grep pam_failock.so'
+  tags: debug
+
+- name: '< Common Config -02_1- > Setting password complexity [ system-auth ]'
+  lineinfile:
+    path: '/etc/pam.d/system-auth'
+    insertafter: 'auth        required                                        pam_deny.so'
+    line: '{{ item }}'
+  loop:
+    - 'auth        required                                        pam_failock.so preauth silent audit deny=5 unlock_time=600'
+    - 'auth        [default=die]                                   pam_failock.so authfail aidot deny=5 unlock_time=600'
+
+- name: '< Common Config -02_2- > Setting password complexity [ system-auth ]'
+  lineinfile:
+    path: '/etc/pam.d/system-auth'
+    insertafter: 'account     required                                        pam_permit.so'
+    line: 'account     required                                        pam_failock.so'
+
+- name: '< Common Config -02_3- > Setting password complexity [ system-auth ]'
+  lineinfile:
+    path: '/etc/pam.d/system-auth'
+    insertafter: 'account     requisite                                       pam_pwquality.so local_users_only'
+    line: 'account     requisite                                       pam_pwquality.so local_users_only try_first_pass enforce_for_root retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1'
+
+- name: '< Common Config -02- > Result Check'
+  shell: 'cat /etc/pam.d/system-auth | egrep "failock|pam_pwquality"'
+  tags: debug
+
+- name: '< Common Config -03- > Remove password complexity [pwquality.conf]'
+  lineinfile:
+    path: '/etc/security/pwquality.conf'
+    regexp: 'password requisite pam_cracklib.so try_first_pass retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1'
+    state: absent
+
+- name: '< Common Config -04- > Setting password complexity [pwquality.conf]'
+  lineinfile:
+    insertafter: '# local_users_only'
+    line: '{{ item }}'
+  loop:
+    - 'ocredit = -1'
+    - 'lcredit = -1'
+    - 'ucredit = -1'
+    - 'dcredit = -1'
+    - 'minlen = 8'
+
+- name: '< Common Config -04- > Result Check'
+  shell: 'cat /etc/security/pwquality.conf | egrep -v "^#|^$"'
+  tags: debug
+
+- name: '< Common Config -05- > Create Crontab Allow File [ cron.allow]'
+  file:
+    path: '/etc/cron.allow'
+    state: touch
+    mode: 0640
+  register: rs_common05
+
+- name: '< Common Config -05- > Result Check'
+  debug:
+    msg: '{{ rs_common05 }}'
+  tags: debug
+
+- name: '< Common Config -06- > Setting logrotate [vsftpd]'
+  copy:
+    src: '/var/lib/awx/projects/file/kvrt_config/vsftpd'
+    dest: '/etc/logrotate.d/'
+  register: rs_common06
+
+- name: '< Common Config -06- > Result Check'
+  debug:
+    msg: '{{ rs_common06 }}'
+  tags: debug
+    
