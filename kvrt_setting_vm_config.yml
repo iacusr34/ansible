@@ -1,0 +1,7 @@
+---
+- name: 'VM for Kubevirt the Config Setting'
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - role: kvrt_setting_vm_config
