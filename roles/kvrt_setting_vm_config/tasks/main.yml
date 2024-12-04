@@ -1,0 +1,19 @@
+---
+- name: '< MAIN -01- > VM Type code Get'
+  shell: 'hostname'
+  register: get_hostname
+
+- name: '< MAIN -02- > VM Type code Set'
+  set_fact:
+    vm_type: '{{ get_hostname.stdout[5:8] | lower }}'
+
+- name: '< MAIN -03- > Common Config Set'
+  include_tasks: common_config.yml
+
+- name: '< MAIN -04- > Web Service Config Set'
+  include_tasks: web_config.yml
+  when: vm_type == 'web'
+
+- name: '< MAIN -05- > Was Service Config Set'
+  include_tasks: was_config.yml
+  when: vm_type == 'was'
