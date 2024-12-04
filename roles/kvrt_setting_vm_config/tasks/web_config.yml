@@ -1,0 +1,24 @@
+---
+- name: '< Web Config -01- > Setting Kernel parameter [sysctl.conf]'
+  lineinfile:
+    path: '/etc/sysctl.conf'
+    insertafter: 'net.ipv4.ip_nonlocal_bind=1'
+    line: '{{ item }}'
+  loop:
+    - 'net.ipv4.ip_local_port_range = 32768 65535'
+    - 'net.ipv4.tcp_keepalive_time = 1800'
+    - 'net.ipv4.tcp_keepalive_probes = 5'
+    - 'net.ipv4.tcp_keepalive_intvl = 15'
+    - 'net.ipv4.tcp_fin_timeout = 30'
+
+- name: '< Web Config -02- > Apply Kernel parameter'
+  shell: 'sysctl -p'
+  register: rs_web02
+
+- name: '< Web Config -03- > Check Kernel parameter'
+  shell: 'sysctl -a | egrep "keepalive|port_range"'
+  register: rs_web03
+
+- name: '< Web Config -03- > Result Check'
+  debug:
+    msg: '{{ rs_web03.stdout }}'
