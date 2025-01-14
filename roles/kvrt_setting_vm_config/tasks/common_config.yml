@@ -5,17 +5,17 @@
     insertafter: 'auth        required                                        pam_deny.so'
     line: '{{ item }}'
   loop:
-    - 'auth        required                                        pam_failock.so preauth silent audit deny=5 unlock_time=600'
-    - 'auth        [default=die]                                   pam_failock.so authfail aidot deny=5 unlock_time=600'
+    - 'auth        required                                        pam_faillock.so preauth silent audit deny=5 unlock_time=600'
+    - 'auth        [default=die]                                   pam_faillock.so authfail audit deny=5 unlock_time=600'
 
 - name: '< Common Config -01_2- > Setting password complexity [ password-auth ]'
   lineinfile:
     path: '/etc/pam.d/password-auth'
     insertafter: 'account     required                                        pam_permit.so'
-    line: 'account     required                                        pam_failock.so'
+    line: 'account     required                                        pam_faillock.so'
 
 - name: '< Common Config -01- > Result Check'
-  shell: 'cat /etc/pam.d/password-auth | grep pam_failock.so'
+  shell: 'cat /etc/pam.d/password-auth | grep pam_faillock.so'
   tags: debug
 
 - name: '< Common Config -02_1- > Setting password complexity [ system-auth ]'
@@ -24,14 +24,14 @@
     insertafter: 'auth        required                                        pam_deny.so'
     line: '{{ item }}'
   loop:
-    - 'auth        required                                        pam_failock.so preauth silent audit deny=5 unlock_time=600'
-    - 'auth        [default=die]                                   pam_failock.so authfail aidot deny=5 unlock_time=600'
+    - 'auth        required                                        pam_faillock.so preauth silent audit deny=5 unlock_time=600'
+    - 'auth        [default=die]                                   pam_faillock.so authfail audit deny=5 unlock_time=600'
 
 - name: '< Common Config -02_2- > Setting password complexity [ system-auth ]'
   lineinfile:
     path: '/etc/pam.d/system-auth'
     insertafter: 'account     required                                        pam_permit.so'
-    line: 'account     required                                        pam_failock.so'
+    line: 'account     required                                        pam_faillock.so'
 
 - name: '< Common Config -02_3- > Setting password complexity [ system-auth ]'
   lineinfile:
@@ -40,7 +40,7 @@
     line: 'account     requisite                                       pam_pwquality.so local_users_only try_first_pass enforce_for_root retry=3 minlen=8 lcredit=-1 ucredit=-1 dcredit=-1 ocredit=-1'
 
 - name: '< Common Config -02- > Result Check'
-  shell: 'cat /etc/pam.d/system-auth | egrep "failock|pam_pwquality"'
+  shell: 'cat /etc/pam.d/system-auth | egrep "faillock|pam_pwquality"'
   tags: debug
 
 - name: '< Common Config -03- > Remove password complexity [pwquality.conf]'
